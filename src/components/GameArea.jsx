@@ -462,10 +462,16 @@ function GameArea({
     <div className="w-full max-w-6xl mx-auto flex flex-col gap-4 animate-in fade-in duration-300">
       
       {/* CAPYBARA CLICKER REFERENCE STYLE UNIFIED MASTER FRAME */}
-      <div className="w-full rounded-3xl overflow-hidden border-4 border-slate-900 shadow-2xl flex flex-col md:flex-row items-stretch min-h-[520px] relative bg-sky-500">
+      <div 
+        className="w-full rounded-3xl overflow-hidden border-4 border-slate-900 shadow-2xl flex flex-col md:flex-row items-stretch bg-sky-500 relative"
+        style={{ minHeight: '560px' }}
+      >
         
         {/* LEFT PANEL (60% WIDTH): SUNBURST CLICK ARENA, TOP UTILITY BUTTONS & SCORE HEADER */}
-        <div className="w-full md:w-7/12 p-4 md:p-5 flex flex-col justify-between items-center relative sunburst-container min-h-[460px]">
+        <div 
+          className="w-full md:w-7/12 p-4 md:p-5 flex flex-col justify-between items-center relative sunburst-container flex-1"
+          style={{ minHeight: '500px' }}
+        >
           
           {/* Animated Radiant Rays */}
           <div className="sunburst-rays"></div>
@@ -522,8 +528,338 @@ function GameArea({
                 <ArrowLeft size={18} />
               </button>
             </div>
+
+            {/* Online Timer badge */}
+            {mode === 'online' && roomData && (
+              <div className="bg-white/90 py-1.5 px-3 rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+                {onlineType === 'competitive' ? (
+                  <span className="text-base font-black text-rose-600 animate-pulse">{roomData.timer}s</span>
+                ) : (
+                  <span className="text-xs text-emerald-700 font-black">CO-OP ONLINE</span>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* TOP CENTER SCORE DISPLAY (LIKE CAPYBARA CLICKER) */}
+          <div className="z-20 my-2 flex flex-col items-center">
+            <span className="cartoon-title text-3xl md:text-4xl text-yellow-300 font-black drop-shadow-[0_4px_0_#000]">
+              💰 {mode === 'offline' ? Math.floor(offlineState.money).toLocaleString() : (getMyCompPlayer()?.score || 0).toLocaleString()}
+            </span>
+            <span className="cartoon-title-sub text-xs md:text-sm uppercase tracking-wider text-white font-extrabold mt-1 drop-shadow-[0_2px_0_#000]">
+              TỐC ĐỘ TỰ ĐỘNG: +{mode === 'offline' ? offlineState.dps.toLocaleString() : (roomData?.players.find(p => p.id === socketId)?.dps || 0).toLocaleString()}/s
+            </span>
+          </div>
+
+          {/* CENTER CLICK TARGET MASCOT/MONSTER */}
+          <div 
+            onClick={handleTap} 
+            className={`clicker-object my-3 select-none cursor-pointer active:scale-90 ${clickShake ? 'click-shake' : ''}`}
+          >
+            {renderClickObject()}
+          </div>
+
+          {/* FLOAT X2 MULTIPLIER BADGE */}
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1.5 z-20">
+            <div className={`multiplier-circle-ad ${isMultiplierActive ? 'animate-bounce ring-4 ring-green-300' : 'opacity-85'}`}>
+              x2
+            </div>
+            <span className="text-[9px] bg-white border border-black px-2 py-0.5 rounded-full font-black text-slate-800 shadow-md">
+              {isMultiplierActive ? `${multiplierTimer}s` : 'SẠC NỘ'}
+            </span>
+          </div>
+
+          {/* BOTTOM ENERGY METER & ACTIVE SKILLS */}
+          <div className="w-full max-w-sm flex flex-col items-center z-10 gap-2 mb-2">
+            {(mode === 'offline' || (mode === 'online' && onlineType === 'competitive')) && (
+              <div className="w-full bg-white/90 p-2 rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+                <div className="flex justify-between text-[10px] text-slate-800 font-black mb-1">
+                  <span className="flex items-center gap-1 text-purple-700 uppercase">
+                    <Flame size={12} className="animate-pulse" /> THANH NỘ BỔ TRỢ (x2)
+                  </span>
+                  <span className="text-purple-800">
+                    {isMultiplierActive ? 'X2 ĐANG CHẠY' : `${energy}%`}
+                  </span>
+                </div>
+                <div className="w-full bg-slate-200 border border-black h-2.5 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-150 ${
+                      isMultiplierActive 
+                        ? 'bg-gradient-to-r from-purple-500 via-pink-500 to-rose-400 animate-pulse' 
+                        : 'bg-purple-600'
+                    }`}
+                    style={{ width: `${isMultiplierActive ? (multiplierTimer / 6) * 100 : energy}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+
+            {/* Offline Skill buttons */}
+            {mode === 'offline' && (
+              <div className="flex gap-2">
+                <button
+                  onClick={handleActivateFrenzy}
+                  disabled={frenzyCd > 0 || frenzyActive}
+                  className={`px-3 py-1 rounded-lg text-xs font-black border-2 border-black transition-all shadow-[2px_2px_0px_#000] ${
+                    frenzyActive 
+                      ? 'bg-rose-500 text-white animate-pulse' 
+                      : frenzyCd > 0 
+                      ? 'bg-slate-300 text-slate-500 cursor-not-allowed' 
+                      : 'bg-rose-400 hover:bg-rose-500 text-black'
+                  }`}
+                >
+                  🔥 Cuồng Phong (x2 DPC) {frenzyActive ? `${frenzyTimer}s` : frenzyCd > 0 ? `(${frenzyCd}s)` : ''}
+                </button>
+                <button
+                  onClick={handleActivateGoldenRush}
+                  disabled={goldenRushCd > 0}
+                  className={`px-3 py-1 rounded-lg text-xs font-black border-2 border-black transition-all shadow-[2px_2px_0px_#000] ${
+                    goldenRushCd > 0 
+                      ? 'bg-slate-300 text-slate-500 cursor-not-allowed' 
+                      : 'bg-amber-400 hover:bg-amber-500 text-black'
+                  }`}
+                >
+                  ⚡ Bão Vàng {goldenRushCd > 0 ? `(${goldenRushCd}s)` : ''}
+                </button>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* RIGHT PANEL (40% WIDTH): UPGRADE SHOP COLUMNS (LIKE CAPYBARA CLICKER REFERENCE) */}
+        <div 
+          className="w-full md:w-5/12 bg-slate-900/95 backdrop-blur-md p-4 md:p-5 flex flex-col border-t-4 md:border-t-0 md:border-l-4 border-slate-900 text-white justify-between flex-1"
+          style={{ minHeight: '500px' }}
+        >
+          
+          {/* TOP RIGHT HEADER (LIKE REFERENCE IMAGE: Click Power +1) */}
+          <div className="text-center pb-3 border-b-2 border-slate-800">
+            <h3 className="cartoon-title text-2xl font-black text-white tracking-wide">
+              Click Power
+            </h3>
+            <span className="text-xl font-black text-amber-400 block mt-0.5">
+              +{mode === 'offline' ? offlineState.dpc : (getMyCompPlayer()?.dpc || 1)}
+            </span>
+          </div>
+
+          {/* SCROLLABLE UPGRADE CARDS LIST (LIKE CAPYBARA CLICKER REFERENCE) */}
+          <div className="upgrade-list-scroll max-h-[440px] my-3 space-y-2.5 overflow-y-auto pr-1">
+            {mode === 'offline' && (() => {
+              const { clickTools, autoWorkers } = getFilteredUpgrades();
+              return (
+                <>
+                  {/* Group 1: Click Tools */}
+                  <div className="text-left font-black text-[10px] text-purple-300 uppercase tracking-wider my-1 bg-purple-900/50 p-1.5 rounded-lg border border-purple-700/50">
+                    ⚒️ Nâng Cấp Công Cụ Click
+                  </div>
+                  {clickTools.map((up) => {
+                    const IconComp = up.icon;
+                    const curLvl = offlineState.upgrades[up.key] || 0;
+                    const cost = getOfflineUpgradeCost(up.cost, curLvl);
+                    const canAfford = offlineState.money >= cost;
+
+                    return (
+                      <button
+                        key={up.key}
+                        onClick={() => buyOfflineUpgrade(up.key, up.isDpc, up.val, up.cost)}
+                        disabled={!canAfford}
+                        className="w-full bg-slate-800/90 border-2 border-slate-700 hover:border-amber-400 p-3 rounded-2xl flex items-center justify-between shadow-md transition-all disabled:opacity-50 text-left group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-11 h-11 bg-slate-900 border border-slate-700 rounded-xl flex items-center justify-center text-amber-400 font-black group-hover:scale-105 transition-transform">
+                            <IconComp size={22} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-extrabold text-sm text-slate-100 flex items-center gap-1.5">
+                              {up.name}
+                              {curLvl > 0 && <span className="text-[10px] bg-purple-500/40 text-purple-300 px-1.5 rounded border border-purple-400/40">v{curLvl}</span>}
+                            </span>
+                            <span className="text-[11px] text-slate-400 font-bold">{up.statLabel}</span>
+                          </div>
+                        </div>
+
+                        <span className="bg-amber-400 group-hover:bg-amber-300 text-slate-950 font-black px-3.5 py-1.5 rounded-xl text-xs shadow-md">
+                          💰{cost.toLocaleString()}
+                        </span>
+                      </button>
+                    );
+                  })}
+
+                  {/* Group 2: Auto Workers */}
+                  <div className="text-left font-black text-[10px] text-emerald-300 uppercase tracking-wider mt-3 mb-1 bg-emerald-900/50 p-1.5 rounded-lg border border-emerald-700/50">
+                    🤖 Thuê Nhân Công Tự Động/s
+                  </div>
+                  {autoWorkers.map((up) => {
+                    const IconComp = up.icon;
+                    const curLvl = offlineState.upgrades[up.key] || 0;
+                    const cost = getOfflineUpgradeCost(up.cost, curLvl);
+                    const canAfford = offlineState.money >= cost;
+
+                    return (
+                      <button
+                        key={up.key}
+                        onClick={() => buyOfflineUpgrade(up.key, up.isDpc, up.val, up.cost)}
+                        disabled={!canAfford}
+                        className="w-full bg-slate-800/90 border-2 border-slate-700 hover:border-amber-400 p-3 rounded-2xl flex items-center justify-between shadow-md transition-all disabled:opacity-50 text-left group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-11 h-11 bg-slate-900 border border-slate-700 rounded-xl flex items-center justify-center text-amber-400 font-black group-hover:scale-105 transition-transform">
+                            <IconComp size={22} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-extrabold text-sm text-slate-100 flex items-center gap-1.5">
+                              {up.name}
+                              {curLvl > 0 && <span className="text-[10px] bg-purple-500/40 text-purple-300 px-1.5 rounded border border-purple-400/40">v{curLvl}</span>}
+                            </span>
+                            <span className="text-[11px] text-slate-400 font-bold">{up.statLabel}</span>
+                          </div>
+                        </div>
+
+                        <span className="bg-amber-400 group-hover:bg-amber-300 text-slate-950 font-black px-3.5 py-1.5 rounded-xl text-xs shadow-md">
+                          💰{cost.toLocaleString()}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </>
+              );
+            })()}
+
+            {mode === 'online' && onlineType === 'competitive' && roomData && (
+              <>
+                <div className="text-left font-black text-[10px] text-purple-300 uppercase tracking-wider my-1 bg-purple-900/50 p-1.5 rounded-lg border border-purple-700/50">
+                  ⚒️ Công Cụ Click (Competitive)
+                </div>
+                {(() => {
+                  const up = { key: 'clicker', name: 'Găng Tay Sắt', val: 1, isDpc: true, icon: MousePointerClick, statLabel: 'Earn 2x per click' };
+                  const me = getMyCompPlayer();
+                  const curLvl = me?.upgrades[up.key] || 0;
+                  const cost = Math.floor(10 * Math.pow(1.5, curLvl));
+                  const myScore = me?.score || 0;
+                  const canAfford = myScore >= cost;
+
+                  return (
+                    <button
+                      onClick={() => onBuyCompUpgrade(up.key)}
+                      disabled={!canAfford}
+                      className="w-full bg-slate-800/90 border-2 border-slate-700 hover:border-amber-400 p-3 rounded-2xl flex items-center justify-between shadow-md transition-all disabled:opacity-50 text-left group mb-2"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 bg-slate-900 border border-slate-700 rounded-xl flex items-center justify-center text-amber-400 font-black">
+                          <MousePointerClick size={22} />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-extrabold text-sm text-slate-100">{up.name}</span>
+                          <span className="text-[11px] text-slate-400 font-bold">{up.statLabel}</span>
+                        </div>
+                      </div>
+                      <span className="bg-amber-400 text-slate-950 font-black px-3.5 py-1.5 rounded-xl text-xs">
+                        💰{cost.toLocaleString()}
+                      </span>
+                    </button>
+                  );
+                })()}
+
+                <div className="text-left font-black text-[10px] text-emerald-300 uppercase tracking-wider mt-3 mb-1 bg-emerald-900/50 p-1.5 rounded-lg border border-emerald-700/50">
+                  🤖 Thuê Nhân Công Auto
+                </div>
+                {getFilteredUpgrades().autoWorkers.slice(0, 3).map((up) => {
+                  const IconComp = up.icon;
+                  const me = getMyCompPlayer();
+                  const curLvl = me?.upgrades[up.key] || 0;
+                  const cost = Math.floor(up.cost * Math.pow(1.5, curLvl));
+                  const myScore = me?.score || 0;
+                  const canAfford = myScore >= cost;
+
+                  return (
+                    <button
+                      key={up.key}
+                      onClick={() => onBuyCompUpgrade(up.key)}
+                      disabled={!canAfford}
+                      className="w-full bg-slate-800/90 border-2 border-slate-700 hover:border-amber-400 p-3 rounded-2xl flex items-center justify-between shadow-md transition-all disabled:opacity-50 text-left group mb-2"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 bg-slate-900 border border-slate-700 rounded-xl flex items-center justify-center text-amber-400 font-black">
+                          <IconComp size={22} />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-extrabold text-sm text-slate-100">{up.name}</span>
+                          <span className="text-[11px] text-slate-400 font-bold">+{up.val}/s DPS</span>
+                        </div>
+                      </div>
+                      <span className="bg-amber-400 text-slate-950 font-black px-3.5 py-1.5 rounded-xl text-xs">
+                        💰{cost.toLocaleString()}
+                      </span>
+                    </button>
+                  );
+                })}
+              </>
+            )}
+
+            {mode === 'online' && onlineType === 'coop' && roomData && roomData.coopUpgrades && (
+              <div className="flex flex-col gap-3">
+                <div className="text-left font-black text-[10px] text-purple-300 uppercase tracking-wider my-1 bg-purple-900/50 p-1.5 rounded-lg border border-purple-700/50">
+                  🤝 Nâng Cấp Chung Cho Cả Team
+                </div>
+                {(() => {
+                  const dmgUp = roomData.coopUpgrades?.damage || { level: 1, baseCost: { meat: 10, wood: 10 } };
+                  const lvl = dmgUp.level || 1;
+                  const factor = Math.pow(1.5, lvl - 1);
+                  const meatCost = Math.floor((dmgUp.baseCost?.meat || 10) * factor);
+                  const woodCost = Math.floor((dmgUp.baseCost?.wood || 10) * factor);
+                  const res = roomData.coopResources || { meat: 0, wood: 0, stone: 0 };
+                  const canAfford = (res.meat || 0) >= meatCost && (res.wood || 0) >= woodCost;
+
+                  return (
+                    <button
+                      onClick={() => onBuyCoopUpgrade('damage')}
+                      disabled={!canAfford}
+                      className="w-full flex flex-col bg-slate-800/90 border-2 border-slate-700 p-3 rounded-2xl text-left relative shadow-sm"
+                    >
+                      <span className="font-extrabold text-xs mb-1 text-slate-100">⚔️ Sát Thương Chung</span>
+                      <span className="text-[10px] text-purple-300 font-extrabold mb-2 block">+1 Click Damage</span>
+                      <div className="flex gap-2 text-[10px] font-black">
+                        <span className={(res.meat || 0) >= meatCost ? 'text-rose-400' : 'text-slate-500'}>🥩 {meatCost}</span>
+                        <span className={(res.wood || 0) >= woodCost ? 'text-emerald-400' : 'text-slate-500'}>🪵 {woodCost}</span>
+                      </div>
+                    </button>
+                  );
+                })()}
+
+                {(() => {
+                  const multUp = roomData.coopUpgrades?.multiplier || { level: 1, baseCost: { stone: 15, wood: 15 } };
+                  const lvl = multUp.level || 1;
+                  const factor = Math.pow(1.5, lvl - 1);
+                  const stoneCost = Math.floor((multUp.baseCost?.stone || 15) * factor);
+                  const woodCost = Math.floor((multUp.baseCost?.wood || 15) * factor);
+                  const res = roomData.coopResources || { meat: 0, wood: 0, stone: 0 };
+                  const canAfford = (res.stone || 0) >= stoneCost && (res.wood || 0) >= woodCost;
+
+                  return (
+                    <button
+                      onClick={() => onBuyCoopUpgrade('multiplier')}
+                      disabled={!canAfford}
+                      className="w-full flex flex-col bg-slate-800/90 border-2 border-slate-700 p-3 rounded-2xl text-left relative shadow-sm"
+                    >
+                      <span className="font-extrabold text-xs mb-1 text-slate-100">📊 Hệ Số Nhân Chung</span>
+                      <span className="text-[10px] text-purple-300 font-extrabold mb-2 block">+20% Click Damage</span>
+                      <div className="flex gap-2 text-[10px] font-black">
+                        <span className={(res.stone || 0) >= stoneCost ? 'text-amber-400' : 'text-slate-500'}>🪨 {stoneCost}</span>
+                        <span className={(res.wood || 0) >= woodCost ? 'text-emerald-400' : 'text-slate-500'}>🪵 {woodCost}</span>
+                      </div>
+                    </button>
+                  );
+                })()}
+              </div>
+            )}
+          </div>
+
+          {/* BOTTOM RIGHT FOOTER */}
+          <div className="pt-2 border-t-2 border-slate-800 text-[10px] text-slate-400 font-extrabold text-center">
+            {theme === 'wood' ? '🪵 Tiều Phu Chặt Gỗ Rừng' : theme === 'monster' ? '⚔️ Săn Quái Vật Cổ Đại' : '🪨 Thợ Mỏ Khai Thác Thạch Anh'}
+          </div>
+        </div>
+
       </div>
 
       {/* REBIRTH MODAL */}
