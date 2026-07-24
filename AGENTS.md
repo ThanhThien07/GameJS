@@ -16,6 +16,7 @@ Bạn là agent điều phối pipeline tạo đồ họa cho game click chuột
 - `tools/Real-ESRGAN`: tăng độ phân giải và độ nét.
 - `tools/Pixelorama`: kiểm tra và chỉnh sprite, sprite sheet.
 - `tools/godogen`: tham khảo quy trình phát triển game.
+- `tools/skills-for-antigravity`: bộ công cụ và kỹ năng AI mở rộng cho hệ thống Antigravity Agent.
 
 # Quy trình bắt buộc
 
@@ -64,7 +65,8 @@ NguyenHoangHung_501250384/
 │   ├── rembg/             # Automated background removal tool
 │   ├── Real-ESRGAN/       # Image super-resolution & upscaling tool
 │   ├── Pixelorama/        # 2D sprite & pixel-art editing tool
-│   └── godogen/           # Game architecture, prompt generator & engine agent workflow
+│   ├── godogen/           # Game architecture, prompt generator & engine agent workflow
+│   └── skills-for-antigravity/ # Extensible AI agent skills & workflow plugin suite
 ├── scripts/
 │   └── asset_pipeline.py  # Python script to run the automated asset processing pipeline
 ├── src/                   # React frontend source code (App.jsx, GameArea.jsx, MainMenu.jsx)

@@ -16,3 +16,6 @@
 [submodule "tools/Krita-AI"]
 	path = tools/Krita-AI
 	url = https://github.com/Acly/krita-ai-diffusion.git
+[submodule "tools/skills-for-antigravity"]
+	path = tools/skills-for-antigravity
+	url = https://github.com/omer-metin/skills-for-antigravity.git

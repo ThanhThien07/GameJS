@@ -32,6 +32,10 @@
     "enabled": true,
     "tool_path": "tools/godogen"
   },
+  "skills_for_antigravity": {
+    "enabled": true,
+    "tool_path": "tools/skills-for-antigravity"
+  },
   "paths": {
     "prompts": "assets/prompts",
     "raw": "assets/raw",

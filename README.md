@@ -20,7 +20,8 @@ NguyenHoangHung_501250384/
 │   ├── rembg/             # Công cụ xóa nền tự động
 │   ├── Real-ESRGAN/       # Công cụ nâng độ phân giải & làm nét ảnh
 │   ├── Pixelorama/        # Công cụ vẽ & kiểm tra sprite 2D
-│   └── godogen/           # Công cụ tham khảo quy trình kiến trúc game
+│   ├── godogen/           # Công cụ tham khảo quy trình kiến trúc game
+│   └── skills-for-antigravity/ # Bộ kỹ năng & workflow plugin AI mở rộng
 ├── config/
 │   └── asset_pipeline.json# File cấu hình thông số các công cụ trong pipeline
 ├── logs/
