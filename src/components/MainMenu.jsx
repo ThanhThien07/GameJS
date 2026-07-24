@@ -22,8 +22,33 @@ function MainMenu({
     }
   };
 
+  const ensureNameSaved = () => {
+    if (isEditingName) {
+      const finalName = nameInput.trim() || 'Người chơi 1';
+      onSaveName(finalName);
+      setNameInput(finalName);
+      setIsEditingName(false);
+    }
+  };
+
+  const handleSelectOffline = () => {
+    ensureNameSaved();
+    onSelectOffline();
+  };
+
+  const handleSelectOnlineComp = () => {
+    ensureNameSaved();
+    onSelectOnlineComp();
+  };
+
+  const handleSelectOnlineCoop = () => {
+    ensureNameSaved();
+    onSelectOnlineCoop();
+  };
+
   const triggerJoin = (e) => {
     e.preventDefault();
+    ensureNameSaved();
     if (codeInput.trim().length === 6) {
       onJoinRoom(codeInput.trim().toUpperCase());
     } else {
@@ -56,7 +81,6 @@ function MainMenu({
                 placeholder="Nhập biệt danh của bạn..."
                 className="bg-transparent border-none outline-none text-slate-800 w-full placeholder-slate-400 font-bold text-base"
                 maxLength={16}
-                required
               />
             </div>
             <button type="submit" className="btn-primary w-full md:w-auto px-8 whitespace-nowrap">
@@ -67,11 +91,11 @@ function MainMenu({
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center border border-purple-200">
-                <span className="text-purple-700 font-bold uppercase">{playerName.charAt(0)}</span>
+                <span className="text-purple-700 font-bold uppercase">{playerName ? playerName.charAt(0) : 'P'}</span>
               </div>
               <div className="text-left">
                 <span className="text-[10px] text-slate-400 block font-bold">BIỆT DANH CỦA BẠN</span>
-                <span className="font-extrabold text-base tracking-wide text-slate-700">{playerName}</span>
+                <span className="font-extrabold text-base tracking-wide text-slate-700">{playerName || 'Người chơi 1'}</span>
               </div>
             </div>
             <button
@@ -103,8 +127,7 @@ function MainMenu({
           </div>
 
           <button
-            onClick={onSelectOffline}
-            disabled={isEditingName}
+            onClick={handleSelectOffline}
             className="btn-primary w-full mt-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600"
           >
             <Play size={16} /> CHƠI OFFLINE
@@ -134,16 +157,14 @@ function MainMenu({
           ) : (
             <div className="flex flex-col gap-2 w-full mt-4">
               <button
-                onClick={onSelectOnlineComp}
-                disabled={isEditingName}
+                onClick={handleSelectOnlineComp}
                 className="btn-primary w-full"
               >
                 <Play size={16} /> Tạo phòng Đấu Trường (1v1v1)
               </button>
               
               <button
-                onClick={onSelectOnlineCoop}
-                disabled={isEditingName}
+                onClick={handleSelectOnlineCoop}
                 className="btn-secondary w-full text-purple-600 hover:text-purple-700 font-bold border-purple-200"
               >
                 Tạo phòng Hợp Tác (Chế độ 3)
@@ -165,11 +186,10 @@ function MainMenu({
               onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
               maxLength={6}
               className="bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 font-black tracking-widest text-center text-slate-800 placeholder-slate-400 outline-none focus:border-purple-500 w-full md:w-52 text-base"
-              disabled={isEditingName}
             />
             <button
               type="submit"
-              disabled={isEditingName || codeInput.trim().length !== 6}
+              disabled={codeInput.trim().length !== 6}
               className="btn-primary px-8 w-full md:w-auto"
             >
               Gia Nhập Phòng

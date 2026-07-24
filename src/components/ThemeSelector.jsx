@@ -73,7 +73,11 @@ function ThemeSelector({ onSelectTheme, onBack }) {
               </div>
 
               <button
-                className="btn-primary w-full mt-4 text-sm py-2.5"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelectTheme(theme.id);
+                }}
+                className="btn-primary w-full mt-4 text-sm py-2.5 cursor-pointer"
                 style={{
                   background: `linear-gradient(135deg, ${theme.accentColor} 0%, ${theme.accentColor}dd 100%)`
                 }}

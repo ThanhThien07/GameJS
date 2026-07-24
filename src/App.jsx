@@ -19,7 +19,7 @@ function App() {
   const [onlineModeType, setOnlineModeType] = useState(null); // 'competitive' | 'coop'
 
   // Player & Room states
-  const [playerName, setPlayerName] = useState(localStorage.getItem('clicker_player_name') || '');
+  const [playerName, setPlayerName] = useState(() => localStorage.getItem('clicker_player_name') || 'Người chơi 1');
   const [roomCode, setRoomCode] = useState('');
   const [roomData, setRoomData] = useState(null);
   const [selectedTheme, setSelectedTheme] = useState('monster'); // 'monster' | 'wood' | 'stone'
