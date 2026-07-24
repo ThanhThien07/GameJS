@@ -90,50 +90,60 @@ function App() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Socket.io connection setup
-    // Connect to server (will proxy in development, or point to origin in production)
-    const socket = io(window.location.origin, {
-      reconnectionAttempts: 5,
-      timeout: 10000,
-      autoConnect: true
-    });
+    // Socket.io connection setup (only connect if not static GitHub Pages without backend)
+    const isGitHubPages = window.location.hostname.includes('github.io');
     
-    socketRef.current = socket;
+    if (!isGitHubPages) {
+      try {
+        const socket = io(window.location.origin, {
+          reconnectionAttempts: 3,
+          timeout: 5000,
+          autoConnect: true
+        });
+        
+        socketRef.current = socket;
 
-    socket.on('connect', () => {
-      console.log('Connected to server over Socket.io');
-      setSocketConnected(true);
-    });
+        socket.on('connect', () => {
+          console.log('Connected to server over Socket.io');
+          setSocketConnected(true);
+        });
 
-    socket.on('disconnect', () => {
-      console.log('Disconnected from server');
-      setSocketConnected(false);
-      if (playMode === 'online') {
-        alert('Mất kết nối tới máy chủ! Trở về menu chính.');
-        setPlayMode(null);
-        setGameScreen('menu');
+        socket.on('disconnect', () => {
+          console.log('Disconnected from server');
+          setSocketConnected(false);
+          if (playMode === 'online') {
+            alert('Mất kết nối tới máy chủ! Trở về menu chính.');
+            setPlayMode(null);
+            setGameScreen('menu');
+          }
+        });
+
+        socket.on('connect_error', () => {
+          setSocketConnected(false);
+        });
+
+        // Real-time room listeners
+        socket.on('roomUpdated', (data) => {
+          setRoomData(data);
+          if (data.code) setRoomCode(data.code);
+        });
+
+        socket.on('gameStarted', (data) => {
+          setRoomData(data);
+          setGameScreen('playing');
+        });
+
+        socket.on('gameFinished', (data) => {
+          setRoomData(data);
+          setGameScreen('gameover');
+        });
+      } catch (err) {
+        console.warn('Socket connection skipped or failed:', err);
+        setSocketConnected(false);
       }
-    });
-
-    socket.on('connect_error', () => {
+    } else {
       setSocketConnected(false);
-    });
-
-    // Real-time room listeners
-    socket.on('roomUpdated', (data) => {
-      setRoomData(data);
-      if (data.code) setRoomCode(data.code);
-    });
-
-    socket.on('gameStarted', (data) => {
-      setRoomData(data);
-      setGameScreen('playing');
-    });
-
-    socket.on('gameFinished', (data) => {
-      setRoomData(data);
-      setGameScreen('gameover');
-    });
+    }
 
     return () => {
       window.removeEventListener('online', handleOnline);
