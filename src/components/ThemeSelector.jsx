@@ -1,8 +1,17 @@
 import React from 'react';
-import { ArrowLeft, MousePointerClick, Swords, Trees, Gem } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 function ThemeSelector({ onSelectTheme, onBack }) {
   const themes = [
+    {
+      id: 'capybara',
+      name: 'Linh Vật Capybara (Sunburst Mode)',
+      desc: 'Chú chuột Capybara 3D đáng yêu đứng giữa vầng hào quang rực rỡ chuẩn phong cách Capybara Clicker!',
+      image: `${import.meta.env.BASE_URL}assets/cartoon_capybara.png`,
+      color: 'bg-amber-100/90 border-yellow-400 hover:bg-yellow-200/70',
+      accentColor: '#f59e0b',
+      badge: '👑 CAPYBARA YÊU THÍCH'
+    },
     {
       id: 'button',
       name: 'Nút Đỏ 3D Cartoon (Red Button)',
@@ -10,7 +19,7 @@ function ThemeSelector({ onSelectTheme, onBack }) {
       image: `${import.meta.env.BASE_URL}assets/cartoon_red_button.png`,
       color: 'bg-red-50/70 border-red-300 hover:bg-red-100/60',
       accentColor: '#ff2d55',
-      badge: '🔥 HOT NHẤT'
+      badge: '🔥 BẠN BÈ YÊU THÍCH'
     },
     {
       id: 'monster',
@@ -23,21 +32,12 @@ function ThemeSelector({ onSelectTheme, onBack }) {
     },
     {
       id: 'wood',
-      name: 'Chặt Gỗ (Woodcutter)',
-      desc: 'Đốn hạ gốc cây 3D với rìu sáng bóng. Nhấp đốn gỗ kiếm tiền bán lâm sản dồi dào!',
+      name: 'Chặt Gỗ & Đào Đá (Classic Mining)',
+      desc: 'Đốn hạ gốc cây 3D và đào quặng mỏ tinh thể 3D lấp lánh với hiệu ứng thích mắt!',
       image: `${import.meta.env.BASE_URL}assets/cartoon_wood.png`,
       color: 'bg-emerald-50/70 border-emerald-300 hover:bg-emerald-100/60',
       accentColor: '#059669',
       badge: 'Thư giãn giải trí'
-    },
-    {
-      id: 'stone',
-      name: 'Đào Đá (Stone Mining)',
-      desc: 'Khai thác quặng tinh thể 3D lấp lánh ẩn giấu sâu dưới hang mỏ với hiệu ứng thích mắt!',
-      image: `${import.meta.env.BASE_URL}assets/cartoon_stone.png`,
-      color: 'bg-amber-50/70 border-amber-300 hover:bg-amber-100/60',
-      accentColor: '#d97706',
-      badge: 'Khai quật quặng'
     }
   ];
 

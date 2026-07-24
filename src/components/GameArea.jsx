@@ -394,10 +394,13 @@ function GameArea({
   };
 
   const renderClickObject = () => {
-    let imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_red_button.png`;
-    let imgAlt = 'Red Button';
+    let imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_capybara.png`;
+    let imgAlt = 'Capybara Mascot';
 
-    if (theme === 'monster') {
+    if (theme === 'button') {
+      imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_red_button.png`;
+      imgAlt = 'Red Push Button';
+    } else if (theme === 'monster') {
       imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_monster.png`;
       imgAlt = 'Monster Boss';
     } else if (theme === 'wood') {
@@ -413,10 +416,10 @@ function GameArea({
         <img
           src={imgSrc}
           alt={imgAlt}
-          className="w-56 h-56 md:w-64 md:h-64 object-contain mx-auto cartoon-clicker-object transition-transform duration-100"
+          className="w-56 h-56 md:w-72 md:h-72 object-contain mx-auto cartoon-clicker-object transition-transform duration-100 z-10 relative"
         />
         {/* Pointer Cursor Arrow Overlay like reference image */}
-        <div className="absolute -bottom-2 -right-2 pointer-events-none group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
+        <div className="absolute -bottom-2 -right-2 pointer-events-none group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform z-20">
           <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="filter drop-shadow-[0_4px_0_#000]">
             <path d="M20 10 L80 50 L50 60 L35 90 L20 10 Z" fill="white" stroke="black" strokeWidth="6" strokeLinejoin="round" />
           </svg>
@@ -643,11 +646,14 @@ function GameArea({
           </div>
         </div>
 
-        {/* COLUMN 2: CENTER PANEL - MAIN INTERACTION CLICK AREA */}
+        {/* COLUMN 2: CENTER PANEL - MAIN INTERACTION CLICK AREA (RADIANT SUNBURST LIKE IMAGE 2) */}
         <div className="lg:col-span-6 flex flex-col gap-4">
           
-          <div className={`w-full game-theme-container ${getThemeClass()} p-5 flex flex-col items-center justify-center min-h-[440px] relative`}>
+          <div className="w-full sunburst-container p-5 flex flex-col items-center justify-center min-h-[480px] relative">
             
+            {/* Animated Radiant Yellow Rays Halo */}
+            <div className="sunburst-rays"></div>
+
             {/* Real-time Flying Numbers */}
             {floatingTexts.map(t => (
               <span
@@ -663,38 +669,47 @@ function GameArea({
               </span>
             ))}
 
-            {/* Total Mining Rate display */}
-            <div className="absolute top-4 left-4 z-10 flex flex-col items-start bg-white/90 py-1 px-3 rounded-lg border border-slate-200 shadow-sm">
-              <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest">Tốc độ tự động</span>
-              <span className="text-base font-black text-green-700 flex items-center gap-0.5">
-                <Zap size={13} className="fill-green-600 text-green-600" />
-                {mode === 'offline' ? `${offlineState.dps}/s` : `${roomData?.players.find(p => p.id === socketId)?.dps || 0}/s`}
-              </span>
+            {/* Top Utility Controls (Settings, Sound, Achievements) like Image 2 */}
+            <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+              <button 
+                onClick={handleToggleSound} 
+                className="w-10 h-10 rounded-xl bg-white border-2 border-black flex items-center justify-center text-slate-900 shadow-[3px_3px_0px_#000] hover:scale-105 active:scale-95 transition-transform"
+                title="Âm thanh"
+              >
+                {muted ? <VolumeX size={18} className="text-red-500" /> : <Volume2 size={18} className="text-emerald-600" />}
+              </button>
+              
+              <button 
+                onClick={() => setShowAchievementsModal(true)} 
+                className="w-10 h-10 rounded-xl bg-white border-2 border-black flex items-center justify-center text-slate-900 shadow-[3px_3px_0px_#000] hover:scale-105 active:scale-95 transition-transform"
+                title="Thành Tựu"
+              >
+                <Award size={18} className="text-yellow-500" />
+              </button>
+
+              {offlineState.money >= 50000 && (
+                <button 
+                  onClick={() => setShowRebirthModal(true)} 
+                  className="w-10 h-10 rounded-xl bg-purple-500 border-2 border-black flex items-center justify-center text-white shadow-[3px_3px_0px_#000] hover:scale-105 active:scale-95 transition-transform animate-pulse"
+                  title="Trùng Sinh"
+                >
+                  <RotateCcw size={18} />
+                </button>
+              )}
             </div>
 
-            {/* Combo Streak Indicator */}
-            {comboCount > 2 && (
-              <div className="absolute top-16 left-4 z-10 bg-amber-500 text-slate-900 font-black px-3 py-1 rounded-full shadow-lg border border-amber-300 animate-bounce">
-                🔥 COMBO x{(1 + Math.floor(comboCount / 5) * 0.2).toFixed(1)} ({comboCount})
-              </div>
-            )}
-
-            {/* Offline target health statistics */}
-            {mode === 'offline' && (
-              <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-1">
-                <span className="text-[9px] text-slate-500 font-black tracking-widest uppercase">CẤP ĐỘ {level}</span>
-                <div className="w-32 bg-slate-200 border border-slate-300 h-4.5 rounded-full overflow-hidden flex items-center justify-between px-2 relative shadow-inner">
-                  <div 
-                    className="bg-gradient-to-r from-rose-500 to-red-500 h-full absolute left-0 top-0 transition-all duration-100"
-                    style={{ width: `${(targetHp / targetMaxHp) * 100}%` }}
-                  ></div>
-                  <span className="text-[8px] font-black text-white relative z-20">HP</span>
-                  <span className="text-[9px] font-black text-white relative z-20">
-                    {Math.max(0, targetHp).toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            )}
+            {/* Header Score Display (Like Image 2) */}
+            <div className="z-20 my-2 flex flex-col items-center">
+              <span className="cartoon-title-sub text-lg md:text-xl uppercase tracking-wider text-yellow-300">
+                TỐC ĐỘ TỰ ĐỘNG (PER SECOND)
+              </span>
+              <span className="cartoon-title text-3xl md:text-4xl text-yellow-400 font-black my-0.5">
+                +{mode === 'offline' ? offlineState.dps.toLocaleString() : (roomData?.players.find(p => p.id === socketId)?.dps || 0).toLocaleString()}/s
+              </span>
+              <span className="text-xs bg-black/70 text-white font-extrabold px-3 py-0.5 rounded-full border border-yellow-400/50 shadow-md">
+                SỨC MẠNH CLICK: +{mode === 'offline' ? offlineState.dpc.toLocaleString() : (roomData?.players.find(p => p.id === socketId)?.dpc || 1)}
+              </span>
+            </div>
 
             {/* Online Timer */}
             {mode === 'online' && roomData && (

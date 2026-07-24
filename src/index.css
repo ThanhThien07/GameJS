@@ -5,7 +5,7 @@
 
   color-scheme: light;
   color: #0f172a;
-  background-color: #f8fafc;
+  background-color: #0284c7;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,49 +15,82 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #f8fafc;
-  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
+  background: #0284c7;
   overflow-x: hidden;
 }
 
 #root {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1380px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.75rem;
   text-align: center;
+}
+
+/* RADIANT SUNBURST BACKGROUND (CAPYBARA CLICKER STYLE) */
+.sunburst-container {
+  background: radial-gradient(circle at center, #0ea5e9 0%, #0369a1 100%);
+  position: relative;
+  border-radius: 28px;
+  border: 4px solid #000000;
+  box-shadow: 6px 6px 0px #000000;
+  overflow: hidden;
+}
+
+.sunburst-rays {
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(253, 224, 71, 0.45) 0deg 12deg,
+    transparent 12deg 24deg
+  );
+  animation: rotateSunburst 35s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes rotateSunburst {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sunburst-content {
+  position: relative;
+  z-index: 10;
 }
 
 /* CARTOON POP BOLD CARDS & PANELS */
 .glass-panel {
   background: #ffffff;
-  border: 3.5px solid #0f172a;
+  border: 3.5px solid #000000;
   border-radius: 24px;
-  box-shadow: 6px 6px 0px #0f172a;
+  box-shadow: 6px 6px 0px #000000;
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   color: #0f172a;
 }
 
 .glass-panel:hover {
   transform: translateY(-2px);
-  box-shadow: 8px 8px 0px #0f172a;
+  box-shadow: 8px 8px 0px #000000;
 }
 
 /* CARTOON LOGO / TITLE TEXT */
 .cartoon-title {
   font-family: 'Luckiest Guy', 'Fredoka', cursive, sans-serif;
-  color: #ff2d55;
+  color: #facc15;
   text-shadow: 
-    -3px -3px 0 #000,
-     3px -3px 0 #000,
-    -3px  3px 0 #000,
-     3px  3px 0 #000,
-     0px  6px 0px #000;
+    -3.5px -3.5px 0 #000,
+     3.5px -3.5px 0 #000,
+    -3.5px  3.5px 0 #000,
+     3.5px  3.5px 0 #000,
+     0px  7px 0px #000;
   letter-spacing: 0.05em;
   line-height: 1.1;
 }
@@ -66,24 +99,24 @@ body {
   font-family: 'Luckiest Guy', 'Fredoka', cursive, sans-serif;
   color: #ffffff;
   text-shadow: 
-    -2.5px -2.5px 0 #000,
-     2.5px -2.5px 0 #000,
-    -2.5px  2.5px 0 #000,
-     2.5px  2.5px 0 #000,
+    -3px -3px 0 #000,
+     3px -3px 0 #000,
+    -3px  3px 0 #000,
+     3px  3px 0 #000,
      0px  5px 0px #000;
   letter-spacing: 0.04em;
 }
 
 /* CARTOON POP BUTTONS */
 .btn-primary {
-  background: #ff2d55;
-  border: 3px solid #000;
+  background: #f59e0b;
+  border: 3.5px solid #000;
   color: white;
-  padding: 0.85rem 1.75rem;
+  padding: 0.8rem 1.6rem;
   border-radius: 16px;
   font-family: 'Fredoka', sans-serif;
-  font-weight: 700;
-  font-size: 1.05rem;
+  font-weight: 800;
+  font-size: 1rem;
   cursor: pointer;
   box-shadow: 4px 4px 0px #000;
   transition: all 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -91,13 +124,13 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000;
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px) scale(1.02);
   box-shadow: 6px 6px 0px #000;
-  background: #ff4769;
+  background: #fbbf24;
 }
 
 .btn-primary:active:not(:disabled) {
@@ -106,8 +139,8 @@ body {
 }
 
 .btn-primary:disabled {
-  background: #cbd5e1;
-  color: #64748b;
+  background: #94a3b8;
+  color: #cbd5e1;
   cursor: not-allowed;
   box-shadow: 3px 3px 0px #000;
   text-shadow: none;
@@ -115,12 +148,12 @@ body {
 
 .btn-secondary {
   background: #ffffff;
-  border: 3px solid #000;
+  border: 3.5px solid #000;
   color: #0f172a;
-  padding: 0.75rem 1.4rem;
+  padding: 0.7rem 1.3rem;
   border-radius: 16px;
   font-family: 'Fredoka', sans-serif;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.95rem;
   cursor: pointer;
   box-shadow: 4px 4px 0px #000;
@@ -138,86 +171,83 @@ body {
   box-shadow: 2px 2px 0px #000;
 }
 
-/* CARTOON BLOCK PANELS */
-.block-panel {
-  background: #ffffff;
-  border: 3.5px solid #0f172a;
-  border-radius: 20px;
-  box-shadow: 5px 5px 0px #0f172a;
+/* SHOP PANEL LIKE IMAGE 2 */
+.shop-panel {
+  background: #94a3b8;
+  border: 4px solid #000000;
+  border-radius: 24px;
+  box-shadow: 6px 6px 0px #000000;
   color: #0f172a;
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.block-panel-header {
-  background: #f1f5f9;
-  border-bottom: 3px solid #0f172a;
-  padding: 10px 14px;
-  font-family: 'Fredoka', sans-serif;
-  font-weight: 800;
-  font-size: 0.9rem;
-  color: #0f172a;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-radius: 16px 16px 0 0;
-  margin: -16px -16px 14px -16px;
-  text-align: left;
+.shop-panel-header {
+  font-family: 'Luckiest Guy', 'Fredoka', sans-serif;
+  font-size: 1.3rem;
+  color: #ffffff;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-/* CARTOON UPGRADE ROWS */
+/* CARTOON SHOP CARDS (IMAGE 2 CAPYBARA CLICKER STYLE) */
 .upgrade-list-scroll {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 480px;
+  max-height: 540px;
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 6px;
 }
 
 .upgrade-row-modern {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #ffffff;
-  border: 2.5px solid #0f172a;
-  border-radius: 14px;
-  padding: 8px 12px;
+  background: #cbd5e1;
+  border: 3.5px solid #000000;
+  border-radius: 16px;
+  padding: 10px 14px;
   cursor: pointer;
   transition: all 0.12s ease;
   position: relative;
   overflow: hidden;
   user-select: none;
-  box-shadow: 3px 3px 0px #0f172a;
+  box-shadow: 4px 4px 0px #000000;
 }
 
 .upgrade-row-modern:hover:not(:disabled) {
-  background: #fdf4ff;
-  border-color: #0f172a;
-  transform: translateX(3px) translateY(-1px);
-  box-shadow: 4px 4px 0px #0f172a;
+  background: #e2e8f0;
+  transform: translateX(4px) translateY(-1px);
+  box-shadow: 6px 6px 0px #000000;
 }
 
 .upgrade-row-modern:active:not(:disabled) {
-  transform: translateX(1px) translateY(1px);
-  box-shadow: 1px 1px 0px #0f172a;
+  transform: translateX(2px) translateY(2px);
+  box-shadow: 2px 2px 0px #000000;
 }
 
 .upgrade-row-modern:disabled {
-  background: #f1f5f9;
-  color: #94a3b8;
+  background: #94a3b8;
+  color: #475569;
   cursor: not-allowed;
-  box-shadow: 2px 2px 0px #cbd5e1;
-  border-color: #cbd5e1;
+  box-shadow: 2px 2px 0px #475569;
+  border-color: #475569;
+  opacity: 0.85;
 }
 
 .upgrade-row-icon-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  border: 2px solid #0f172a;
-  background: #fef08a;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 3px solid #000000;
+  background: #000000;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -228,63 +258,65 @@ body {
   display: flex;
   flex-direction: column;
   text-align: left;
-  margin-left: 10px;
+  margin-left: 12px;
   flex-grow: 1;
 }
 
 .upgrade-row-name {
   font-family: 'Fredoka', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: #0f172a;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #000000;
   line-height: 1.2;
 }
 
 .upgrade-row-stat {
-  font-size: 0.75rem;
-  color: #64748b;
-  font-weight: 600;
-  margin-top: 1px;
+  font-size: 0.8rem;
+  color: #334155;
+  font-weight: 700;
+  margin-top: 2px;
 }
 
 .upgrade-row-price-btn {
-  background: #22c55e;
-  border: 2px solid #000;
-  border-radius: 10px;
-  color: white;
+  background: #facc15;
+  border: 3px solid #000;
+  border-radius: 12px;
+  color: #000000;
   font-family: 'Fredoka', sans-serif;
-  font-weight: 800;
-  font-size: 0.85rem;
-  padding: 6px 12px;
-  min-width: 75px;
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 6px 14px;
+  min-width: 85px;
   text-align: center;
-  box-shadow: 2px 2px 0px #000;
+  box-shadow: 3px 3px 0px #000;
   transition: all 0.12s ease;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 .upgrade-row-modern:hover:not(:disabled) .upgrade-row-price-btn {
-  background: #16a34a;
+  background: #eab308;
 }
 
 .upgrade-row-modern:disabled .upgrade-row-price-btn {
-  background: #cbd5e1;
-  color: #64748b;
-  border-color: #94a3b8;
+  background: #64748b;
+  color: #cbd5e1;
+  border-color: #334155;
   box-shadow: none;
-  text-shadow: none;
 }
 
 .upgrade-row-level {
   position: absolute;
   top: 4px;
-  right: 4px;
-  font-size: 0.65rem;
-  font-weight: 800;
-  background: #ff2d55;
-  border: 1.5px solid #000;
+  right: 6px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  background: #ef4444;
+  border: 2px solid #000;
   color: white;
-  padding: 0 6px;
+  padding: 0 8px;
   border-radius: 9999px;
 }
 
@@ -292,66 +324,45 @@ body {
 .cartoon-clicker-object {
   cursor: pointer;
   transition: transform 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  filter: drop-shadow(0px 10px 0px rgba(0,0,0,0.8));
+  filter: drop-shadow(0px 12px 0px rgba(0,0,0,0.9));
 }
 
 .cartoon-clicker-object:hover {
-  transform: scale(1.06);
+  transform: scale(1.08);
 }
 
 .cartoon-clicker-object:active {
-  transform: scale(0.92) translateY(8px);
-  filter: drop-shadow(0px 3px 0px rgba(0,0,0,0.8));
-}
-
-/* THEMED TARGET CONTAINER */
-.game-theme-container {
-  border-radius: 24px;
-  border: 4px solid #0f172a;
-  box-shadow: 6px 6px 0px #0f172a;
-  overflow: hidden;
-  position: relative;
-}
-
-.theme-bg-monster {
-  background: linear-gradient(180deg, #fef2f2 0%, #ffe4e6 100%);
-}
-
-.theme-bg-wood {
-  background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
-}
-
-.theme-bg-stone {
-  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  transform: scale(0.9) translateY(10px);
+  filter: drop-shadow(0px 4px 0px rgba(0,0,0,0.9));
 }
 
 /* FLOATING NUMBERS POP ANIMATION */
 .floating-text {
   position: absolute;
   font-family: 'Luckiest Guy', 'Fredoka', cursive, sans-serif;
-  font-size: 1.8rem;
+  font-size: 2rem;
   pointer-events: none;
   animation: floatUp 0.85s cubic-bezier(0.23, 1, 0.32, 1) forwards;
   z-index: 50;
   text-shadow:
-    -2px -2px 0 #000,
-     2px -2px 0 #000,
-    -2px  2px 0 #000,
-     2px  2px 0 #000,
-     0px  4px 0px #000;
+    -2.5px -2.5px 0 #000,
+     2.5px -2.5px 0 #000,
+    -2.5px  2.5px 0 #000,
+     2.5px  2.5px 0 #000,
+     0px  5px 0px #000;
 }
 
 @keyframes floatUp {
   0% {
     opacity: 1;
-    transform: translateY(0) scale(0.7) rotate(-5deg);
+    transform: translateY(0) scale(0.7) rotate(-6deg);
   }
   30% {
-    transform: translateY(-25px) scale(1.3) rotate(5deg);
+    transform: translateY(-30px) scale(1.35) rotate(6deg);
   }
   100% {
     opacity: 0;
-    transform: translateY(-70px) scale(1) rotate(0deg);
+    transform: translateY(-80px) scale(1) rotate(0deg);
   }
 }
 
@@ -361,7 +372,7 @@ body {
 
 @keyframes clickBounce {
   0% { transform: scale(1); }
-  50% { transform: scale(0.9) rotate(-3deg); }
+  50% { transform: scale(0.88) rotate(-4deg); }
   100% { transform: scale(1); }
 }
 
@@ -371,20 +382,20 @@ body {
   align-items: center;
   gap: 6px;
   font-family: 'Fredoka', sans-serif;
-  font-weight: 700;
-  font-size: 0.8rem;
-  padding: 4px 12px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 4px 14px;
   border-radius: 9999px;
-  border: 2px solid #0f172a;
-  box-shadow: 2px 2px 0px #0f172a;
+  border: 2.5px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
 }
 
 .status-online {
-  background: #bbf7d0;
-  color: #14532d;
+  background: #4ade80;
+  color: #000000;
 }
 
 .status-offline {
-  background: #fecdd3;
-  color: #881337;
+  background: #f43f5e;
+  color: #ffffff;
 }
