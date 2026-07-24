@@ -612,21 +612,28 @@ function GameArea({
               <Package size={18} />
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="font-extrabold text-xs tracking-wider uppercase">ANG VẬT</span>
-              <span className="text-[10px] opacity-75 font-semibold">Vật phẩm</span>
+              <span className="font-extrabold text-xs tracking-wider uppercase">VẬT PHẨM</span>
+              <span className="text-[10px] opacity-75 font-semibold">Túi đồ</span>
             </div>
           </button>
 
           <button
-            onClick={() => setShowAchievementsModal(true)}
-            className="w-full p-3 rounded-2xl flex items-center gap-3 transition-all text-left border bg-[#1e293b]/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-[#1e293b]"
+            onClick={() => {
+              setActiveTab('achievements');
+              setShowAchievementsModal(true);
+            }}
+            className={`w-full p-3 rounded-2xl flex items-center gap-3 transition-all text-left border ${
+              activeTab === 'achievements'
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 border-blue-400 text-white font-black shadow-lg shadow-blue-500/25'
+                : 'bg-[#1e293b]/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-[#1e293b]'
+            }`}
           >
             <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
               <Trophy size={18} />
             </div>
             <div className="flex flex-col min-w-0">
               <span className="font-extrabold text-xs tracking-wider uppercase">THÀNH TÍCH</span>
-              <span className="text-[10px] opacity-75 font-semibold">Thành tích</span>
+              <span className="text-[10px] opacity-75 font-semibold">Thành tựu</span>
             </div>
           </button>
 
@@ -648,109 +655,282 @@ function GameArea({
           </button>
         </aside>
 
-        {/* CENTER MAIN GAMEPLAY ARENA (MATCHING MOCKUP CENTER AREA) */}
-        <main className="flex-1 w-full bg-[#1e293b]/60 border border-slate-800 rounded-3xl p-4 md:p-6 flex flex-col items-center justify-between relative overflow-hidden min-h-[520px]">
-          
-          {/* Flying Damage/Gold Numbers */}
-          {floatingTexts.map(t => (
-            <span
-              key={t.id}
-              className="floating-text"
-              style={{
-                left: `${t.x}%`,
-                top: `${t.y}%`,
-                color: t.color
-              }}
-            >
-              {t.text}
-            </span>
-          ))}
-
-          {/* TOP CHARACTER STATS & ENERGY BAR */}
-          <div className="w-full max-w-md flex flex-col items-center z-10 gap-2">
-            <span className="text-[10px] font-black text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-0.5 rounded-full tracking-wider uppercase">
-              ⚡ SẮC NỔ ACTIVE ⚡
-            </span>
-
-            {/* Energy / Frenzy Bar */}
-            <div className="w-full bg-[#0f172a] border border-slate-700/80 p-2.5 rounded-2xl shadow-md">
-              <div className="flex justify-between text-[11px] font-black mb-1.5">
-                <span className="text-blue-400 flex items-center gap-1">
-                  <Flame size={14} className="text-amber-400 animate-pulse" /> THANH NỘ BỔ TRỢ (x2)
-                </span>
-                <span className="text-amber-400">{isMultiplierActive ? 'X2 FRENZY RUNNING' : `${energy}%`}</span>
+        {/* CENTER MAIN GAMEPLAY ARENA & DYNAMIC TAB VIEWS */}
+        {activeTab === 'items' ? (
+          <main className="flex-1 w-full bg-[#1e293b]/60 border border-slate-800 rounded-3xl p-4 md:p-6 flex flex-col justify-between relative min-h-[520px]">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+              <div className="flex items-center gap-2">
+                <Package size={22} className="text-pink-400" />
+                <h3 className="text-xl font-black text-white uppercase tracking-wider">TÚI ĐỒ & VẬT PHẨM</h3>
               </div>
-              <div className="w-full bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700">
-                <div
-                  className={`h-full transition-all duration-200 ${
-                    isMultiplierActive
-                      ? 'bg-gradient-to-r from-amber-400 via-purple-500 to-blue-500 animate-pulse'
-                      : 'bg-gradient-to-r from-blue-600 to-indigo-500'
+              <span className="text-xs text-slate-400 font-bold">Vật phẩm sở hữu</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-purple-900/40 border border-purple-500/40 text-purple-300 flex items-center justify-center font-black text-xl">
+                    🔮
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-white">Tinh Thể Linh Hồn</h4>
+                    <span className="text-xs text-purple-400 font-bold">Sở hữu: {offlineState.soulCrystals || 0} 💎</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowRebirthModal(true)}
+                  className="bg-purple-600 hover:bg-purple-500 text-white font-black text-xs px-3 py-2 rounded-xl"
+                >
+                  Trùng Sinh
+                </button>
+              </div>
+
+              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 text-rose-300 flex items-center justify-center font-black text-xl">
+                    🧪
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-white">Bình Thuốc Nộ (x2 DPC)</h4>
+                    <span className="text-xs text-rose-400 font-bold">{frenzyActive ? 'Đang kích hoạt!' : 'Sẵn sàng dùng'}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={handleActivateFrenzy}
+                  disabled={frenzyCd > 0 || frenzyActive}
+                  className="bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white font-black text-xs px-3 py-2 rounded-xl"
+                >
+                  Sử Dụng
+                </button>
+              </div>
+
+              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-amber-900/40 border border-amber-500/40 text-amber-300 flex items-center justify-center font-black text-xl">
+                    ⚡
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-white">Bùa Bão Vàng</h4>
+                    <span className="text-xs text-amber-400 font-bold">Thưởng vàng bão tức thì</span>
+                  </div>
+                </div>
+                <button
+                  onClick={handleActivateGoldenRush}
+                  disabled={goldenRushCd > 0}
+                  className="bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-slate-950 font-black text-xs px-3 py-2 rounded-xl"
+                >
+                  Sử Dụng
+                </button>
+              </div>
+
+              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-900/40 border border-emerald-500/40 text-emerald-300 flex items-center justify-center font-black text-xl">
+                    🎁
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-white">Rương Thần Khí</h4>
+                    <span className="text-xs text-emerald-400 font-bold">Quà thưởng hàng ngày</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setOfflineState(prev => ({ ...prev, money: prev.money + 500 }));
+                    spawnFloatingText('+500💰 HÀNG NGÀY!', 50, 40, '#10b981');
+                  }}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-3 py-2 rounded-xl"
+                >
+                  Mở Rương
+                </button>
+              </div>
+            </div>
+          </main>
+        ) : activeTab === 'shop' ? (
+          <main className="flex-1 w-full bg-[#1e293b]/60 border border-slate-800 rounded-3xl p-4 md:p-6 flex flex-col justify-between relative min-h-[520px]">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+              <div className="flex items-center gap-2">
+                <Store size={22} className="text-emerald-400" />
+                <h3 className="text-xl font-black text-white uppercase tracking-wider">CỬA HÀNG THẦN KHÍ</h3>
+              </div>
+              <span className="text-xs text-amber-400 font-bold">Vàng: {Math.floor(offlineState.money).toLocaleString()} 🪙</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
+              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between items-center text-center">
+                <div className="w-14 h-14 rounded-2xl bg-rose-900/40 border border-rose-500/40 text-rose-300 flex items-center justify-center font-black text-2xl mb-2">
+                  🧪
+                </div>
+                <h4 className="font-extrabold text-sm text-white mb-1">Bình Nộ Cuồng Phong</h4>
+                <p className="text-xs text-slate-400 mb-3">x2 DPC trong 30s</p>
+                <button
+                  onClick={() => {
+                    if (offlineState.money >= 500) {
+                      setOfflineState(prev => ({ ...prev, money: prev.money - 500 }));
+                      handleActivateFrenzy();
+                    } else {
+                      alert('Không đủ tiền!');
+                    }
+                  }}
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-2 rounded-xl"
+                >
+                  Mua (500 🪙)
+                </button>
+              </div>
+
+              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between items-center text-center">
+                <div className="w-14 h-14 rounded-2xl bg-amber-900/40 border border-amber-500/40 text-amber-300 flex items-center justify-center font-black text-2xl mb-2">
+                  ⚡
+                </div>
+                <h4 className="font-extrabold text-sm text-white mb-1">Cơn Mưa Vàng</h4>
+                <p className="text-xs text-slate-400 mb-3">+5,000 Vàng tức thì</p>
+                <button
+                  onClick={() => {
+                    if ((offlineState.soulCrystals || 0) >= 2) {
+                      setOfflineState(prev => ({ 
+                        ...prev, 
+                        soulCrystals: prev.soulCrystals - 2,
+                        money: prev.money + 5000 
+                      }));
+                      spawnFloatingText('+5,000💰!', 50, 40, '#eab308');
+                    } else {
+                      alert('Không đủ Tinh thể!');
+                    }
+                  }}
+                  className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs py-2 rounded-xl"
+                >
+                  Mua (2 💎)
+                </button>
+              </div>
+
+              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between items-center text-center">
+                <div className="w-14 h-14 rounded-2xl bg-purple-900/40 border border-purple-500/40 text-purple-300 flex items-center justify-center font-black text-2xl mb-2">
+                  📜
+                </div>
+                <h4 className="font-extrabold text-sm text-white mb-1">Bùa Sát Thương Vĩnh Viễn</h4>
+                <p className="text-xs text-slate-400 mb-3">Tăng vĩnh viễn +20 DPC</p>
+                <button
+                  onClick={() => {
+                    if ((offlineState.soulCrystals || 0) >= 5) {
+                      setOfflineState(prev => ({ 
+                        ...prev, 
+                        soulCrystals: prev.soulCrystals - 5,
+                        dpc: prev.dpc + 20 
+                      }));
+                      spawnFloatingText('+20 DPC VĨNH VIỄN!', 50, 40, '#8b5cf6');
+                    } else {
+                      alert('Không đủ Tinh thể!');
+                    }
+                  }}
+                  className="w-full bg-purple-600 hover:bg-purple-500 text-white font-black text-xs py-2 rounded-xl"
+                >
+                  Mua (5 💎)
+                </button>
+              </div>
+            </div>
+          </main>
+        ) : (
+          <main className="flex-1 w-full bg-[#1e293b]/60 border border-slate-800 rounded-3xl p-4 md:p-6 flex flex-col items-center justify-between relative overflow-hidden min-h-[520px]">
+            {/* Flying Damage/Gold Numbers */}
+            {floatingTexts.map(t => (
+              <span
+                key={t.id}
+                className="floating-text"
+                style={{
+                  left: `${t.x}%`,
+                  top: `${t.y}%`,
+                  color: t.color
+                }}
+              >
+                {t.text}
+              </span>
+            ))}
+
+            {/* TOP CHARACTER STATS & ENERGY BAR */}
+            <div className="w-full max-w-md flex flex-col items-center z-10 gap-2">
+              <span className="text-[10px] font-black text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-0.5 rounded-full tracking-wider uppercase">
+                ⚡ SẮC NỔ ACTIVE ⚡
+              </span>
+
+              {/* Energy / Frenzy Bar */}
+              <div className="w-full bg-[#0f172a] border border-slate-700/80 p-2.5 rounded-2xl shadow-md">
+                <div className="flex justify-between text-[11px] font-black mb-1.5">
+                  <span className="text-blue-400 flex items-center gap-1">
+                    <Flame size={14} className="text-amber-400 animate-pulse" /> THANH NỘ BỔ TRỢ (x2)
+                  </span>
+                  <span className="text-amber-400">{isMultiplierActive ? 'X2 FRENZY RUNNING' : `${energy}%`}</span>
+                </div>
+                <div className="w-full bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700">
+                  <div
+                    className={`h-full transition-all duration-200 ${
+                      isMultiplierActive
+                        ? 'bg-gradient-to-r from-amber-400 via-purple-500 to-blue-500 animate-pulse'
+                        : 'bg-gradient-to-r from-blue-600 to-indigo-500'
+                    }`}
+                    style={{ width: `${isMultiplierActive ? (multiplierTimer / 6) * 100 : energy}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Buff Tags */}
+              <div className="flex gap-2 text-xs font-black">
+                <button
+                  onClick={handleActivateFrenzy}
+                  disabled={frenzyCd > 0 || frenzyActive}
+                  className={`px-3 py-1 rounded-xl border transition-all flex items-center gap-1.5 ${
+                    frenzyActive
+                      ? 'bg-rose-600 border-rose-400 text-white animate-pulse'
+                      : frenzyCd > 0
+                      ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed'
+                      : 'bg-rose-500/20 border-rose-500/40 text-rose-300 hover:bg-rose-500/30'
                   }`}
-                  style={{ width: `${isMultiplierActive ? (multiplierTimer / 6) * 100 : energy}%` }}
-                ></div>
+                >
+                  🔥 Cuồng Phong (x2 DPC) {frenzyActive ? `${frenzyTimer}s` : frenzyCd > 0 ? `(${frenzyCd}s)` : ''}
+                </button>
+
+                <button
+                  onClick={handleActivateGoldenRush}
+                  disabled={goldenRushCd > 0}
+                  className={`px-3 py-1 rounded-xl border transition-all flex items-center gap-1.5 ${
+                    goldenRushCd > 0
+                      ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed'
+                      : 'bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30'
+                  }`}
+                >
+                  ⚡ Bão Vàng {goldenRushCd > 0 ? `(${goldenRushCd}s)` : ''}
+                </button>
               </div>
             </div>
 
-            {/* Buff Tags */}
-            <div className="flex gap-2 text-xs font-black">
-              <button
-                onClick={handleActivateFrenzy}
-                disabled={frenzyCd > 0 || frenzyActive}
-                className={`px-3 py-1 rounded-xl border transition-all flex items-center gap-1.5 ${
-                  frenzyActive
-                    ? 'bg-rose-600 border-rose-400 text-white animate-pulse'
-                    : frenzyCd > 0
-                    ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed'
-                    : 'bg-rose-500/20 border-rose-500/40 text-rose-300 hover:bg-rose-500/30'
-                }`}
-              >
-                🔥 Cuồng Phong (x2 DPC) {frenzyActive ? `${frenzyTimer}s` : frenzyCd > 0 ? `(${frenzyCd}s)` : ''}
-              </button>
-
-              <button
-                onClick={handleActivateGoldenRush}
-                disabled={goldenRushCd > 0}
-                className={`px-3 py-1 rounded-xl border transition-all flex items-center gap-1.5 ${
-                  goldenRushCd > 0
-                    ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed'
-                    : 'bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30'
-                }`}
-              >
-                ⚡ Bão Vàng {goldenRushCd > 0 ? `(${goldenRushCd}s)` : ''}
-              </button>
-            </div>
-          </div>
-
-          {/* CENTER CHARACTER MASCOT CENTERPIECE */}
-          <div
-            onClick={handleTap}
-            className={`my-4 cursor-pointer select-none transition-transform active:scale-95 z-10 ${clickShake ? 'click-shake' : ''}`}
-          >
-            {renderClickObject()}
-          </div>
-
-          {/* BOTTOM CLICK POWER & MAIN GOLD CTA BUTTON */}
-          <div className="w-full flex flex-col items-center gap-3 z-10 mt-2">
-            <div className="text-center">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Click Power</span>
-              <span className="text-3xl md:text-4xl font-black text-white tracking-wide block drop-shadow-md">
-                +{mode === 'offline' ? offlineState.dpc : (getMyCompPlayer()?.dpc || 1)}
-              </span>
-              <span className="text-[11px] text-purple-300 font-extrabold flex items-center justify-center gap-1 mt-0.5">
-                ⚒️ Nâng Cấp Công Cụ Click
-              </span>
-            </div>
-
-            {/* GIANT GOLD PRIMARY CLICK BUTTON (MATCHING MOCKUP "BẤM NGAY") */}
-            <button
+            {/* CENTER CHARACTER MASCOT CENTERPIECE */}
+            <div
               onClick={handleTap}
-              className="cta-gold-button text-xl py-4 px-12 rounded-full shadow-2xl flex items-center justify-center gap-3 cursor-pointer active:scale-95 transition-transform"
+              className={`my-4 cursor-pointer select-none transition-transform active:scale-95 z-10 ${clickShake ? 'click-shake' : ''}`}
             >
-              <MousePointerClick size={24} className="text-slate-950 animate-bounce" /> BẤM NGAY
-            </button>
-          </div>
-        </main>
+              {renderClickObject()}
+            </div>
+
+            {/* BOTTOM CLICK POWER & MAIN GOLD CTA BUTTON */}
+            <div className="w-full flex flex-col items-center gap-3 z-10 mt-2">
+              <div className="text-center">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Click Power</span>
+                <span className="text-3xl md:text-4xl font-black text-white tracking-wide block drop-shadow-md">
+                  +{mode === 'offline' ? offlineState.dpc : (getMyCompPlayer()?.dpc || 1)}
+                </span>
+                <span className="text-[11px] text-purple-300 font-extrabold flex items-center justify-center gap-1 mt-0.5">
+                  ⚒️ Nâng Cấp Công Cụ Click
+                </span>
+              </div>
+
+              {/* GIANT GOLD PRIMARY CLICK BUTTON (MATCHING MOCKUP "BẤM NGAY") */}
+              <button
+                onClick={handleTap}
+                className="cta-gold-button text-xl py-4 px-12 rounded-full shadow-2xl flex items-center justify-center gap-3 cursor-pointer active:scale-95 transition-transform"
+              >
+                <MousePointerClick size={24} className="text-slate-950 animate-bounce" /> BẤM NGAY
+              </button>
+            </div>
+          </main>
+        )}
 
         {/* RIGHT SIDE UTILITY BOOST CARDS (MATCHING MOCKUP RIGHT CARDS) */}
         <aside className="w-full md:w-[150px] shrink-0 flex flex-row md:flex-col gap-4 justify-center">
