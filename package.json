@@ -13,20 +13,20 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "lucide-react": "^0.475.0",
+    "mysql2": "^3.12.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "mysql2": "^3.12.0"
+    "vite": "^6.1.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.3.4",
-    "concurrently": "^9.1.2",
-    "vite": "^6.1.0"
+    "@types/react-dom": "^19.0.0"
   }
 }
