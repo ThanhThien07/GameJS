@@ -61,15 +61,15 @@ def generate_report():
     sub_run.font.color.rgb = secondary_color
     sub_p.paragraph_format.space_after = Pt(50)
 
-    # Author info table
-    info_table = doc.add_table(rows=2, cols=2)
-    info_table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    
-    # Styling info table
     info_data = [
-        ("Sinh viên thực hiện:", "Đỗ Tâm"),
-        ("Đề tài dự án:", "Web Game Tap Tap Clicker Multiplayer")
+        ("Sinh viên thực hiện:", "Nguyễn Hoàng Hùng"),
+        ("Mã số sinh viên:", "501250384"),
+        ("Đề tài dự án:", "Web Game Tap Tap Clicker Multiplayer"),
+        ("GitHub Repository:", "https://github.com/ThanhThien07/GameJS.git"),
+        ("Link Web GitHub Pages:", "https://thanhthien07.github.io/GameJS/")
     ]
+    info_table = doc.add_table(rows=len(info_data), cols=2)
+    info_table.alignment = WD_TABLE_ALIGNMENT.CENTER
     for i, (label, val) in enumerate(info_data):
         row = info_table.rows[i]
         
@@ -112,7 +112,7 @@ def generate_report():
 
     p2 = doc.add_paragraph()
     p2_run = p2.add_run(
-        "Nhận thấy cơ hội nâng tầm thể loại này, sinh viên Đỗ Tâm đã quyết định thực hiện đề tài \"Phát triển ứng dụng Web Game "
+        "Nhận thấy cơ hội nâng tầm thể loại này, sinh viên Nguyễn Hoàng Hùng (MSSV: 501250384) đã quyết định thực hiện đề tài \"Phát triển ứng dụng Web Game "
         "Tap Tap Clicker Multiplayer\". Dự án tập trung giải quyết các bài toán:"
     )
     p2_run.font.name = 'Arial'
@@ -222,6 +222,42 @@ def generate_report():
         ("Đồng bộ bộ đếm ngược (Game Timer): ", "Bộ đếm thời gian 60 giây chạy trực tiếp trên Server và gửi nhịp tích tắc xuống client để chống gian lận thời gian ở máy khách.")
     ]
     for label, desc in be_bullets:
+        bp = doc.add_paragraph(style='List Bullet')
+        run_label = bp.add_run(label)
+        run_label.font.name = 'Arial'
+        run_label.font.size = Pt(11)
+        run_label.font.bold = True
+        run_desc = bp.add_run(desc)
+        run_desc.font.name = 'Arial'
+        run_desc.font.size = Pt(11)
+        bp.paragraph_format.space_after = Pt(4)
+
+    # Sub-heading 2.3
+    h2_3 = doc.add_paragraph()
+    h2_3_run = h2_3.add_run("2.3 Quy trình Triển khai Tự động (CI/CD & GitHub Pages)")
+    h2_3_run.font.name = 'Arial'
+    h2_3_run.font.size = Pt(13)
+    h2_3_run.font.bold = True
+    h2_3_run.font.color.rgb = secondary_color
+    h2_3.paragraph_format.space_before = Pt(10)
+    h2_3.paragraph_format.space_after = Pt(6)
+
+    p_cicd = doc.add_paragraph()
+    p_cicd_run = p_cicd.add_run(
+        "Dự án được tự động hóa quy trình đóng gói và triển khai (CI/CD) lên nền tảng GitHub Pages thông qua GitHub Actions "
+        "(`.github/workflows/deploy.yml`). Khi có bất kỳ thay đổi nào được push lên branch main, hệ thống sẽ tự động khởi tạo môi trường "
+        "Node.js, đóng gói bản build Vite và deploy giao diện web lên địa chỉ công khai:"
+    )
+    p_cicd_run.font.name = 'Arial'
+    p_cicd_run.font.size = Pt(11)
+    p_cicd.paragraph_format.space_after = Pt(8)
+
+    cicd_bullets = [
+        ("Cấu hình Vite Base Path (`vite.config.js`): ", "Thiết lập base: '/GameJS/' để đảm bảo các tài nguyên tĩnh (JavaScript, CSS, Assets) tải chính xác trên GitHub Pages."),
+        ("Tự động hóa build với GitHub Actions: ", "Workflow tự động thực hiện các lệnh `npm ci`, `npm run build` và đẩy thư mục `dist/` lên môi trường gh-pages trong chưa đầy 1 phút."),
+        ("Địa chỉ truy cập trực tuyến: ", "https://thanhthien07.github.io/GameJS/")
+    ]
+    for label, desc in cicd_bullets:
         bp = doc.add_paragraph(style='List Bullet')
         run_label = bp.add_run(label)
         run_label.font.name = 'Arial'
