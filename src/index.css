@@ -2,11 +2,9 @@
   font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 500;
-
   color-scheme: light;
   color: #0f172a;
   background-color: #f1f5f9;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -32,7 +30,9 @@ body {
   text-align: center;
 }
 
-/* CLEAN MODERN GLASS / LIGHT GAME PANELS */
+/* ==============================================
+   GLASS PANELS
+   ============================================== */
 .glass-panel {
   background: #ffffff;
   border: 1.5px solid #cbd5e1;
@@ -47,14 +47,19 @@ body {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* GRADIENT TEXT & NEON GLOW */
+/* ==============================================
+   GRADIENT TEXT
+   ============================================== */
 .gradient-text {
   background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* PREMIUM ACTION BUTTONS */
+/* ==============================================
+   BUTTONS
+   ============================================== */
 .btn-primary {
   background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
   border: none;
@@ -76,7 +81,6 @@ body {
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
-  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -111,7 +115,9 @@ body {
   transform: translateY(-2px);
 }
 
-/* MINE CLICKER 3-COLUMN STRUCTURE */
+/* ==============================================
+   BLOCK PANELS (GAME 3-COLUMN LAYOUT)
+   ============================================== */
 .block-panel {
   background: #ffffff;
   border: 2px solid #e2e8f0;
@@ -139,7 +145,195 @@ body {
   text-align: left;
 }
 
-/* UPGRADE ITEM ROWS */
+/* ==============================================
+   GAME HEADER BANNER
+   ============================================== */
+.screenshot-banner {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a21caf 100%);
+  border-radius: 16px;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: white;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+}
+
+/* ==============================================
+   CENTER CLICK AREA - THEMED BACKGROUNDS
+   ============================================== */
+.game-theme-container {
+  border-radius: 22px;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  position: relative;
+}
+
+.theme-bg-monster {
+  background: linear-gradient(160deg, #fff5f5 0%, #ffe3e3 60%, #fecaca 100%);
+  border-color: #fca5a5;
+}
+
+.theme-bg-wood {
+  background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 60%, #bbf7d0 100%);
+  border-color: #86efac;
+}
+
+.theme-bg-stone {
+  background: linear-gradient(160deg, #f8fafc 0%, #e2e8f0 60%, #cbd5e1 100%);
+  border-color: #94a3b8;
+}
+
+/* Capybara / default sunny theme */
+.sunburst-container {
+  background: linear-gradient(160deg, #06b6d4 0%, #0ea5e9 40%, #38bdf8 100%);
+  border-radius: 22px;
+  border: 2px solid #7dd3fc;
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.25);
+  overflow: hidden;
+  position: relative;
+}
+
+.sunburst-rays {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 235, 59, 0.18) 10deg,
+    transparent 20deg,
+    transparent 25deg,
+    rgba(255, 235, 59, 0.18) 35deg,
+    transparent 45deg,
+    transparent 50deg,
+    rgba(255, 235, 59, 0.18) 60deg,
+    transparent 70deg,
+    transparent 80deg,
+    rgba(255, 235, 59, 0.18) 90deg,
+    transparent 100deg,
+    transparent 110deg,
+    rgba(255, 235, 59, 0.18) 120deg,
+    transparent 130deg,
+    transparent 155deg,
+    rgba(255, 235, 59, 0.18) 165deg,
+    transparent 175deg,
+    transparent 200deg,
+    rgba(255, 235, 59, 0.18) 210deg,
+    transparent 220deg,
+    transparent 240deg,
+    rgba(255, 235, 59, 0.18) 250deg,
+    transparent 260deg,
+    transparent 285deg,
+    rgba(255, 235, 59, 0.18) 295deg,
+    transparent 305deg,
+    transparent 330deg,
+    rgba(255, 235, 59, 0.18) 340deg,
+    transparent 350deg
+  );
+  animation: rotateSunburst 18s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes rotateSunburst {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==============================================
+   CLICK OBJECT & ANIMATIONS
+   ============================================== */
+.cartoon-clicker-object {
+  cursor: pointer;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.18));
+  transition: transform 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.1s ease;
+}
+
+.cartoon-clicker-object:hover {
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.28)) brightness(1.05);
+}
+
+.clicker-object {
+  cursor: pointer;
+  transition: transform 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.clicker-object:hover {
+  transform: scale(1.05);
+}
+
+.clicker-object:active {
+  transform: scale(0.92);
+}
+
+.click-shake {
+  animation: clickBounce 0.12s ease-in-out;
+}
+
+@keyframes clickBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.88); }
+  100% { transform: scale(1); }
+}
+
+/* ==============================================
+   FLOATING SCORE NUMBERS
+   ============================================== */
+.floating-text {
+  position: absolute;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 1.4rem;
+  pointer-events: none;
+  animation: floatUp 0.85s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  z-index: 50;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(0.8);
+  }
+  30% {
+    transform: translateY(-20px) scale(1.25);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) scale(1);
+  }
+}
+
+/* ==============================================
+   MULTIPLIER CIRCLE (ENERGY x2 BUTTON)
+   ============================================== */
+.multiplier-circle-ad {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5cf6 0%, #db2777 100%);
+  color: white;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid rgba(255,255,255,0.4);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+  transition: all 0.2s ease;
+  cursor: default;
+  user-select: none;
+}
+
+/* ==============================================
+   UPGRADE ITEM ROWS
+   ============================================== */
 .upgrade-list-scroll {
   display: flex;
   flex-direction: column;
@@ -162,6 +356,7 @@ body {
   position: relative;
   overflow: hidden;
   user-select: none;
+  width: 100%;
 }
 
 .upgrade-row-modern:hover:not(:disabled) {
@@ -183,8 +378,8 @@ body {
 }
 
 .upgrade-row-icon-box {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
   border: 1px solid #cbd5e1;
   background: #f8fafc;
@@ -205,18 +400,22 @@ body {
   text-align: left;
   margin-left: 10px;
   flex-grow: 1;
+  min-width: 0;
 }
 
 .upgrade-row-name {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   color: #0f172a;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .upgrade-row-stat {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: #64748b;
   font-weight: 600;
   margin-top: 1px;
@@ -229,11 +428,12 @@ body {
   color: #166534;
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  font-size: 0.8rem;
-  padding: 6px 12px;
-  min-width: 75px;
+  font-size: 0.75rem;
+  padding: 5px 10px;
+  min-width: 70px;
   text-align: center;
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
 .upgrade-row-modern:hover:not(:disabled) .upgrade-row-price-btn {
@@ -251,89 +451,18 @@ body {
   position: absolute;
   top: 4px;
   right: 4px;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 800;
   background: #7c3aed;
   color: white;
-  padding: 0 6px;
+  padding: 1px 6px;
   border-radius: 9999px;
+  line-height: 1.4;
 }
 
-/* THEMED TARGET CONTAINER (PASTEL GRADIENTS) */
-.game-theme-container {
-  border-radius: 22px;
-  border: 2px solid #cbd5e1;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-  overflow: hidden;
-  position: relative;
-}
-
-.theme-bg-monster {
-  background: linear-gradient(180deg, #fff5f5 0%, #ffe3e3 100%);
-  border-color: #fca5a5;
-}
-
-.theme-bg-wood {
-  background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
-  border-color: #86efac;
-}
-
-.theme-bg-stone {
-  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
-  border-color: #cbd5e1;
-}
-
-/* CLICKER TARGET OBJECT ANIMATION */
-.clicker-object {
-  cursor: pointer;
-  transition: transform 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.clicker-object:hover {
-  transform: scale(1.05);
-}
-
-.clicker-object:active {
-  transform: scale(0.92);
-}
-
-/* FLOATING NUMBERS POP ANIMATION */
-.floating-text {
-  position: absolute;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900;
-  font-size: 1.6rem;
-  pointer-events: none;
-  animation: floatUp 0.85s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-  z-index: 50;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-@keyframes floatUp {
-  0% {
-    opacity: 1;
-    transform: translateY(0) scale(0.8);
-  }
-  30% {
-    transform: translateY(-20px) scale(1.25);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-60px) scale(1);
-  }
-}
-
-.click-shake {
-  animation: clickBounce 0.12s ease-in-out;
-}
-
-@keyframes clickBounce {
-  0% { transform: scale(1); }
-  50% { transform: scale(0.92); }
-  100% { transform: scale(1); }
-}
-
-/* STATUS BADGES */
+/* ==============================================
+   STATUS BADGES
+   ============================================== */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -356,4 +485,21 @@ body {
   background: #ffe4e6;
   color: #9f1239;
   border-color: #fca5a5;
+}
+
+/* ==============================================
+   CARTOON TITLE TEXTS (CENTER PANEL HEADER)
+   ============================================== */
+.cartoon-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.cartoon-title-sub {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }

@@ -92,23 +92,24 @@ function App() {
 
     // Socket.io connection setup (only connect if not static GitHub Pages without backend)
     const isGitHubPages = window.location.hostname.includes('github.io');
+    let createdSocket = null;
     
     if (!isGitHubPages) {
       try {
-        const socket = io(window.location.origin, {
+        createdSocket = io(window.location.origin, {
           reconnectionAttempts: 3,
           timeout: 5000,
           autoConnect: true
         });
         
-        socketRef.current = socket;
+        socketRef.current = createdSocket;
 
-        socket.on('connect', () => {
+        createdSocket.on('connect', () => {
           console.log('Connected to server over Socket.io');
           setSocketConnected(true);
         });
 
-        socket.on('disconnect', () => {
+        createdSocket.on('disconnect', () => {
           console.log('Disconnected from server');
           setSocketConnected(false);
           if (playMode === 'online') {
@@ -118,22 +119,22 @@ function App() {
           }
         });
 
-        socket.on('connect_error', () => {
+        createdSocket.on('connect_error', () => {
           setSocketConnected(false);
         });
 
         // Real-time room listeners
-        socket.on('roomUpdated', (data) => {
+        createdSocket.on('roomUpdated', (data) => {
           setRoomData(data);
           if (data.code) setRoomCode(data.code);
         });
 
-        socket.on('gameStarted', (data) => {
+        createdSocket.on('gameStarted', (data) => {
           setRoomData(data);
           setGameScreen('playing');
         });
 
-        socket.on('gameFinished', (data) => {
+        createdSocket.on('gameFinished', (data) => {
           setRoomData(data);
           setGameScreen('gameover');
         });
@@ -148,7 +149,10 @@ function App() {
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
-      socket.disconnect();
+      // Only disconnect if a socket was actually created
+      if (createdSocket) {
+        createdSocket.disconnect();
+      }
     };
   }, [playMode]);
 
@@ -250,14 +254,14 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-between items-center text-white py-4 relative">
+    <div className="min-h-screen w-full flex flex-col justify-between items-center py-4 relative">
       {/* Network & Mode status header */}
       <header className="w-full max-w-4xl flex flex-wrap justify-between items-center px-4 py-3 glass-panel z-10 gap-3 mb-6">
         <div className="flex items-center gap-2">
-          <span className="font-extrabold text-lg tracking-wider text-neon-glow gradient-text">
+          <span className="font-extrabold text-lg tracking-wider gradient-text">
             🌟 SIÊU CLICKER TAM HỢP 🌟
           </span>
-          <span className="text-xs text-gray-400 bg-gray-800/80 px-2 py-0.5 rounded border border-gray-700">v1.1.0</span>
+          <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">v1.1.0</span>
         </div>
 
         {/* Real-time Connectivity Status Badge */}
@@ -275,9 +279,9 @@ function App() {
           </div>
           
           {playMode && (
-            <div className="flex items-center gap-1.5 text-sm bg-purple-900/40 px-3 py-1 rounded-full border border-purple-500/30">
-              {playMode === 'online' ? <Globe size={14} className="text-purple-400" /> : <HardDrive size={14} className="text-pink-400" />}
-              <span className="capitalize font-semibold text-purple-200">
+            <div className="flex items-center gap-1.5 text-sm bg-purple-100 px-3 py-1 rounded-full border border-purple-300">
+              {playMode === 'online' ? <Globe size={14} className="text-purple-600" /> : <HardDrive size={14} className="text-pink-600" />}
+              <span className="capitalize font-semibold text-purple-700">
                 {playMode === 'online' ? `Online (${onlineModeType === 'coop' ? 'Hợp Tác' : 'Thi Đấu'})` : 'Offline'}
               </span>
             </div>
@@ -384,8 +388,8 @@ function App() {
         )}
       </main>
 
-      <footer className="mt-8 text-xs text-gray-500 font-medium">
-        Thiết kế bởi Đỗ Tâm - Clicker Game Dự Án Học Tập
+      <footer className="mt-8 text-xs text-slate-400 font-medium">
+        Nguyễn Hoàng Hùng (501250384) — Dự Án Game Clicker Học Tập
       </footer>
     </div>
   );
