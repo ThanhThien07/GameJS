@@ -44,30 +44,32 @@ function ThemeSelector({ onSelectTheme, onBack }) {
         <div className="w-20"></div> {/* Spacer */}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
         {themes.map((theme) => {
           return (
             <div
               key={theme.id}
               onClick={() => onSelectTheme(theme.id)}
-              className={`glass-panel p-6 flex flex-col justify-between items-center text-center cursor-pointer border hover:scale-105 active:scale-98 transition-all ${theme.color} group`}
+              className={`glass-panel p-4 flex flex-col justify-between items-center text-center cursor-pointer border hover:scale-102 active:scale-98 transition-all ${theme.color} group rounded-2xl shadow-sm`}
             >
               <div className="w-full text-right mb-1">
-                <span className="text-[9px] px-2.5 py-0.5 rounded-full bg-white border border-slate-200 font-extrabold uppercase text-slate-500">
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-white border border-slate-200 font-black uppercase text-slate-500">
                   {theme.badge}
                 </span>
               </div>
 
-              <div className="my-3 flex flex-col items-center">
-                <img 
-                  src={theme.image} 
-                  alt={theme.name} 
-                  className="w-32 h-32 object-contain my-3 filter drop-shadow-md group-hover:scale-110 transition-transform duration-200"
-                />
-                <h3 className="text-lg font-black mb-2 text-slate-800 transition-colors">
+              <div className="my-2 flex flex-col items-center">
+                <div className="w-24 h-24 max-w-[96px] max-h-[96px] flex items-center justify-center my-2 shrink-0">
+                  <img 
+                    src={theme.image} 
+                    alt={theme.name} 
+                    className="w-full h-full max-w-[96px] max-h-[96px] object-contain filter drop-shadow-md group-hover:scale-105 transition-transform duration-200"
+                  />
+                </div>
+                <h3 className="text-base font-black text-slate-800 transition-colors mt-1 mb-1">
                   {theme.name}
                 </h3>
-                <p className="text-slate-500 text-xs leading-relaxed">
+                <p className="text-slate-500 text-xs leading-snug line-clamp-3">
                   {theme.desc}
                 </p>
               </div>
@@ -77,7 +79,7 @@ function ThemeSelector({ onSelectTheme, onBack }) {
                   e.stopPropagation();
                   onSelectTheme(theme.id);
                 }}
-                className="btn-primary w-full mt-4 text-sm py-2.5 cursor-pointer"
+                className="btn-primary w-full mt-3 text-xs py-2 cursor-pointer font-extrabold rounded-xl"
                 style={{
                   background: `linear-gradient(135deg, ${theme.accentColor} 0%, ${theme.accentColor}dd 100%)`
                 }}
