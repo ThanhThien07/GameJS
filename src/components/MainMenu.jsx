@@ -58,82 +58,113 @@ function MainMenu({
   };
 
   return (
-    <div className="w-full min-h-[80vh] flex items-center justify-center py-6 px-4">
-      {/* UNIFIED DARK FANTASY CARTOON STARTING CARD */}
-      <div className="w-full max-w-md bg-[#1e293b]/95 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-700/80 text-slate-100 flex flex-col items-center text-center animate-in zoom-in-95 duration-200 relative overflow-hidden">
+    <div className="w-full min-h-[85vh] flex flex-col items-center justify-center py-6 px-4">
+      {/* AAA GAME TITLE START SCREEN HERO CARD */}
+      <div className="w-full max-w-3xl bg-[#1e293b]/95 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-700/80 text-slate-100 flex flex-col items-center text-center animate-in zoom-in-95 duration-200 relative overflow-hidden">
         
-        {/* Glow Halo behind Top Badge */}
-        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-48 bg-purple-600/30 rounded-full blur-2xl pointer-events-none"></div>
+        {/* Glow Halo behind Logo */}
+        <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-64 h-64 bg-purple-600/30 rounded-full blur-3xl pointer-events-none"></div>
 
-        {/* Top Icon Badge */}
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-blue-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/30 mb-4 z-10 animate-bounce-slow">
-          <Gamepad2 size={34} />
+        {/* 1. TOP HEADER LOGO & TITLE SECTION */}
+        <div className="flex flex-col items-center mb-6 z-10">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-blue-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/30 mb-3 animate-bounce-slow">
+            <Gamepad2 size={36} />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight uppercase mb-1 drop-shadow-md">
+            TAP TAP <span className="gradient-text">CLICKER</span>
+          </h1>
+          <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+            Siêu Clicker Tam Hợp • Đánh Quái ⚔️ • Chặt Gỗ 🪵 • Đào Đá 🪨
+          </p>
         </div>
 
-        {/* Title & Subtitle */}
-        <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase mb-1 z-10">
-          TAP TAP <span className="gradient-text">CLICKER</span>
-        </h1>
-        <p className="text-xs text-slate-400 font-bold mb-6 z-10">
-          Siêu Clicker Tam Hợp • Đánh Quái • Chặt Gỗ • Đào Đá
-        </p>
-
-        {/* Player Name Input Field */}
-        <div className="w-full mb-5 text-left z-10">
-          <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider block mb-1.5 pl-1">
-            Biệt danh người chơi
-          </label>
-          <div className="flex items-center gap-2 bg-[#0f172a] border border-slate-700 rounded-2xl px-3.5 py-2.5 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-500/20 transition-all">
-            <User size={18} className="text-purple-400 shrink-0" />
-            <input
-              type="text"
-              value={nameInput}
-              onChange={(e) => setNameInput(e.target.value)}
-              onBlur={handleSave}
-              placeholder="Nhập biệt danh..."
-              className="bg-transparent border-none outline-none text-white w-full font-bold text-sm placeholder-slate-500"
-              maxLength={16}
+        {/* 2. TWO-COLUMN HERO LAYOUT (CHARACTER ART LEFT | FORM & BUTTONS RIGHT) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full items-center mb-6 z-10 text-left">
+          
+          {/* LEFT SIDE: CHARACTER MASCOT SHOWCASE */}
+          <div className="flex flex-col items-center justify-center p-4 bg-[#0f172a]/60 border border-slate-800 rounded-3xl relative overflow-hidden group">
+            {/* Ambient Aura Ring */}
+            <div className="w-40 h-40 rounded-full bg-purple-500/20 absolute blur-xl group-hover:scale-110 transition-transform"></div>
+            
+            <img
+              src={`${import.meta.env.BASE_URL}assets/cartoon_monster.png`}
+              alt="Mascot Monster"
+              className="w-44 h-44 max-h-[200px] object-contain mx-auto filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-200 z-10"
             />
+
+            <div className="flex gap-2 mt-3 z-10">
+              <span className="text-[9px] font-black bg-rose-500/20 border border-rose-500/40 text-rose-300 px-2 py-0.5 rounded-full uppercase">
+                ⚔️ Săn Quái
+              </span>
+              <span className="text-[9px] font-black bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded-full uppercase">
+                🪵 Chặt Gỗ
+              </span>
+              <span className="text-[9px] font-black bg-amber-500/20 border border-amber-500/40 text-amber-300 px-2 py-0.5 rounded-full uppercase">
+                🪨 Đào Đá
+              </span>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE: NICKNAME FORM & PRIMARY ACTION BUTTONS */}
+          <div className="flex flex-col justify-center space-y-4">
+            {/* Nickname Input Field */}
+            <div>
+              <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider block mb-1.5 pl-1">
+                Biệt danh người chơi
+              </label>
+              <div className="flex items-center gap-2.5 bg-[#0f172a] border border-slate-700 rounded-2xl px-3.5 py-2.5 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-500/20 transition-all">
+                <User size={18} className="text-purple-400 shrink-0" />
+                <input
+                  type="text"
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  onBlur={handleSave}
+                  placeholder="Nhập biệt danh..."
+                  className="bg-transparent border-none outline-none text-white w-full font-bold text-sm placeholder-slate-500"
+                  maxLength={16}
+                />
+              </div>
+            </div>
+
+            {/* Primary CTA Button: PLAY OFFLINE */}
+            <button
+              onClick={handleSelectOffline}
+              disabled={!nameInput.trim()}
+              className="w-full cta-gold-button py-3.5 text-base flex items-center justify-center gap-2 shadow-xl shadow-amber-500/25 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-black"
+            >
+              <Play size={20} /> BẮT ĐẦU CHƠI (OFFLINE)
+            </button>
+
+            {/* Secondary Action Buttons: Competitive & Co-op */}
+            {isOnline ? (
+              <div className="grid grid-cols-2 gap-2.5">
+                <button
+                  onClick={handleSelectOnlineComp}
+                  disabled={!nameInput.trim()}
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 disabled:opacity-50 text-white font-extrabold py-2.5 px-3 rounded-2xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
+                >
+                  <Swords size={15} className="text-amber-400" /> Đấu Trường 1v1
+                </button>
+
+                <button
+                  onClick={handleSelectOnlineCoop}
+                  disabled={!nameInput.trim()}
+                  className="bg-slate-800 hover:bg-slate-700 text-slate-200 disabled:opacity-50 font-extrabold py-2.5 px-3 rounded-2xl text-xs border border-slate-700 flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                >
+                  <Sparkles size={15} className="text-purple-400" /> Phòng Hợp Tác
+                </button>
+              </div>
+            ) : (
+              <div className="text-xs text-rose-400 bg-rose-950/40 border border-rose-800/50 py-2 px-3 rounded-2xl font-bold flex items-center justify-center gap-1.5">
+                <ShieldAlert size={14} /> Mở kết nối mạng để mở khóa Online
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Action Buttons Stack */}
-        <div className="w-full space-y-3 mb-5 z-10">
-          {/* Main Action 1: Play Offline (CTA Gold Button) */}
-          <button
-            onClick={handleSelectOffline}
-            className="w-full cta-gold-button py-3.5 text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 active:scale-98 cursor-pointer"
-          >
-            <Play size={18} /> BẮT ĐẦU CHƠI (OFFLINE)
-          </button>
-
-          {/* Main Action 2: Online Modes */}
-          {isOnline ? (
-            <div className="grid grid-cols-2 gap-2.5">
-              <button
-                onClick={handleSelectOnlineComp}
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold py-2.5 px-3 rounded-2xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
-              >
-                <Swords size={15} className="text-amber-400" /> Đấu Trường 1v1
-              </button>
-
-              <button
-                onClick={handleSelectOnlineCoop}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-200 font-extrabold py-2.5 px-3 rounded-2xl text-xs border border-slate-700 flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
-              >
-                <Sparkles size={15} className="text-purple-400" /> Phòng Hợp Tác
-              </button>
-            </div>
-          ) : (
-            <div className="text-xs text-rose-400 bg-rose-950/40 border border-rose-800/50 py-2.5 px-3 rounded-2xl font-bold flex items-center justify-center gap-1.5">
-              <ShieldAlert size={15} /> Vui lòng mở mạng để đấu Online
-            </div>
-          )}
-        </div>
-
-        {/* Join Code Section */}
+        {/* 3. BOTTOM JOIN ROOM CODE BADGE */}
         {isOnline && (
-          <div className="w-full border-t border-slate-800/80 pt-3 text-center z-10">
+          <div className="w-full border-t border-slate-800/80 pt-3.5 text-center z-10">
             {!showJoinInput ? (
               <button
                 onClick={() => setShowJoinInput(true)}
@@ -142,7 +173,7 @@ function MainMenu({
                 <Key size={14} /> Có mã phòng? Gia nhập ngay
               </button>
             ) : (
-              <form onSubmit={triggerJoin} className="flex gap-2 items-center">
+              <form onSubmit={triggerJoin} className="flex gap-2 items-center justify-center max-w-sm mx-auto">
                 <input
                   type="text"
                   placeholder="Mã 6 chữ số..."
@@ -163,12 +194,12 @@ function MainMenu({
           </div>
         )}
 
-        {/* Footer Credit */}
-        <span className="text-[10px] text-slate-500 font-bold mt-4 block z-10">
-          Nguyễn Hoàng Hùng (501250384) — Dự Án Học Tập GameJS
-        </span>
-
       </div>
+
+      {/* FOOTER CREDIT TAG */}
+      <footer className="mt-4 text-[11px] text-slate-500 font-extrabold text-center">
+        Nguyễn Hoàng Hùng (501250384) — Dự Án GameJS Clicker Multiplayer
+      </footer>
     </div>
   );
 }
