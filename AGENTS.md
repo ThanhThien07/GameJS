@@ -31,6 +31,7 @@ Khi người dùng yêu cầu tạo asset:
 8. Không tải hoặc commit model AI dung lượng lớn.
 9. Nếu công cụ chưa cài dependency, hãy báo rõ thay vì tự đoán.
 10. Chỉ sửa repo chính, trừ khi người dùng yêu cầu sửa submodule.
+11. Tự động biên dịch, git commit và git push lên GitHub main branch sau mỗi lần hoàn thành nhiệm vụ theo yêu cầu từ người dùng.
 
 # Cách thực thi
 
