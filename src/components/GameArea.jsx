@@ -28,7 +28,8 @@ import {
   Plus,
   Package,
   Store,
-  CheckCircle2
+  CheckCircle2,
+  Gamepad2
 } from 'lucide-react';
 import { soundManager } from '../utils/audio';
 
