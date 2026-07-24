@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Play, ShieldAlert, Cpu, Gamepad2, Sparkles, Swords, Trees, Gem } from 'lucide-react';
+import { User, Play, ShieldAlert, Cpu, Gamepad2, Sparkles, Swords, Key } from 'lucide-react';
 
 function MainMenu({
   isOnline,
@@ -10,12 +10,13 @@ function MainMenu({
   onSelectOnlineCoop,
   onJoinRoom
 }) {
-  const [nameInput, setNameInput] = useState(playerName);
+  const [nameInput, setNameInput] = useState(playerName || '');
   const [codeInput, setCodeInput] = useState('');
   const [isEditingName, setIsEditingName] = useState(!playerName);
+  const [showJoinInput, setShowJoinInput] = useState(false);
 
   const handleSave = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (nameInput.trim()) {
       onSaveName(nameInput.trim());
       setIsEditingName(false);
@@ -23,7 +24,7 @@ function MainMenu({
   };
 
   const ensureNameSaved = () => {
-    if (isEditingName) {
+    if (isEditingName || nameInput.trim() !== playerName) {
       const finalName = nameInput.trim() || 'Người chơi 1';
       onSaveName(finalName);
       setNameInput(finalName);
@@ -57,146 +58,114 @@ function MainMenu({
   };
 
   return (
-    <div className="w-full max-w-2xl flex flex-col gap-4 items-center my-1 animate-in fade-in duration-300">
-      {/* Title Branding */}
-      <div className="text-center mb-1">
-        <h1 className="text-3xl md:text-4xl font-black tracking-wider uppercase mb-1">
-          ⚡️ TAP TAP <span className="gradient-text">CLICKER</span> ⚡️
-        </h1>
-        <p className="text-slate-500 font-bold text-xs md:text-sm">
-          Siêu Clicker Tam Hợp - Đánh Quái Vật ⚔️ • Chặt Gỗ 🪵 • Đào Đá Quặng 🪨
-        </p>
-      </div>
-
-      {/* Name Input Form */}
-      <div className="w-full glass-panel p-3 rounded-2xl shadow-sm">
-        {isEditingName ? (
-          <form onSubmit={handleSave} className="flex flex-col md:flex-row gap-2.5 items-center justify-between">
-            <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 w-full md:w-auto flex-grow">
-              <User size={16} className="text-purple-600" />
-              <input
-                type="text"
-                value={nameInput}
-                onChange={(e) => setNameInput(e.target.value)}
-                placeholder="Nhập biệt danh của bạn..."
-                className="bg-transparent border-none outline-none text-slate-800 w-full placeholder-slate-400 font-bold text-sm"
-                maxLength={16}
-              />
-            </div>
-            <button type="submit" className="btn-primary w-full md:w-auto px-6 text-xs py-2 whitespace-nowrap font-extrabold">
-              Lưu biệt danh
-            </button>
-          </form>
-        ) : (
-          <div className="flex justify-between items-center w-full px-1">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center border border-purple-200">
-                <span className="text-purple-700 font-black text-xs uppercase">{playerName ? playerName.charAt(0) : 'P'}</span>
-              </div>
-              <div className="text-left">
-                <span className="text-[9px] text-slate-400 block font-extrabold uppercase">BIỆT DANH CỦA BẠN</span>
-                <span className="font-extrabold text-sm tracking-wide text-slate-800">{playerName || 'Người chơi 1'}</span>
-              </div>
-            </div>
-            <button
-              onClick={() => setIsEditingName(true)}
-              className="text-xs text-purple-600 hover:text-purple-800 font-bold hover:underline"
-            >
-              Thay đổi ✏️
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Mode Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-        {/* Offline Card */}
-        <div className="glass-panel p-4 flex flex-col justify-between items-center text-center relative overflow-hidden group rounded-2xl shadow-sm">
-          <div className="absolute top-0 right-0 bg-pink-50 text-pink-700 text-[9px] font-black px-2.5 py-0.5 rounded-bl-xl border-l border-b border-pink-100">
-            CHƠI ĐƠN OFFLINE
-          </div>
-          
-          <div className="my-2">
-            <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center border border-pink-100 mx-auto mb-2 group-hover:scale-105 transition-transform">
-              <Cpu size={20} className="text-pink-600" />
-            </div>
-            <h3 className="text-base font-black text-slate-800 mb-1">Chế độ Ngoại tuyến</h3>
-            <p className="text-slate-500 text-xs leading-snug">
-              Luyện ngón tay click chuột, tích luỹ tiền vàng và mua cỗ máy tự động!
-            </p>
-          </div>
-
-          <button
-            onClick={handleSelectOffline}
-            className="btn-primary w-full mt-3 text-xs py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 font-extrabold"
-          >
-            <Play size={14} /> CHƠI OFFLINE
-          </button>
+    <div className="w-full min-h-[75vh] flex items-center justify-center py-4 px-2">
+      {/* SINGLE CLEAN ELEGANT WHITE CARD (IDENTICAL IN STRUCTURE TO IMAGE 1 REFERENCE) */}
+      <div className="w-full max-w-md bg-white rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-100 text-slate-800 flex flex-col items-center text-center animate-in zoom-in-95 duration-200">
+        
+        {/* Top Icon Badge (Like Image 1 Round Icon) */}
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-lg shadow-sky-500/30 mb-4">
+          <Gamepad2 size={34} />
         </div>
 
-        {/* Online Card */}
-        <div className={`glass-panel p-4 flex flex-col justify-between items-center text-center relative overflow-hidden group rounded-2xl shadow-sm ${!isOnline ? 'bg-slate-50/70 border-slate-100' : ''}`}>
-          <div className="absolute top-0 right-0 bg-purple-50 text-purple-700 text-[9px] font-black px-2.5 py-0.5 rounded-bl-xl border-l border-b border-purple-100">
-            ONLINE MULTIPLAYER
-          </div>
+        {/* Title & Subtitle (Like Image 1 Title) */}
+        <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight uppercase mb-1">
+          TAP TAP CLICKER
+        </h1>
+        <p className="text-xs text-slate-500 font-bold mb-6">
+          Siêu Clicker Tam Hợp • Đánh Quái • Chặt Gỗ • Đào Đá
+        </p>
 
-          <div className="my-2">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center border border-purple-100 mx-auto mb-2 group-hover:scale-105 transition-transform">
-              <Gamepad2 size={20} className="text-purple-600" />
-            </div>
-            <h3 className="text-base font-black text-slate-800 mb-1">Chế độ Trực tuyến</h3>
-            <p className="text-slate-500 text-xs leading-snug">
-              Thi đấu Đấu Trường 3 người thời gian thực hoặc Hợp Tác nâng cấp!
-            </p>
+        {/* Player Name Input Field (Like Image 1 Form Input) */}
+        <div className="w-full mb-5 text-left">
+          <label className="text-[11px] font-black text-slate-400 uppercase tracking-wider block mb-1.5 pl-1">
+            Biệt danh người chơi
+          </label>
+          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-100 transition-all">
+            <User size={18} className="text-sky-600 shrink-0" />
+            <input
+              type="text"
+              value={nameInput}
+              onChange={(e) => setNameInput(e.target.value)}
+              onBlur={handleSave}
+              placeholder="Nhập biệt danh..."
+              className="bg-transparent border-none outline-none text-slate-800 w-full font-bold text-sm placeholder-slate-400"
+              maxLength={16}
+            />
           </div>
+        </div>
 
-          {!isOnline ? (
-            <div className="flex items-center gap-2 justify-center text-xs text-rose-600 bg-rose-50 py-2 px-3 rounded-xl border border-rose-100 mt-3 w-full font-bold">
-              <ShieldAlert size={14} /> Vui lòng mở mạng để mớ khóa Online
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2 w-full mt-3">
+        {/* Main Action Buttons Stack (Like Image 1 Main Action Button) */}
+        <div className="w-full space-y-3 mb-5">
+          {/* Main Action 1: Play Offline */}
+          <button
+            onClick={handleSelectOffline}
+            className="w-full bg-sky-500 hover:bg-sky-600 text-white font-black py-3.5 rounded-xl text-sm shadow-lg shadow-sky-500/30 flex items-center justify-center gap-2 transition-all active:scale-98 cursor-pointer"
+          >
+            <Play size={18} /> BẮT ĐẦU CHƠI (OFFLINE)
+          </button>
+
+          {/* Main Action 2: Online Modes */}
+          {isOnline ? (
+            <div className="grid grid-cols-2 gap-2.5">
               <button
                 onClick={handleSelectOnlineComp}
-                className="btn-primary w-full text-xs py-2 font-extrabold"
+                className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer"
               >
-                <Play size={14} /> Đấu Trường (1v1v1)
+                <Swords size={15} className="text-amber-400" /> Đấu Trường
               </button>
-              
+
               <button
                 onClick={handleSelectOnlineCoop}
-                className="btn-secondary w-full text-xs py-1.5 text-purple-600 hover:text-purple-700 font-extrabold border-purple-200 rounded-xl"
+                className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold py-2.5 px-3 rounded-xl text-xs border border-slate-200 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
-                Phòng Hợp Tác (Chế độ 3)
+                <Sparkles size={15} className="text-purple-600" /> Hợp Tác
               </button>
+            </div>
+          ) : (
+            <div className="text-xs text-rose-600 bg-rose-50 border border-rose-200 py-2.5 px-3 rounded-xl font-bold flex items-center justify-center gap-1.5">
+              <ShieldAlert size={15} /> Mở mạng để mở khóa Online
             </div>
           )}
         </div>
-      </div>
 
-      {/* Online Join Room Section */}
-      {isOnline && (
-        <div className="w-full glass-panel p-3.5 text-center rounded-2xl shadow-sm">
-          <h4 className="font-extrabold text-slate-700 text-xs mb-2 uppercase tracking-wider">🔑 Gia nhập phòng đã có</h4>
-          <form onSubmit={triggerJoin} className="flex flex-col md:flex-row gap-2 justify-center items-center">
-            <input
-              type="text"
-              placeholder="Mã 6 chữ số..."
-              value={codeInput}
-              onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
-              maxLength={6}
-              className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 font-black tracking-widest text-center text-slate-800 placeholder-slate-400 outline-none focus:border-purple-500 w-full md:w-44 text-sm"
-            />
-            <button
-              type="submit"
-              disabled={codeInput.trim().length !== 6}
-              className="btn-primary px-6 text-xs py-2 w-full md:w-auto font-extrabold"
-            >
-              Gia Nhập Phòng
-            </button>
-          </form>
-        </div>
-      )}
+        {/* Join Code Section */}
+        {isOnline && (
+          <div className="w-full border-t border-slate-100 pt-3 text-center">
+            {!showJoinInput ? (
+              <button
+                onClick={() => setShowJoinInput(true)}
+                className="text-xs font-extrabold text-sky-600 hover:text-sky-700 flex items-center justify-center gap-1 mx-auto hover:underline cursor-pointer"
+              >
+                <Key size={14} /> Có mã phòng? Gia nhập ngay
+              </button>
+            ) : (
+              <form onSubmit={triggerJoin} className="flex gap-2 items-center">
+                <input
+                  type="text"
+                  placeholder="Mã 6 chữ số..."
+                  value={codeInput}
+                  onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                  maxLength={6}
+                  className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-center font-black tracking-widest text-slate-800 text-sm outline-none focus:border-sky-500 flex-1"
+                />
+                <button
+                  type="submit"
+                  disabled={codeInput.trim().length !== 6}
+                  className="bg-sky-500 text-white font-extrabold text-xs px-4 py-2 rounded-xl disabled:opacity-50 hover:bg-sky-600 cursor-pointer"
+                >
+                  Vào
+                </button>
+              </form>
+            )}
+          </div>
+        )}
+
+        {/* Footer Credit */}
+        <span className="text-[10px] text-slate-400 font-bold mt-4 block">
+          Nguyễn Hoàng Hùng (501250384) — Dự Án Học Tập GameJS
+        </span>
+
+      </div>
     </div>
   );
 }

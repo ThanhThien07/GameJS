@@ -247,39 +247,41 @@ function App() {
 
   return (
     <div className="min-h-screen w-full flex flex-col justify-between items-center py-4 relative">
-      {/* Network & Mode status header */}
-      <header className="w-full max-w-4xl flex flex-wrap justify-between items-center px-4 py-3 glass-panel z-10 gap-3 mb-6">
-        <div className="flex items-center gap-2">
-          <span className="font-extrabold text-lg tracking-wider gradient-text">
-            🌟 SIÊU CLICKER TAM HỢP 🌟
-          </span>
-          <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">v1.1.0</span>
-        </div>
-
-        {/* Real-time Connectivity Status Badge */}
-        <div className="flex items-center gap-4">
+      {/* Network & Mode status header (Only when active in game/lobby) */}
+      {gameScreen !== 'menu' && (
+        <header className="w-full max-w-4xl flex flex-wrap justify-between items-center px-4 py-3 glass-panel z-10 gap-3 mb-6">
           <div className="flex items-center gap-2">
-            {isOnlineAvailable ? (
-              <span className="status-badge status-online">
-                <Wifi size={14} className="animate-pulse" /> Trực Tuyến
-              </span>
-            ) : (
-              <span className="status-badge status-offline">
-                <WifiOff size={14} /> Ngoại Tuyến
-              </span>
+            <span className="font-extrabold text-lg tracking-wider gradient-text">
+              🌟 SIÊU CLICKER TAM HỢP 🌟
+            </span>
+            <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">v1.1.0</span>
+          </div>
+
+          {/* Real-time Connectivity Status Badge */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              {isOnlineAvailable ? (
+                <span className="status-badge status-online">
+                  <Wifi size={14} className="animate-pulse" /> Trực Tuyến
+                </span>
+              ) : (
+                <span className="status-badge status-offline">
+                  <WifiOff size={14} /> Ngoại Tuyến
+                </span>
+              )}
+            </div>
+            
+            {playMode && (
+              <div className="flex items-center gap-1.5 text-sm bg-purple-100 px-3 py-1 rounded-full border border-purple-300">
+                {playMode === 'online' ? <Globe size={14} className="text-purple-600" /> : <HardDrive size={14} className="text-pink-600" />}
+                <span className="capitalize font-semibold text-purple-700">
+                  {playMode === 'online' ? `Online (${onlineModeType === 'coop' ? 'Hợp Tác' : 'Thi Đấu'})` : 'Offline'}
+                </span>
+              </div>
             )}
           </div>
-          
-          {playMode && (
-            <div className="flex items-center gap-1.5 text-sm bg-purple-100 px-3 py-1 rounded-full border border-purple-300">
-              {playMode === 'online' ? <Globe size={14} className="text-purple-600" /> : <HardDrive size={14} className="text-pink-600" />}
-              <span className="capitalize font-semibold text-purple-700">
-                {playMode === 'online' ? `Online (${onlineModeType === 'coop' ? 'Hợp Tác' : 'Thi Đấu'})` : 'Offline'}
-              </span>
-            </div>
-          )}
-        </div>
-      </header>
+        </header>
+      )}
 
       {/* Screen Router */}
       <main className="w-full flex-grow flex justify-center items-center px-2">
