@@ -592,14 +592,16 @@ function GameArea({
               </div>
             )}
 
-            {mode === 'online' && onlineType === 'coop' && roomData && (
+            {mode === 'online' && onlineType === 'coop' && roomData && roomData.coopUpgrades && (
               <div className="flex flex-col gap-3">
                 {(() => {
-                  const lvl = roomData.coopUpgrades.damage.level;
+                  const dmgUp = roomData.coopUpgrades?.damage || { level: 1, baseCost: { meat: 10, wood: 10 } };
+                  const lvl = dmgUp.level || 1;
                   const factor = Math.pow(1.5, lvl - 1);
-                  const meatCost = Math.floor(roomData.coopUpgrades.damage.baseCost.meat * factor);
-                  const woodCost = Math.floor(roomData.coopUpgrades.damage.baseCost.wood * factor);
-                  const canAfford = roomData.coopResources.meat >= meatCost && roomData.coopResources.wood >= woodCost;
+                  const meatCost = Math.floor((dmgUp.baseCost?.meat || 10) * factor);
+                  const woodCost = Math.floor((dmgUp.baseCost?.wood || 10) * factor);
+                  const res = roomData.coopResources || { meat: 0, wood: 0, stone: 0 };
+                  const canAfford = (res.meat || 0) >= meatCost && (res.wood || 0) >= woodCost;
 
                   return (
                     <button
@@ -611,19 +613,21 @@ function GameArea({
                       <span className="font-extrabold text-xs mb-1">⚔️ Sát Thương Chung</span>
                       <span className="text-[10px] text-purple-600 font-extrabold mb-2 block">+1 Click Damage</span>
                       <div className="flex gap-2 text-[10px] font-black">
-                        <span className={roomData.coopResources.meat >= meatCost ? 'text-rose-600' : 'text-slate-300'}>🥩 {meatCost}</span>
-                        <span className={roomData.coopResources.wood >= woodCost ? 'text-emerald-600' : 'text-slate-300'}>🪵 {woodCost}</span>
+                        <span className={(res.meat || 0) >= meatCost ? 'text-rose-600' : 'text-slate-300'}>🥩 {meatCost}</span>
+                        <span className={(res.wood || 0) >= woodCost ? 'text-emerald-600' : 'text-slate-300'}>🪵 {woodCost}</span>
                       </div>
                     </button>
                   );
                 })()}
 
                 {(() => {
-                  const lvl = roomData.coopUpgrades.multiplier.level;
+                  const multUp = roomData.coopUpgrades?.multiplier || { level: 1, baseCost: { stone: 15, wood: 15 } };
+                  const lvl = multUp.level || 1;
                   const factor = Math.pow(1.5, lvl - 1);
-                  const stoneCost = Math.floor(roomData.coopUpgrades.multiplier.baseCost.stone * factor);
-                  const woodCost = Math.floor(roomData.coopUpgrades.multiplier.baseCost.wood * factor);
-                  const canAfford = roomData.coopResources.stone >= stoneCost && roomData.coopResources.wood >= woodCost;
+                  const stoneCost = Math.floor((multUp.baseCost?.stone || 15) * factor);
+                  const woodCost = Math.floor((multUp.baseCost?.wood || 15) * factor);
+                  const res = roomData.coopResources || { meat: 0, wood: 0, stone: 0 };
+                  const canAfford = (res.stone || 0) >= stoneCost && (res.wood || 0) >= woodCost;
 
                   return (
                     <button
@@ -635,8 +639,8 @@ function GameArea({
                       <span className="font-extrabold text-xs mb-1">📊 Hệ Số Nhân Chung</span>
                       <span className="text-[10px] text-purple-600 font-extrabold mb-2 block">+20% Click Damage</span>
                       <div className="flex gap-2 text-[10px] font-black">
-                        <span className={roomData.coopResources.stone >= stoneCost ? 'text-amber-600' : 'text-slate-300'}>🪨 {stoneCost}</span>
-                        <span className={roomData.coopResources.wood >= woodCost ? 'text-emerald-600' : 'text-slate-300'}>🪵 {woodCost}</span>
+                        <span className={(res.stone || 0) >= stoneCost ? 'text-amber-600' : 'text-slate-300'}>🪨 {stoneCost}</span>
+                        <span className={(res.wood || 0) >= woodCost ? 'text-emerald-600' : 'text-slate-300'}>🪵 {woodCost}</span>
                       </div>
                     </button>
                   );
@@ -806,7 +810,7 @@ function GameArea({
               <div className="text-center w-full">
                 <span className="text-[10px] text-purple-600 font-extrabold uppercase tracking-wider block mb-1">CHẾ ĐỘ HỢP TÁC 3 NGƯỜI CHƠI</span>
                 <p className="text-xs text-slate-500 font-medium">
-                  Đánh Boss/Đốn cây/Khai mỏ để nhận được các mảnh nguyên liệu. Bạn đã sạc thành công <span className="font-bold text-green-600">{roomData?.coopUpgrades.autoClick.level * 2} DPS</span> cho phòng.
+                  Đánh Boss/Đốn cây/Khai mỏ để nhận được các mảnh nguyên liệu. Bạn đã sạc thành công <span className="font-bold text-green-600">{(roomData?.coopUpgrades?.autoClick?.level || 0) * 2} DPS</span> cho phòng.
                 </p>
               </div>
             )}
@@ -907,11 +911,13 @@ function GameArea({
 
                 <div className="text-left mt-1 border-t border-slate-200 pt-3">
                   {(() => {
-                    const lvl = roomData.coopUpgrades.autoClick.level;
+                    const autoUp = roomData.coopUpgrades?.autoClick || { level: 0, baseCost: { meat: 20, stone: 20 } };
+                    const lvl = autoUp.level || 0;
                     const factor = Math.pow(1.5, lvl);
-                    const meatCost = Math.floor(roomData.coopUpgrades.autoClick.baseCost.meat * factor);
-                    const stoneCost = Math.floor(roomData.coopUpgrades.autoClick.baseCost.stone * factor);
-                    const canAfford = roomData.coopResources.meat >= meatCost && roomData.coopResources.stone >= stoneCost;
+                    const meatCost = Math.floor((autoUp.baseCost?.meat || 20) * factor);
+                    const stoneCost = Math.floor((autoUp.baseCost?.stone || 20) * factor);
+                    const res = roomData.coopResources || { meat: 0, stone: 0 };
+                    const canAfford = (res.meat || 0) >= meatCost && (res.stone || 0) >= stoneCost;
 
                     return (
                       <button
@@ -923,8 +929,8 @@ function GameArea({
                         <span className="font-extrabold text-xs mb-1">🤖 Robot Auto-Click</span>
                         <span className="text-[10px] text-purple-600 font-extrabold mb-2 block">+2 Vàng/s chung</span>
                         <div className="flex gap-2 text-[10px] font-black">
-                          <span className={roomData.coopResources.meat >= meatCost ? 'text-rose-600' : 'text-slate-300'}>🥩 {meatCost}</span>
-                          <span className={roomData.coopResources.stone >= stoneCost ? 'text-amber-600' : 'text-slate-300'}>🪨 {stoneCost}</span>
+                          <span className={(res.meat || 0) >= meatCost ? 'text-rose-600' : 'text-slate-300'}>🥩 {meatCost}</span>
+                          <span className={(res.stone || 0) >= stoneCost ? 'text-amber-600' : 'text-slate-300'}>🪨 {stoneCost}</span>
                         </div>
                       </button>
                     );
