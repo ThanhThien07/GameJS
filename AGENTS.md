@@ -135,3 +135,83 @@ Khi cần sửa lỗi hoặc bảo trì hệ thống, Agent (với vai trò Lead
 - Kết quả chạy kiểm thử (Build, Console, Responsive).
 - Các vấn đề còn tồn đọng (nếu có).
 
+---
+
+## 🎨 Master UI System Specification
+
+This section defines the unified Master Design System tokens, component contracts, and styling rules across all screens in **Tap Tap Clicker Multiplayer**.
+
+### 🎨 Color Palette (Dark Fantasy Cartoon Theme)
+- **Background Main**: `#0F172A` (Slate 900)
+- **Surface Card**: `#1E293B` (Slate 800)
+- **Surface Hover**: `#273449`
+- **Primary Purple**: `#8B5CF6` (Purple 500)
+- **Primary Blue**: `#3B82F6` (Blue 500)
+- **Accent CTA Gold**: `#F59E0B` (Amber 500) / Gradient `#f59e0b` to `#d97706`
+- **Success Green**: `#10B981` (Emerald 500)
+- **Danger Red**: `#EF4444` (Red 500)
+- **Text Primary**: `#F8FAFC` (Slate 50)
+- **Text Secondary**: `#94A3B8` (Slate 400)
+
+### 🔤 Typography & Hierarchy
+- **Display Title**: `48px` / Font-Weight: 900 (Black)
+- **H1 Header**: `32px` / Font-Weight: 900 (Black)
+- **H2 Section**: `24px` / Font-Weight: 900 (Black)
+- **H3 Card Title**: `20px` / Font-Weight: 800 (ExtraBold)
+- **Body Text**: `16px` / Font-Weight: 600 (SemiBold)
+- **Caption / Badge**: `13px` / Font-Weight: 700 (Bold)
+
+### 📐 Spacing & Radius Tokens (8pt Grid System)
+- **Grid Multiples**: `8px`, `16px`, `24px`, `32px`, `40px`, `48px`, `64px`
+- **Button Radius**: `12px` (`rounded-xl` / `rounded-2xl`)
+- **Card Radius**: `16px` (`rounded-3xl`)
+- **Modal Radius**: `20px` (`rounded-[2rem]`)
+
+### 🖼 Image & Asset Handling Constraints
+- **Object Fit**: `object-contain`
+- **Character / Mascot Max Heights**:
+  - Main Menu Left Card: `max-h-[200px]`
+  - Theme Selector Cards: `max-h-[160px]` inside container (`max-w-[280px]`)
+  - Gameplay Arena Mascot: `max-h-[340px]`
+- **No Overflow**: Images must never control page container height or trigger horizontal scrolling.
+
+### 🧩 Shared Component Specifications
+1. **Resource Pill**: Rounded gold/diamond/crystal status pill with icon + formatted text.
+2. **Primary Button**: Large gold gradient CTA button (`.cta-gold-button`) with active scale-down press physics.
+3. **Secondary Button**: Slate `#1e293b` / Purple `#8b5cf6` glass card button with crisp icon.
+4. **Navigation Tab**: Vertical sidebar button with dual-line labels and hover active highlight states.
+5. **Selection Card**: 3-column card on desktop with active `ring-4` border highlight and checkmark badge.
+6. **Upgrade Grid**: 4-column responsive grid card layout with item icon, level badge, DPC/DPS stat, and buy button.
+
+---
+
+## 🗺 Screen Flow Architecture & Routing
+
+Defines the unified navigation screen flow and state machine transitions across **Tap Tap Clicker Multiplayer**.
+
+### 🗺 Application State Machine (`App.jsx`)
+```
+               [ Start Screen (MainMenu) ]
+                           │
+             ┌─────────────┴─────────────┐
+             ▼                           ▼
+[ Offline Mode Selected ]    [ Online Mode Selected ]
+             │                           │
+             ▼                           ▼
+  [ Theme Selection ]          [ Multiplayer Lobby ]
+             │                           │
+             └─────────────┬─────────────┘
+                           ▼
+                 [ Gameplay Arena ]
+             ┌─────────────┼─────────────┐
+             ▼             ▼             ▼
+        [ Upgrades ]    [ Shop ]    [ Inventory ]
+```
+
+### 📱 Screen-by-Screen Specifications
+- **1. Start Screen (`MainMenu.jsx`)**: 2-Column Hero Card (`max-w-3xl`), Left Mascot Showcase (`cartoon_monster.png`), Right Nickname Form + CTA Gold Button (`🎮 BẮT ĐẦU CHƠI`) + Mode Buttons (`⚔️ Đấu Trường 1v1v1` / `✨ Phòng Hợp Tác`).
+- **2. Theme Selection (`ThemeSelector.jsx`)**: 3-column responsive grid on desktop/laptop, 1 column on mobile. Single selection with `ring-4` border + `✓ ĐÃ CHỌN` badge, fixed image container height (`max-h-[160px]`).
+- **3. Gameplay Arena (`GameArea.jsx`)**: Resource bar header, vertical tab sidebar, 3D Rune platform arena, 4-column upgrade card grid.
+- **4. Multiplayer Lobby (`MultiplayerLobby.jsx`)**: Room code card with copy button, theme selector, player slots grid (3 slots max with Bot AI support), and Ready status button.
+
+

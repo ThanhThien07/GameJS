@@ -2,9 +2,25 @@
   font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 500;
-  color-scheme: light dark;
-  color: #0f172a;
-  background-color: #f1f5f9;
+  color-scheme: dark;
+  
+  /* MASTER UI SYSTEM DESIGN TOKENS */
+  --bg-main: #0F172A;
+  --bg-surface: #1E293B;
+  --bg-surface-hover: #273449;
+  --primary-purple: #8B5CF6;
+  --primary-blue: #3B82F6;
+  --accent-gold: #F59E0B;
+  --success-green: #10B981;
+  --danger-red: #EF4444;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --radius-button: 12px;
+  --radius-card: 16px;
+  --radius-modal: 20px;
+
+  color: #f8fafc;
+  background-color: #0f172a;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -16,9 +32,10 @@ body {
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #f1f5f9;
-  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+  background: var(--bg-main);
+  background-image: radial-gradient(#334155 1.5px, transparent 1.5px);
   background-size: 24px 24px;
+  color: var(--text-primary);
   overflow-x: hidden;
 }
 
