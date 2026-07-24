@@ -367,21 +367,51 @@ function GameArea({
     }
   };
 
-  // Clicker Tool Upgrades (Left column)
-  const OFFLINE_CLICK_TOOLS = [
-    { key: 'clicker', name: 'Găng Tay Sắt', desc: 'Click +1 vàng', cost: 10, val: 1, isDpc: true, icon: MousePointerClick, statLabel: 'Earn 2x per click' },
-    { key: 'battleAxe', name: 'Rìu Chặt Củi', desc: 'Click +5 vàng', cost: 100, val: 5, isDpc: true, icon: Wrench, statLabel: '+5 DPC' },
-    { key: 'diamondSword', name: 'Kiếm Kim Cương', desc: 'Click +25 vàng', cost: 800, val: 25, isDpc: true, icon: Swords, statLabel: '+25 DPC' }
-  ];
+  // Dynamic Theme-Filtered Upgrades System
+  const getFilteredUpgrades = () => {
+    let clickTools = [];
+    let autoWorkers = [];
 
-  // Auto Workers/Helpers (Right column)
-  const OFFLINE_AUTO_WORKERS = [
-    { key: 'pickaxe', name: 'Steve Thợ Mỏ', desc: 'Đục tự động +1/s', cost: 50, val: 1, isDpc: false, icon: Pickaxe, statLabel: '+1/s auto' },
-    { key: 'minecart', name: 'Xe Goòng Mỏ', desc: 'Khai thác tự động +10/s', cost: 300, val: 10, isDpc: false, icon: ShoppingCart, statLabel: '+10/s auto' },
-    { key: 'drill', name: 'Máy Khoan Laze', desc: 'Khai quật tự động +120/s', cost: 1500, val: 120, isDpc: false, icon: Wrench, statLabel: '+120/s auto' },
-    { key: 'excavator', name: 'Xe Máy Xúc', desc: 'Đào tự động +1000/s', cost: 8000, val: 1000, isDpc: false, icon: Truck, statLabel: '+1k/s auto' },
-    { key: 'miningRig', name: 'Giàn Khoan Siêu Cấp', desc: 'Khai thác cực đỉnh +5000/s', cost: 50000, val: 5000, isDpc: false, icon: Factory, statLabel: '+5k/s auto' }
-  ];
+    if (theme === 'wood') {
+      clickTools = [
+        { key: 'battleAxe', name: 'Rìu Chặt Củi', desc: 'Click +5 DPC', cost: 10, val: 5, isDpc: true, icon: Wrench, statLabel: '+5 DPC' },
+        { key: 'crystalAxe', name: 'Rìu Thạch Anh', desc: 'Click +25 DPC', cost: 150, val: 25, isDpc: true, icon: Wrench, statLabel: '+25 DPC' },
+        { key: 'mythicSaw', name: 'Cưa Cổ Thụ', desc: 'Click +120 DPC', cost: 1000, val: 120, isDpc: true, icon: Zap, statLabel: '+120 DPC' }
+      ];
+      autoWorkers = [
+        { key: 'apprenticeLumberjack', name: 'Tiều Phu Tập Sự', desc: 'Chặt gỗ +1/s auto', cost: 50, val: 1, isDpc: false, icon: Trees, statLabel: '+1/s auto' },
+        { key: 'logCart', name: 'Xe Kéo Gỗ Rừng', desc: 'Vận chuyển gỗ +10/s auto', cost: 300, val: 10, isDpc: false, icon: Truck, statLabel: '+10/s auto' },
+        { key: 'autoChainsaw', name: 'Máy Cưa Tự Động', desc: 'Chặt đốn gỗ +120/s auto', cost: 1500, val: 120, isDpc: false, icon: Factory, statLabel: '+120/s auto' }
+      ];
+    } else if (theme === 'monster') {
+      clickTools = [
+        { key: 'clicker', name: 'Găng Tay Sắt', desc: 'Click +1 DPC', cost: 10, val: 1, isDpc: true, icon: MousePointerClick, statLabel: '+1 DPC' },
+        { key: 'diamondSword', name: 'Kiếm Kim Cương', desc: 'Click +25 DPC', cost: 150, val: 25, isDpc: true, icon: Swords, statLabel: '+25 DPC' },
+        { key: 'godSlayer', name: 'Trảm Thần Đao', desc: 'Click +120 DPC', cost: 1000, val: 120, isDpc: true, icon: Flame, statLabel: '+120 DPC' }
+      ];
+      autoWorkers = [
+        { key: 'apprenticeHero', name: 'Dũng Sĩ Tập Sự', desc: 'Săn quái +1/s auto', cost: 50, val: 1, isDpc: false, icon: Swords, statLabel: '+1/s auto' },
+        { key: 'paladinWorker', name: 'Hiệp Sĩ Thánh Điện', desc: 'Đánh quái +10/s auto', cost: 300, val: 10, isDpc: false, icon: Swords, statLabel: '+10/s auto' },
+        { key: 'mageWorker', name: 'Phù Thủy Ma Pháp', desc: 'Chưởng phép +120/s auto', cost: 1500, val: 120, isDpc: false, icon: Sparkles, statLabel: '+120/s auto' }
+      ];
+    } else {
+      // Default: Stone Mining Theme & Capybara / Button
+      clickTools = [
+        { key: 'stonePickaxe', name: 'Cuốc Đá Cổ', desc: 'Click +1 DPC', cost: 10, val: 1, isDpc: true, icon: Pickaxe, statLabel: '+1 DPC' },
+        { key: 'diamondPickaxe', name: 'Cuốc Kim Cương', desc: 'Click +25 DPC', cost: 150, val: 25, isDpc: true, icon: Gem, statLabel: '+25 DPC' },
+        { key: 'laserHammer', name: 'Búa Laze Tinh Thể', desc: 'Click +120 DPC', cost: 1000, val: 120, isDpc: true, icon: Zap, statLabel: '+120 DPC' }
+      ];
+      autoWorkers = [
+        { key: 'pickaxe', name: 'Steve Thợ Mỏ', desc: 'Đục đá +1/s auto', cost: 50, val: 1, isDpc: false, icon: Pickaxe, statLabel: '+1/s auto' },
+        { key: 'minecart', name: 'Xe Goòng Mỏ', desc: 'Khai thác +10/s auto', cost: 300, val: 10, isDpc: false, icon: ShoppingCart, statLabel: '+10/s auto' },
+        { key: 'drill', name: 'Máy Khoan Laze', desc: 'Khai quật +120/s auto', cost: 1500, val: 120, isDpc: false, icon: Wrench, statLabel: '+120/s auto' },
+        { key: 'excavator', name: 'Xe Máy Xúc', desc: 'Đào quặng +1000/s auto', cost: 8000, val: 1000, isDpc: false, icon: Truck, statLabel: '+1k/s auto' },
+        { key: 'miningRig', name: 'Giàn Khoan Siêu Cấp', desc: 'Khai thác +5000/s auto', cost: 50000, val: 5000, isDpc: false, icon: Factory, statLabel: '+5k/s auto' }
+      ];
+    }
+
+    return { clickTools, autoWorkers };
+  };
 
   const getMyCompPlayer = () => {
     return roomData?.players.find(p => p.id === socketId);
@@ -429,24 +459,51 @@ function GameArea({
   };
 
   return (
-    <div className="w-full max-w-6xl flex flex-col gap-5 text-slate-800">
+    <div className="w-full flex flex-col gap-4 animate-in fade-in duration-300">
       
-      {/* HEADER BANNER */}
-      <div className="w-full">
-        <div className="screenshot-banner">
-          <div className="flex items-center gap-2">
-            <ClipboardList size={18} className="text-purple-100" />
-            <span className="font-semibold text-xs md:text-sm">Đang ở chế độ đồng bộ đám mây - Tiến trình đã được lưu</span>
+      {/* SCREENSHOT BANNER / HEADER */}
+      <div className="screenshot-banner">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={onLeave} 
+            className="flex items-center gap-1 bg-white/10 hover:bg-white/20 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg border border-white/20 transition-all"
+            title="Quay về danh mục"
+          >
+            <ArrowLeft size={16} /> Menu
+          </button>
+
+          <div className="text-left">
+            <h2 className="font-extrabold text-sm md:text-base leading-tight tracking-wide flex items-center gap-2 text-white">
+              <span>⚡ TAP TAP CLICKER MULTIPLAYER</span>
+              <span className="text-[10px] bg-yellow-400 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase">
+                {mode === 'offline' ? 'CHẾ ĐỘ OFFLINE' : onlineType === 'competitive' ? 'ĐẤU TRƯỜNG ONLINE' : 'HỢP TÁC CO-OP'}
+              </span>
+            </h2>
+            <span className="text-[11px] text-purple-200 font-semibold block">
+              {theme === 'wood' ? '🪵 Tiều Phu Chặt Gỗ Rừng' : theme === 'monster' ? '⚔️ Chiến Đấu Quái Vật' : '🪨 Thợ Mỏ Khai Thác Thạch Anh'}
+            </span>
           </div>
-          
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-black/30 border border-white/10 px-3 py-1.5 rounded-xl">
+            {/* Mode status pill */}
+            <div className="flex flex-col text-left">
+              <span className="text-[9px] text-purple-200 font-bold uppercase tracking-wider">CHẾ ĐỘ HIỆN TẠI</span>
+              <span className="text-xs font-black text-yellow-300">
+                {mode === 'offline' ? 'CHƠI ĐƠN OFFLINE' : roomData ? `PHÒNG #${roomData.id}` : 'ĐANG KẾT NỐI'}
+              </span>
+            </div>
+          </div>
+
           <div className="flex items-center gap-2">
-            {/* Sound Mute Toggle */}
+            {/* Settings Trigger */}
             <button 
-              onClick={handleToggleSound}
-              className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all"
-              title={muted ? 'Bật âm thanh' : 'Tắt âm thanh'}
+              onClick={() => soundManager.playClick()} 
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all"
+              title="Cài đặt"
             >
-              {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+              <Settings size={18} />
             </button>
 
             {/* Achievements Modal Trigger */}
@@ -456,134 +513,16 @@ function GameArea({
             >
               <Award size={15} /> Thành Tựu
             </button>
-
-            {/* Rebirth Modal Trigger (Offline mode) */}
-            {mode === 'offline' && (
-              <button 
-                onClick={() => setShowRebirthModal(true)}
-                className="flex items-center gap-1 bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-400/40 font-extrabold text-xs py-1 px-2.5 rounded-lg"
-              >
-                <RotateCcw size={14} /> Trùng Sinh (💎{offlineState.soulCrystals || 0})
-              </button>
-            )}
-
-            <button onClick={onLeave} className="bg-white/10 hover:bg-white/20 text-white font-bold text-xs py-1 px-3 rounded-lg border border-white/10">
-              Quay về Menu
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* ACTIVE SKILLS TOOLBAR (OFFLINE MODE) */}
-      {mode === 'offline' && (
-        <div className="w-full bg-slate-900/80 backdrop-blur border border-purple-500/30 rounded-xl p-3 flex flex-wrap justify-between items-center gap-3 text-white">
-          <div className="flex items-center gap-2">
-            <Sparkles size={18} className="text-yellow-400 animate-pulse" />
-            <span className="font-extrabold text-xs text-purple-200 uppercase tracking-wider">Kỹ Năng Nguồn Lực</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Skill 1: Frenzy */}
-            <button
-              onClick={handleActivateFrenzy}
-              disabled={frenzyCd > 0 || frenzyActive}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                frenzyActive 
-                  ? 'bg-rose-600 text-white border-rose-400 animate-pulse' 
-                  : frenzyCd > 0 
-                  ? 'bg-slate-800 text-slate-400 border-slate-700 cursor-not-allowed' 
-                  : 'bg-rose-900/50 hover:bg-rose-600 text-rose-200 border-rose-500/50'
-              }`}
-            >
-              <Flame size={14} />
-              <span>Cơn Cuồng Phong (x2 DPC)</span>
-              {frenzyActive && <span className="bg-white/20 px-1.5 rounded text-[10px]">{frenzyTimer}s</span>}
-              {!frenzyActive && frenzyCd > 0 && <span className="text-[10px]">({frenzyCd}s)</span>}
-            </button>
-
-            {/* Skill 2: Golden Rush */}
-            <button
-              onClick={handleActivateGoldenRush}
-              disabled={goldenRushCd > 0}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                goldenRushCd > 0 
-                  ? 'bg-slate-800 text-slate-400 border-slate-700 cursor-not-allowed' 
-                  : 'bg-amber-900/50 hover:bg-amber-600 text-amber-200 border-amber-500/50'
-              }`}
-            >
-              <Coins size={14} />
-              <span>Bão Vàng (Thưởng Vàng)</span>
-              {goldenRushCd > 0 && <span className="text-[10px]">({goldenRushCd}s)</span>}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* UNIFIED MASTER FRAME (IMAGE 2 DASHBOARD STYLE WRAPPER) */}
-      <div className="w-full glass-panel p-4 md:p-5 shadow-xl rounded-3xl bg-white border border-slate-200 flex flex-col gap-4">
-        
-        {/* TOP KPI METRIC CARDS BAR (4 CARDS ACROSS TOP LIKE DASHBOARD REFERENCE) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full">
-          {/* KPI Card 1: Gold Money */}
-          <div className="kpi-card">
-            <div>
-              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TỔNG TIỀN VÀNG</span>
-              <span className="text-xl md:text-2xl font-black text-slate-800">
-                {mode === 'offline' ? Math.floor(offlineState.money).toLocaleString() : (getMyCompPlayer()?.score || 0).toLocaleString()} 💰
-              </span>
-            </div>
-            <div className="kpi-icon-box bg-amber-50 text-amber-600 border border-amber-200">
-              <Coins size={20} />
-            </div>
-          </div>
-
-          {/* KPI Card 2: DPC Click Power */}
-          <div className="kpi-card">
-            <div>
-              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">SỨC MẠNH CLICK</span>
-              <span className="text-xl md:text-2xl font-black text-purple-600">
-                +{mode === 'offline' ? offlineState.dpc : (getMyCompPlayer()?.dpc || 1)} DPC
-              </span>
-            </div>
-            <div className="kpi-icon-box bg-purple-50 text-purple-600 border border-purple-200">
-              <MousePointerClick size={20} />
-            </div>
-          </div>
-
-          {/* KPI Card 3: DPS Auto Speed */}
-          <div className="kpi-card">
-            <div>
-              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">TỐC ĐỘ TỰ ĐỘNG</span>
-              <span className="text-xl md:text-2xl font-black text-emerald-600">
-                +{mode === 'offline' ? offlineState.dps.toLocaleString() : (roomData?.players.find(p => p.id === socketId)?.dps || 0).toLocaleString()}/s
-              </span>
-            </div>
-            <div className="kpi-icon-box bg-emerald-50 text-emerald-600 border border-emerald-200">
-              <Zap size={20} />
-            </div>
-          </div>
-
-          {/* KPI Card 4: Soul Crystals / Rebirth */}
-          <div className="kpi-card">
-            <div>
-              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">HỆ SỐ THẦN THOẠI</span>
-              <span className="text-xl md:text-2xl font-black text-indigo-600">
-                {mode === 'offline' && offlineState.soulCrystals > 0 ? `+${offlineState.soulCrystals * 15}%` : 'x2 NỘ'}
-              </span>
-            </div>
-            <div className="kpi-icon-box bg-indigo-50 text-indigo-600 border border-indigo-200">
-              <Award size={20} />
-            </div>
           </div>
         </div>
 
-        {/* 2-COLUMN MAIN CONTENT GRID */}
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+        {/* GUARANTEED SIDE-BY-SIDE FLEX CONTAINER (50% LEFT / 50% RIGHT) */}
+        <div className="w-full flex flex-col lg:flex-row gap-5 items-start justify-between">
           
-          {/* LEFT COLUMN: COMPACT CLICK SUNBURST ARENA & SKILL TOOLBAR */}
-          <div className="lg:col-span-6 flex flex-col gap-3">
+          {/* LEFT SIDE (50% WIDTH): COMPACT CLICK SUNBURST ARENA */}
+          <div className="w-full lg:w-1/2 flex flex-col gap-3">
             
-            <div className="w-full sunburst-container p-4 flex flex-col items-center justify-center min-h-[300px] md:min-h-[320px] relative rounded-2xl">
+            <div className="w-full sunburst-container p-4 flex flex-col items-center justify-center min-h-[300px] md:min-h-[340px] relative rounded-2xl">
               
               {/* Animated Radiant Yellow Rays Halo */}
               <div className="sunburst-rays"></div>
@@ -603,33 +542,12 @@ function GameArea({
                 </span>
               ))}
 
-              {/* Top Utility Controls */}
-              <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
-                <button 
-                  onClick={handleToggleSound} 
-                  className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-900 shadow-sm hover:scale-105 active:scale-95 transition-transform"
-                  title="Âm thanh"
-                >
-                  {muted ? <VolumeX size={15} className="text-red-500" /> : <Volume2 size={15} className="text-emerald-600" />}
-                </button>
-                
-                <button 
-                  onClick={() => setShowAchievementsModal(true)} 
-                  className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-900 shadow-sm hover:scale-105 active:scale-95 transition-transform"
-                  title="Thành Tựu"
-                >
-                  <Award size={15} className="text-yellow-500" />
-                </button>
-
-                {offlineState.money >= 50000 && (
-                  <button 
-                    onClick={() => setShowRebirthModal(true)} 
-                    className="w-8 h-8 rounded-lg bg-purple-500 border border-purple-400 flex items-center justify-center text-white shadow-sm hover:scale-105 active:scale-95 transition-transform animate-pulse"
-                    title="Trùng Sinh"
-                  >
-                    <RotateCcw size={15} />
-                  </button>
-                )}
+              {/* Core Click Target */}
+              <div 
+                onClick={handleTap} 
+                className={`clicker-object my-2 select-none active:scale-90 ${clickShake ? 'click-shake' : ''}`}
+              >
+                {renderClickObject()}
               </div>
 
               {/* Online Timer */}
@@ -649,14 +567,6 @@ function GameArea({
                 </div>
               )}
 
-              {/* Core Click Target */}
-              <div 
-                onClick={handleTap} 
-                className={`clicker-object my-2 select-none active:scale-90 ${clickShake ? 'click-shake' : ''}`}
-              >
-                {renderClickObject()}
-              </div>
-
               {/* Float x2 circle multiplier */}
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1">
                 <div className={`multiplier-circle-ad ${isMultiplierActive ? 'animate-bounce ring-4 ring-green-300' : 'opacity-85'}`}>
@@ -666,115 +576,95 @@ function GameArea({
                   {isMultiplierActive ? `${multiplierTimer}s` : 'SẠC NỘ'}
                 </span>
               </div>
-
-              {/* Energy progress meter */}
-              {(mode === 'offline' || (mode === 'online' && onlineType === 'competitive')) && (
-                <div className="w-full max-w-xs flex flex-col items-center mt-1 z-10 bg-white/90 p-1.5 rounded-xl border border-slate-200 shadow-sm">
-                  <div className="flex justify-between w-full text-[9px] text-slate-500 font-extrabold mb-0.5">
-                    <span className="flex items-center gap-1 text-purple-600 uppercase">
-                      <Flame size={11} className="animate-pulse" /> THANH NỘ BỔ TRỢ CLICK (x2)
-                    </span>
-                    <span className="text-purple-700">
-                      {isMultiplierActive ? 'X2 ĐANG CHẠY' : `${energy}%`}
-                    </span>
-                  </div>
-                  <div className="w-full bg-slate-100 border border-slate-200 h-2 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full transition-all duration-150 ${
-                        isMultiplierActive 
-                          ? 'bg-gradient-to-r from-purple-500 via-pink-500 to-rose-400 animate-pulse' 
-                          : 'bg-purple-600'
-                      }`}
-                      style={{ width: `${isMultiplierActive ? (multiplierTimer / 6) * 100 : energy}%` }}
-                    ></div>
-                  </div>
-                </div>
-              )}
             </div>
 
-            {/* Offline Info Badge */}
-            {mode === 'offline' && offlineState.soulCrystals > 0 && (
-              <div className="text-xs text-purple-700 font-extrabold bg-purple-50 border border-purple-200 p-2 rounded-xl text-center shadow-sm">
-                💎 Tinh thể linh hồn thần thoại: +{(offlineState.soulCrystals * 15)}% Sức mạnh Click & Auto!
-              </div>
-            )}
+            {/* Theme Badge */}
+            <div className="text-xs text-slate-600 font-bold bg-slate-100 border border-slate-200 p-2 rounded-xl text-center shadow-sm">
+              {theme === 'wood' && '🪵 Chế độ: Tiều Phu Chặt Gỗ Rừng'}
+              {theme === 'monster' && '⚔️ Chế độ: Săn Quái Vật Cổ Đại'}
+              {theme === 'stone' && '🪨 Chế độ: Thợ Mỏ Khai Thác Thạch Anh'}
+              {theme === 'button' && '🔴 Chế độ: Nút Ấn Đẩy Kinh Điển'}
+            </div>
           </div>
 
-          {/* RIGHT COLUMN: ALL UPGRADES IN ONE RIGHT PANEL */}
-          <div className="lg:col-span-6 flex flex-col gap-3">
+          {/* RIGHT SIDE (50% WIDTH): SHOP UPGRADES PANEL FILTERED BY THEME */}
+          <div className="w-full lg:w-1/2 flex flex-col gap-3">
             <div className="block-panel h-full">
               <div className="block-panel-header flex justify-between items-center">
-                <span>🛍️ CỬA HÀNG NÂNG CẤP & NHÂN CÔNG</span>
+                <span>🛍️ CỬA HÀNG NÂNG CẤP ({theme === 'wood' ? 'TIỀU PHU' : theme === 'monster' ? 'QUÁI VẬT' : 'THỢ MỎ'})</span>
               </div>
 
               <div className="upgrade-list-scroll max-h-[460px]">
-                {mode === 'offline' && (
-                  <>
-                    {/* Group 1: Click Tools (DPC) */}
-                    <div className="text-left font-black text-[10px] text-purple-600 uppercase tracking-wider my-1 bg-purple-50 p-1.5 rounded-lg border border-purple-100">
-                      ⚒️ Công Cụ Click (Tăng Sức Mạnh Click)
-                    </div>
-                    {OFFLINE_CLICK_TOOLS.map((up) => {
-                      const IconComp = up.icon;
-                      const curLvl = offlineState.upgrades[up.key] || 0;
-                      const cost = getOfflineUpgradeCost(up.cost, curLvl);
-                      const canAfford = offlineState.money >= cost;
+                {mode === 'offline' && (() => {
+                  const { clickTools, autoWorkers } = getFilteredUpgrades();
+                  return (
+                    <>
+                      {/* Group 1: Click Tools */}
+                      <div className="text-left font-black text-[10px] text-purple-600 uppercase tracking-wider my-1 bg-purple-50 p-1.5 rounded-lg border border-purple-100">
+                        ⚒️ Công Cụ Click (Tăng DPC)
+                      </div>
+                      {clickTools.map((up) => {
+                        const IconComp = up.icon;
+                        const curLvl = offlineState.upgrades[up.key] || 0;
+                        const cost = getOfflineUpgradeCost(up.cost, curLvl);
+                        const canAfford = offlineState.money >= cost;
 
-                      return (
-                        <button
-                          key={up.key}
-                          onClick={() => buyOfflineUpgrade(up.key, up.isDpc, up.val, up.cost)}
-                          disabled={!canAfford}
-                          className="upgrade-row-modern"
-                        >
-                          {curLvl > 0 && <span className="upgrade-row-level">v{curLvl}</span>}
-                          <div className="upgrade-row-icon-box">
-                            <IconComp size={18} className="text-slate-700" />
-                          </div>
-                          <div className="upgrade-row-details">
-                            <span className="upgrade-row-name">{up.name}</span>
-                            <span className="upgrade-row-stat">{up.statLabel}</span>
-                          </div>
-                          <span className="upgrade-row-price-btn">
-                            💰{cost.toLocaleString()}
-                          </span>
-                        </button>
-                      );
-                    })}
+                        return (
+                          <button
+                            key={up.key}
+                            onClick={() => buyOfflineUpgrade(up.key, up.isDpc, up.val, up.cost)}
+                            disabled={!canAfford}
+                            className="upgrade-row-modern"
+                          >
+                            {curLvl > 0 && <span className="upgrade-row-level">v{curLvl}</span>}
+                            <div className="upgrade-row-icon-box">
+                              <IconComp size={18} className="text-slate-700" />
+                            </div>
+                            <div className="upgrade-row-details">
+                              <span className="upgrade-row-name">{up.name}</span>
+                              <span className="upgrade-row-stat">{up.statLabel}</span>
+                            </div>
+                            <span className="upgrade-row-price-btn">
+                              💰{cost.toLocaleString()}
+                            </span>
+                          </button>
+                        );
+                      })}
 
-                    {/* Group 2: Auto Workers (DPS) */}
-                    <div className="text-left font-black text-[10px] text-green-600 uppercase tracking-wider mt-3 mb-1 bg-green-50 p-1.5 rounded-lg border border-green-100">
-                      🤖 Nhân Công Auto (Tự Động Thu Thập/s)
-                    </div>
-                    {OFFLINE_AUTO_WORKERS.map((up) => {
-                      const IconComp = up.icon;
-                      const curLvl = offlineState.upgrades[up.key] || 0;
-                      const cost = getOfflineUpgradeCost(up.cost, curLvl);
-                      const canAfford = offlineState.money >= cost;
+                      {/* Group 2: Auto Workers */}
+                      <div className="text-left font-black text-[10px] text-green-600 uppercase tracking-wider mt-3 mb-1 bg-green-50 p-1.5 rounded-lg border border-green-100">
+                        🤖 Nhân Công Auto (Tự Động/s)
+                      </div>
+                      {autoWorkers.map((up) => {
+                        const IconComp = up.icon;
+                        const curLvl = offlineState.upgrades[up.key] || 0;
+                        const cost = getOfflineUpgradeCost(up.cost, curLvl);
+                        const canAfford = offlineState.money >= cost;
 
-                      return (
-                        <button
-                          key={up.key}
-                          onClick={() => buyOfflineUpgrade(up.key, up.isDpc, up.val, up.cost)}
-                          disabled={!canAfford}
-                          className="upgrade-row-modern"
-                        >
-                          {curLvl > 0 && <span className="upgrade-row-level">v{curLvl}</span>}
-                          <div className="upgrade-row-icon-box">
-                            <IconComp size={18} className="text-slate-700" />
-                          </div>
-                          <div className="upgrade-row-details">
-                            <span className="upgrade-row-name">{up.name}</span>
-                            <span className="upgrade-row-stat">{up.statLabel}</span>
-                          </div>
-                          <span className="upgrade-row-price-btn">
-                            💰{cost.toLocaleString()}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </>
-                )}
+                        return (
+                          <button
+                            key={up.key}
+                            onClick={() => buyOfflineUpgrade(up.key, up.isDpc, up.val, up.cost)}
+                            disabled={!canAfford}
+                            className="upgrade-row-modern"
+                          >
+                            {curLvl > 0 && <span className="upgrade-row-level">v{curLvl}</span>}
+                            <div className="upgrade-row-icon-box">
+                              <IconComp size={18} className="text-slate-700" />
+                            </div>
+                            <div className="upgrade-row-details">
+                              <span className="upgrade-row-name">{up.name}</span>
+                              <span className="upgrade-row-stat">{up.statLabel}</span>
+                            </div>
+                            <span className="upgrade-row-price-btn">
+                              💰{cost.toLocaleString()}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </>
+                  );
+                })()}
 
                 {mode === 'online' && onlineType === 'competitive' && roomData && (
                   <>
@@ -813,7 +703,7 @@ function GameArea({
                     <div className="text-left font-black text-[10px] text-green-600 uppercase tracking-wider mt-3 mb-1 bg-green-50 p-1.5 rounded-lg">
                       🤖 Thuê Nhân Công Auto
                     </div>
-                    {OFFLINE_AUTO_WORKERS.slice(0, 3).map((up) => {
+                    {getFilteredUpgrades().autoWorkers.slice(0, 3).map((up) => {
                       const IconComp = up.icon;
                       const me = getMyCompPlayer();
                       const curLvl = me?.upgrades[up.key] || 0;
