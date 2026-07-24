@@ -308,6 +308,7 @@ function App() {
 
         {gameScreen === 'theme-select' && (
           <ThemeSelector
+            selectedTheme={selectedTheme}
             onSelectTheme={(themeName) => {
               setSelectedTheme(themeName);
               setGameScreen('playing');
