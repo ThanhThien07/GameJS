@@ -214,4 +214,236 @@ Defines the unified navigation screen flow and state machine transitions across 
 - **3. Gameplay Arena (`GameArea.jsx`)**: Resource bar header, vertical tab sidebar, 3D Rune platform arena, 4-column upgrade card grid.
 - **4. Multiplayer Lobby (`MultiplayerLobby.jsx`)**: Room code card with copy button, theme selector, player slots grid (3 slots max with Bot AI support), and Ready status button.
 
+---
+
+# FRONTEND ARCHITECTURE RULES
+
+Bạn là Lead Frontend Architect của toàn bộ dự án.
+
+Mọi thay đổi giao diện trong repo chính phải tuân thủ kiến trúc sau:
+
+## 1. Phân chia trách nhiệm framework
+
+### Bootstrap 5 chỉ dùng cho:
+- Modal
+- Dropdown
+- Collapse
+- Offcanvas
+- Toast
+- Tooltip
+- Popover
+- Tab có JavaScript
+- Form validation state
+- Các component thật sự cần Bootstrap JavaScript
+
+### Tailwind CSS dùng cho:
+- Toàn bộ layout
+- Grid
+- Flexbox
+- Spacing
+- Width, height
+- Typography
+- Color
+- Background
+- Border
+- Radius
+- Shadow
+- Responsive
+- Hover, focus, active
+- Button
+- Input
+- Card
+- Table
+- Navigation
+- Sidebar
+- Header
+- Game HUD
+- Theme selection
+- Upgrade card
+- Shop
+- Inventory
+- Multiplayer UI
+
+Không dùng Bootstrap để trang trí giao diện nếu Tailwind đã làm được.
+
+## 2. Hạn chế CSS thủ công
+
+Không tạo CSS riêng nếu Tailwind utility xử lý được.
+
+Ưu tiên:
+- `flex`
+- `grid`
+- `gap-*`
+- `p-*`
+- `m-*`
+- `w-*`
+- `h-*`
+- `max-w-*`
+- `rounded-*`
+- `shadow-*`
+- `bg-*`
+- `text-*`
+- `border-*`
+- `hover:*`
+- `focus:*`
+- `transition-*`
+- responsive prefixes như `sm:`, `md:`, `lg:`, `xl:`
+
+Chỉ viết CSS thủ công cho:
+- keyframes animation đặc biệt
+- pseudo-element phức tạp
+- hiệu ứng game không thể biểu diễn rõ bằng utility
+- scrollbar tùy chỉnh
+- mask, clip-path
+- canvas hoặc WebGL
+- giá trị động phụ thuộc biến runtime
+- fix tương thích trình duyệt
+
+## 3. Không trộn class tùy tiện
+
+Không dùng cùng lúc các class Bootstrap layout và Tailwind layout trên cùng phần tử.
+
+Không dùng kiểu:
+```html
+<div class="container row d-flex gap-4 grid grid-cols-3">
+```
+
+Phải chọn Tailwind cho layout:
+```html
+<div class="mx-auto grid max-w-7xl grid-cols-1 gap-6 lg:grid-cols-3">
+```
+
+Bootstrap chỉ giữ lại thuộc tính tương tác nếu cần:
+```html
+<button
+  class="rounded-xl bg-violet-600 px-4 py-3 font-semibold text-white transition hover:bg-violet-500"
+  data-bs-toggle="modal"
+  data-bs-target="#settingsModal"
+>
+  Cài đặt
+</button>
+```
+
+## 4. Không dùng class giao diện Bootstrap
+
+Hạn chế hoặc loại bỏ khỏi repo chính:
+- `btn`
+- `btn-primary`
+- `btn-secondary`
+- `form-control`
+- `form-select`
+- `card`
+- `navbar`
+- `container`
+- `row`
+- `col-*`
+- `table`
+- `badge`
+- `alert`
+- utility spacing Bootstrap như `mt-*`, `p-*`, `d-flex`
+
+Trừ trường hợp component Bootstrap bắt buộc phụ thuộc class đó để hoạt động.
+
+Nếu cần giao diện tương đương, dùng Tailwind.
+
+## 5. Design system dùng chung
+
+Mọi màn hình phải dùng cùng token:
+- Background: `#0F172A`
+- Surface: `#1E293B`
+- Surface hover: `#273449`
+- Primary purple: `#8B5CF6`
+- Primary blue: `#3B82F6`
+- Accent gold: `#F59E0B`
+- Success: `#10B981`
+- Danger: `#EF4444`
+- Text primary: `#F8FAFC`
+- Text secondary: `#94A3B8`
+
+Spacing ưu tiên theo hệ 8px: 8, 16, 24, 32, 40, 48, 64
+
+Radius:
+- Button: 12px
+- Card: 16px
+- Modal: 20px
+
+## 6. Component dùng chung
+
+Ưu tiên tạo component tái sử dụng cho:
+- PrimaryButton
+- SecondaryButton
+- IconButton
+- ResourcePill
+- GameCard
+- SelectionCard
+- UpgradeCard
+- NavigationItem
+- BuffBadge
+- ModalShell
+- InputField
+- EmptyState
+- LoadingState
+
+Không lặp lại hàng chục chuỗi class dài ở nhiều nơi nếu có thể gom thành component.
+
+## 7. Quy tắc với submodule
+
+Các repo trong `tools/` và submodule:
+- Chỉ dùng làm tài liệu, công cụ hoặc nguồn tham khảo.
+- Không ép chúng đổi sang Bootstrap hoặc Tailwind.
+- Không sửa source trong submodule trừ khi người dùng yêu cầu rõ.
+- Không import toàn bộ CSS của submodule vào repo chính nếu gây xung đột.
+- Không cho CSS từ submodule ghi đè design system of game.
+- Mọi tích hợp vào repo chính phải đi qua lớp adapter hoặc wrapper.
+
+Ví dụ:
+```text
+repo chính
+    ↓
+UI wrapper bằng Tailwind
+    ↓
+Bootstrap JS khi cần
+    ↓
+submodule/tool
+```
+
+## 8. Kiểm tra xung đột
+
+Sau mỗi lần sửa giao diện phải kiểm tra:
+- Bootstrap CSS có ghi đè Tailwind không
+- Tailwind preflight có ảnh hưởng component cũ không
+- `z-index`
+- `position`
+- `overflow`
+- `pointer-events`
+- button và input có mất style không
+- modal, dropdown, offcanvas có còn hoạt động không
+- responsive có bị vỡ không
+- console có lỗi JavaScript không
+
+## 9. Quy trình refactor
+
+Khi gặp UI cũ:
+1. Xác định class Bootstrap đang dùng.
+2. Giữ lại phần Bootstrap JS cần thiết.
+3. Thay layout và style bằng Tailwind.
+4. Loại bỏ CSS riêng không còn cần.
+5. Gom phần lặp thành component.
+6. Chạy build.
+7. Test luồng chính.
+8. Kiểm tra desktop và mobile.
+
+## 10. Không được làm
+
+Không:
+- dùng Bootstrap và Tailwind cùng xử lý một nhiệm vụ
+- thêm CSS riêng chỉ để chỉnh margin, padding, màu, radius
+- dùng `!important` tràn lan
+- sửa trực tiếp source submodule
+- import nhiều framework UI khác
+- hard-code style inline
+- đổi class/id/data-attribute đang dùng cho JavaScript mà không cập nhật logic
+- làm đẹp UI nhưng phá gameplay
+
+
 
