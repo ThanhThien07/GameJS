@@ -92,3 +92,46 @@ NguyenHoangHung_501250384/
 - **Null Safety**: Always use optional chaining (`?.`) when accessing dynamic server state like `roomData` or `offlineState`.
 - **Responsive Layout**: Ensure UI containers maintain strict max dimensions (`max-w-[280px]` for click targets) to prevent image overflow.
 - **Dark Mode Adaptability**: Retain `color-scheme: light dark;` and robust dark mode text fallbacks in `src/index.css`.
+
+---
+
+## 🛠 Standard Debug Workflow
+
+Khi cần sửa lỗi hoặc bảo trì hệ thống, Agent (với vai trò Lead Software Engineer, Game Architect, Senior UI/UX Engineer & QA Lead) bắt buộc tuân thủ quy trình sau:
+
+### 1. Phân Tích & Xác Định Nguyên Nhân Gốc (Root Cause)
+- **Không đoán mò:** Phải đọc toàn bộ mã nguồn liên quan, tài liệu tại `tools/` (dùng làm tham khảo) trước khi can thiệp.
+- **Phạm vi kiểm tra:** Logic, State, Events, Rendering, CSS, DOM, API, Async logic, Asset pipeline, Animations, Real-time Multiplayer, Save/Load, Performance, Memory leak, Responsive, và Trình duyệt.
+- **Giữ nguyên hợp đồng Submodule:** Chỉ sửa mã nguồn trong repository chính. Không sửa trực tiếp mã trong các thư mục submodule thuộc `tools/`.
+
+### 2. Phân Tích Phạm Vi Ảnh Hưởng (Impact Analysis)
+- Đảm bảo sửa lỗi không làm hỏng Gameplay, UI, Multiplayer, Inventory, Combat, Shop, Upgrades, Rebirth, Achievements, hay Animations.
+- **Ưu tiên phương án tối ưu:** Sửa ít nhất, sạch nhất, dễ bảo trì nhất, không tạo Technical Debt.
+
+### 3. Quy Tắc Sửa UI / UX (UI/UX Engineering)
+- Đọc và áp dụng quy chuẩn tại `tools/skills-for-antigravity/skills/game-ui-design`:
+  - **Visual Hierarchy** & **Consistency**
+  - **8pt Grid System**
+  - **Fitts's Law** (Tối ưu vùng bấm & kích thước nút)
+  - **Hick's Law** (Tối giản lựa chọn)
+  - **Accessibility** & Dark Mode harmony.
+- Không dùng overlay che khu vực tương tác (`pointer-events: none` trên container chứa nút bấm).
+- Giữ nguyên các `class`, `id`, `data-attribute` đang được JavaScript tham chiếu.
+
+### 4. Quy Tắc Mã Nguồn & Asset
+- **Không hard-code** dữ liệu giả thay cho dữ liệu thật.
+- **Không duplicate code**, không xóa gameplay, không disable tính năng, không comment nuốt lỗi exception.
+- Khi thiếu asset: ưu tiên sinh prompt và chạy ComfyUI asset pipeline thay vì hard-code ảnh giả.
+
+### 5. Kiểm Thử Bắt Buộc Sau Khi Sửa (Verification Matrix)
+- `npm run build` kiểm tra biên dịch bundle.
+- Kiểm tra Console & Network tab không có cảnh báo/lỗi JavaScript.
+- Desktop (1920x1080), Laptop (1366x768), Mobile (390x844).
+- Regression test luồng Offline, Multiplayer Competitive (1v1v1) & Co-op.
+
+### 6. Báo Cáo Kết Quả
+- Liệt kê Root Cause.
+- Danh sách file đã sửa & lý do.
+- Kết quả chạy kiểm thử (Build, Console, Responsive).
+- Các vấn đề còn tồn đọng (nếu có).
+
