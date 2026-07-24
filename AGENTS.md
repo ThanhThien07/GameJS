@@ -42,6 +42,7 @@ python scripts/asset_pipeline.py --request "<yêu cầu>"
 ```
 
 Sau khi chạy, báo:
+
 - Công đoạn thành công.
 - Công đoạn thất bại.
 - File đầu ra.
