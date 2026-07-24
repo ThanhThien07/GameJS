@@ -469,16 +469,16 @@ function GameArea({
     let imgAlt = 'Capybara Mascot';
 
     if (theme === 'button') {
-      imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_red_button.png`;
+      imgSrc = `${import.meta.env.BASE_URL}assets/pixel_red_button.png`;
       imgAlt = 'Red Push Button';
     } else if (theme === 'monster') {
-      imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_monster.png`;
+      imgSrc = `${import.meta.env.BASE_URL}assets/pixel_monster.png`;
       imgAlt = 'Monster Boss';
     } else if (theme === 'wood') {
-      imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_wood.png`;
+      imgSrc = `${import.meta.env.BASE_URL}assets/pixel_wood.png`;
       imgAlt = 'Tree Stump';
     } else if (theme === 'stone') {
-      imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_stone.png`;
+      imgSrc = `${import.meta.env.BASE_URL}assets/pixel_stone.png`;
       imgAlt = 'Crystal Gem Ore';
     }
 

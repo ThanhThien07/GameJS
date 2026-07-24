@@ -10,7 +10,7 @@ function ThemeSelector({ selectedTheme, onSelectTheme, onBack }) {
       id: 'monster',
       name: 'ĐÁNH QUÁI VẬT',
       desc: 'Chiến đấu chống lại quái thú cổ xưa. Nhấp chuột để gây sát thương và đoạt vàng!',
-      image: `${import.meta.env.BASE_URL}assets/cartoon_monster.png`,
+      image: `${import.meta.env.BASE_URL}assets/pixel_monster.png`,
       badge: '⚔️ SĂN QUÁI',
       btnVariant: 'red'
     },
@@ -18,7 +18,7 @@ function ThemeSelector({ selectedTheme, onSelectTheme, onBack }) {
       id: 'wood',
       name: 'TIỀU PHU CHẶT GỖ',
       desc: 'Đốn hạ thân cây cổ thụ khổng lồ. Nhấp đốn gỗ kiếm tiền bán lâm sản!',
-      image: `${import.meta.env.BASE_URL}assets/cartoon_wood.png`,
+      image: `${import.meta.env.BASE_URL}assets/pixel_wood.png`,
       badge: '🪵 CHẶT GỖ',
       btnVariant: 'green'
     },
@@ -26,7 +26,7 @@ function ThemeSelector({ selectedTheme, onSelectTheme, onBack }) {
       id: 'stone',
       name: 'THỢ MỎ ĐÀO ĐÁ',
       desc: 'Khai thác khối quặng thạch anh ẩn giấu sâu dưới hang mỏ bí ẩn!',
-      image: `${import.meta.env.BASE_URL}assets/cartoon_stone.png`,
+      image: `${import.meta.env.BASE_URL}assets/pixel_stone.png`,
       badge: '🪨 ĐÀO ĐÁ',
       btnVariant: 'gold'
     }
