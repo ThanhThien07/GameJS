@@ -2,7 +2,7 @@
   font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 500;
-  color-scheme: light;
+  color-scheme: light dark;
   color: #0f172a;
   background-color: #f1f5f9;
   font-synthesis: none;
@@ -31,6 +31,56 @@ body {
 }
 
 /* ==============================================
+   DARK MODE ADAPTABILITY (Fixes browser Dark Mode extensions)
+   ============================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #f8fafc;
+    background-color: #0f172a;
+  }
+  body {
+    background: #0f172a;
+    background-image: radial-gradient(#334155 1.5px, transparent 1.5px);
+  }
+  .glass-panel, .block-panel {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+  .block-panel-header {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+  }
+  .text-slate-800, .text-slate-700, .text-slate-600 {
+    color: #f1f5f9 !important;
+  }
+  .text-slate-500 {
+    color: #cbd5e1 !important;
+  }
+  .bg-slate-50 {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+  }
+  .bg-white {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+  }
+  .btn-secondary {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+    color: #f8fafc !important;
+  }
+  .upgrade-row-modern {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+  }
+  .upgrade-row-name {
+    color: #f8fafc !important;
+  }
+}
+
+/* ==============================================
    GLASS PANELS
    ============================================== */
 .glass-panel {
@@ -48,13 +98,14 @@ body {
 }
 
 /* ==============================================
-   GRADIENT TEXT
+   GRADIENT TEXT & DARK MODE SAFE FALLBACK
    ============================================== */
 .gradient-text {
+  color: #a855f7; /* Dark mode & browser extension fallback */
   background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* ==============================================
@@ -63,7 +114,7 @@ body {
 .btn-primary {
   background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
   border: none;
-  color: white;
+  color: #ffffff !important;
   padding: 0.8rem 1.6rem;
   border-radius: 14px;
   font-family: 'Outfit', sans-serif;
@@ -89,7 +140,7 @@ body {
 
 .btn-primary:disabled {
   background: #cbd5e1;
-  color: #94a3b8;
+  color: #94a3b8 !important;
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -157,7 +208,7 @@ body {
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  color: white;
+  color: white !important;
   box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
 }
 
@@ -317,7 +368,7 @@ body {
   height: 52px;
   border-radius: 50%;
   background: linear-gradient(135deg, #8b5cf6 0%, #db2777 100%);
-  color: white;
+  color: white !important;
   font-family: 'Outfit', sans-serif;
   font-weight: 900;
   font-size: 1.1rem;
@@ -454,7 +505,7 @@ body {
   font-size: 0.62rem;
   font-weight: 800;
   background: #7c3aed;
-  color: white;
+  color: white !important;
   padding: 1px 6px;
   border-radius: 9999px;
   line-height: 1.4;
