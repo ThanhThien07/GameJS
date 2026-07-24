@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Play, ShieldAlert, Cpu, Gamepad2, Sparkles } from 'lucide-react';
+import { User, Play, ShieldAlert, Cpu, Gamepad2, Sparkles, Swords, Trees, Gem } from 'lucide-react';
 
 function MainMenu({
   isOnline,
@@ -32,35 +32,14 @@ function MainMenu({
   };
 
   return (
-    <div className="w-full max-w-2xl flex flex-col gap-6 items-center my-2">
-      
-      {/* 3D CARTOON LOGO BANNER MATCHING USER REFERENCE IMAGE */}
-      <div className="flex flex-col items-center text-center relative py-2">
-        {/* Main Title Badge */}
-        <div className="cartoon-title text-4xl md:text-6xl uppercase tracking-wider mb-1 select-none">
-          CLICK CLICK
-        </div>
-        <div className="cartoon-title text-5xl md:text-7xl uppercase tracking-wider text-yellow-400 select-none -mt-2">
-          CLICKER
-        </div>
-
-        {/* 3D Red Button Banner Graphic with Pointer Cursor */}
-        <div className="relative my-3 cursor-pointer group hover:scale-105 transition-transform duration-200">
-          <img 
-            src={`${import.meta.env.BASE_URL}assets/cartoon_red_button.png`} 
-            alt="Cartoon Red Button" 
-            className="w-44 h-44 object-contain filter drop-shadow-[0_8px_0_#000]"
-          />
-          {/* Cartoon Cursor Arrow Overlay */}
-          <div className="absolute bottom-2 right-2 animate-bounce">
-            <svg width="54" height="54" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 10 L80 50 L50 60 L35 90 L20 10 Z" fill="white" stroke="black" strokeWidth="6" strokeLinejoin="round" />
-            </svg>
-          </div>
-        </div>
-
-        <p className="text-slate-700 font-bold text-sm md:text-base bg-white/90 px-4 py-1 rounded-full border-2 border-black shadow-[3px_3px_0px_#000]">
-          🎮 Game Nhấp Chuột 3D Cartoon - Thi Đấu & Hợp Tác Thời Gian Thực!
+    <div className="w-full max-w-3xl flex flex-col gap-6 items-center my-2">
+      {/* Title Branding */}
+      <div className="text-center mb-1">
+        <h1 className="text-4xl md:text-5xl font-black tracking-wider uppercase mb-2">
+          ⚡️ TAP TAP <span className="gradient-text">CLICKER</span> ⚡️
+        </h1>
+        <p className="text-slate-500 font-bold text-sm md:text-base">
+          Siêu Clicker Tam Hợp - Đánh Quái Vật ⚔️ • Chặt Gỗ 🪵 • Đào Đá Quặng 🪨
         </p>
       </div>
 
@@ -68,14 +47,14 @@ function MainMenu({
       <div className="w-full glass-panel p-5">
         {isEditingName ? (
           <form onSubmit={handleSave} className="flex flex-col md:flex-row gap-3 items-center justify-between">
-            <div className="flex items-center gap-2 bg-slate-50 px-4 py-2.5 rounded-xl border-2 border-black w-full md:w-auto flex-grow shadow-[3px_3px_0px_#000]">
-              <User size={20} className="text-red-500" />
+            <div className="flex items-center gap-2 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 w-full md:w-auto flex-grow">
+              <User size={18} className="text-purple-600" />
               <input
                 type="text"
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
                 placeholder="Nhập biệt danh của bạn..."
-                className="bg-transparent border-none outline-none text-slate-900 w-full placeholder-slate-400 font-black text-base"
+                className="bg-transparent border-none outline-none text-slate-800 w-full placeholder-slate-400 font-bold text-base"
                 maxLength={16}
                 required
               />
@@ -87,17 +66,17 @@ function MainMenu({
         ) : (
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-yellow-400 flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_#000]">
-                <span className="text-black font-black text-lg uppercase">{playerName.charAt(0)}</span>
+              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center border border-purple-200">
+                <span className="text-purple-700 font-bold uppercase">{playerName.charAt(0)}</span>
               </div>
               <div className="text-left">
-                <span className="text-[10px] text-slate-500 block font-black uppercase">BIỆT DANH NGƯỜI CHƠI</span>
-                <span className="font-black text-lg tracking-wide text-slate-900">{playerName}</span>
+                <span className="text-[10px] text-slate-400 block font-bold">BIỆT DANH CỦA BẠN</span>
+                <span className="font-extrabold text-base tracking-wide text-slate-700">{playerName}</span>
               </div>
             </div>
             <button
               onClick={() => setIsEditingName(true)}
-              className="text-xs text-red-600 hover:text-red-800 font-black hover:underline underline-offset-4"
+              className="text-xs text-purple-600 hover:text-purple-800 font-bold hover:underline"
             >
               Thay đổi ✏️
             </button>
@@ -107,68 +86,67 @@ function MainMenu({
 
       {/* Mode Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-        
         {/* Offline Card */}
-        <div className="glass-panel p-6 flex flex-col justify-between items-center text-center relative overflow-hidden bg-rose-50/50">
-          <div className="absolute top-0 right-0 bg-yellow-400 text-black text-[11px] font-black px-3 py-1 rounded-bl-xl border-l-2 border-b-2 border-black">
-            Ngoại tuyến 📴
+        <div className="glass-panel p-6 flex flex-col justify-between items-center text-center relative overflow-hidden group">
+          <div className="absolute top-0 right-0 bg-pink-50 text-pink-700 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b border-pink-100">
+            Không cần mạng
           </div>
           
-          <div className="my-2">
-            <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center border-3 border-black mx-auto mb-3 shadow-[4px_4px_0px_#000]">
-              <Cpu size={32} className="text-red-500" />
+          <div className="my-3">
+            <div className="w-14 h-14 rounded-2xl bg-pink-50 flex items-center justify-center border border-pink-100 mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <Cpu size={28} className="text-pink-600" />
             </div>
-            <h3 className="text-2xl font-black mb-2 text-slate-900">Chế độ Offline</h3>
-            <p className="text-slate-600 text-sm font-bold leading-relaxed">
-              Luyện ngón tay click chuột 3D, tích luỹ tiền vàng và mua cỗ máy tự động mọi lúc mọi nơi!
+            <h3 className="text-xl font-bold mb-2 text-slate-800">Chế độ Ngoại tuyến</h3>
+            <p className="text-slate-500 text-sm leading-relaxed">
+              Luyện ngón tay click chuột, tích luỹ tiền vàng và mua cỗ máy tự động mọi lúc mọi nơi!
             </p>
           </div>
 
           <button
             onClick={onSelectOffline}
             disabled={isEditingName}
-            className="btn-primary w-full mt-4 bg-gradient-to-r from-red-500 to-rose-600"
+            className="btn-primary w-full mt-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600"
           >
-            <Play size={18} /> CHƠI OFFLINE
+            <Play size={16} /> CHƠI OFFLINE
           </button>
         </div>
 
         {/* Online Card */}
-        <div className={`glass-panel p-6 flex flex-col justify-between items-center text-center relative overflow-hidden bg-purple-50/50 ${!isOnline ? 'opacity-80' : ''}`}>
-          <div className="absolute top-0 right-0 bg-emerald-400 text-black text-[11px] font-black px-3 py-1 rounded-bl-xl border-l-2 border-b-2 border-black">
-            Trực tuyến 🌐
+        <div className={`glass-panel p-6 flex flex-col justify-between items-center text-center relative overflow-hidden group ${!isOnline ? 'bg-slate-50/70 border-slate-100' : ''}`}>
+          <div className="absolute top-0 right-0 bg-purple-50 text-purple-700 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b border-purple-100">
+            Cần kết nối mạng
           </div>
 
-          <div className="my-2">
-            <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center border-3 border-black mx-auto mb-3 shadow-[4px_4px_0px_#000]">
-              <Gamepad2 size={32} className="text-purple-600" />
+          <div className="my-3">
+            <div className="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center border border-purple-100 mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <Gamepad2 size={28} className="text-purple-600" />
             </div>
-            <h3 className="text-2xl font-black mb-2 text-slate-900">Chế độ Online</h3>
-            <p className="text-slate-600 text-sm font-bold leading-relaxed">
-              Thi đấu 3 người thời gian thực hoặc tạo phòng Hợp Tác cùng bạn bè và AI Bot!
+            <h3 className="text-xl font-bold mb-2 text-slate-800">Chế độ Trực tuyến</h3>
+            <p className="text-slate-500 text-sm leading-relaxed">
+              Tạo phòng đấu trường so tài click 3 người thời gian thực hoặc phòng hợp tác nâng cấp chung!
             </p>
           </div>
 
           {!isOnline ? (
-            <div className="flex items-center gap-2 justify-center text-xs text-red-600 bg-red-100 py-2.5 px-4 rounded-xl border-2 border-black mt-4 w-full font-black shadow-[2px_2px_0px_#000]">
-              <ShieldAlert size={16} /> Bật mạng để mở khóa Online
+            <div className="flex items-center gap-2 justify-center text-xs text-rose-600 bg-rose-50 py-2.5 px-4 rounded-xl border border-rose-100 mt-4 w-full font-bold">
+              <ShieldAlert size={14} /> Vui lòng mở mạng để mớ khóa Online
             </div>
           ) : (
-            <div className="flex flex-col gap-2.5 w-full mt-4">
+            <div className="flex flex-col gap-2 w-full mt-4">
               <button
                 onClick={onSelectOnlineComp}
                 disabled={isEditingName}
-                className="btn-primary w-full bg-purple-600 hover:bg-purple-700"
+                className="btn-primary w-full"
               >
-                <Play size={18} /> Phòng Đấu Trường (1v1v1)
+                <Play size={16} /> Tạo phòng Đấu Trường (1v1v1)
               </button>
               
               <button
                 onClick={onSelectOnlineCoop}
                 disabled={isEditingName}
-                className="btn-secondary w-full text-purple-700 font-black"
+                className="btn-secondary w-full text-purple-600 hover:text-purple-700 font-bold border-purple-200"
               >
-                Phòng Hợp Tác (Chế độ 3)
+                Tạo phòng Hợp Tác (Chế độ 3)
               </button>
             </div>
           )}
@@ -177,16 +155,16 @@ function MainMenu({
 
       {/* Online Join Room Section */}
       {isOnline && (
-        <div className="w-full glass-panel p-5 text-center bg-yellow-50/60">
-          <h4 className="font-black text-slate-900 text-base mb-3 uppercase tracking-wider">🔑 Gia nhập phòng bằng mã</h4>
+        <div className="w-full glass-panel p-5 text-center">
+          <h4 className="font-bold text-slate-800 text-sm mb-3 uppercase tracking-wider">🔑 Gia nhập phòng đã có</h4>
           <form onSubmit={triggerJoin} className="flex flex-col md:flex-row gap-3 justify-center items-center">
             <input
               type="text"
-              placeholder="MÃ PHÒNG (6 CHỮ...)"
+              placeholder="Nhập mã 6 chữ số..."
               value={codeInput}
               onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
               maxLength={6}
-              className="bg-white px-4 py-2.5 rounded-xl border-2 border-black font-black tracking-widest text-center text-slate-900 placeholder-slate-400 outline-none focus:border-red-500 w-full md:w-56 text-base shadow-[3px_3px_0px_#000]"
+              className="bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 font-black tracking-widest text-center text-slate-800 placeholder-slate-400 outline-none focus:border-purple-500 w-full md:w-52 text-base"
               disabled={isEditingName}
             />
             <button
@@ -194,7 +172,7 @@ function MainMenu({
               disabled={isEditingName || codeInput.trim().length !== 6}
               className="btn-primary px-8 w-full md:w-auto"
             >
-              VÀO PHÒNG
+              Gia Nhập Phòng
             </button>
           </form>
         </div>
