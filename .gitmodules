@@ -1,5 +1,5 @@
-[submodule "godogen"]
-	path = godogen
+[submodule "tools/godogen"]
+	path = tools/godogen
 	url = https://github.com/htdt/godogen.git
 [submodule "tools/ComfyUI"]
 	path = tools/ComfyUI

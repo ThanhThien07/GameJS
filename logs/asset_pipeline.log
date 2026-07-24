@@ -1,0 +1,38 @@
+2026-07-24 12:29:23,913 [INFO] ============================================================
+2026-07-24 12:29:23,914 [INFO] 🚀 THỰC THI PIPELINE ĐỒ HỌA CHO YÊU CẦU: 'Tạo sprite nhân vật Rồng Lửa Cổ Đại cho game'
+2026-07-24 12:29:23,914 [INFO] ============================================================
+2026-07-24 12:29:24,101 [INFO] 🖥️ OS: Windows (10.0.26200)
+2026-07-24 12:29:24,102 [INFO] 🐍 Python Executable: C:\Users\LENOVO\AppData\Local\Python\pythoncore-3.14-64\python.exe
+2026-07-24 12:29:24,102 [INFO] 📦 Virtual Environment: Global/System Python
+2026-07-24 12:29:24,104 [INFO] 
+🔍 DEPENDENCY DIAGNOSTICS:
+2026-07-24 12:29:24,104 [INFO]   ✅ PIL (Pillow): Sẵn sàng
+2026-07-24 12:29:24,104 [INFO]   ⚠️ rembg: Chưa cài đặt (dùng fallback)
+2026-07-24 12:29:24,104 [INFO]   ✅ urllib: Sẵn sàng
+2026-07-24 12:29:24,105 [INFO]   ✅ json: Sẵn sàng
+2026-07-24 12:29:26,291 [INFO] ⚠️ ComfyUI chưa được khởi động tại http://127.0.0.1:8188.
+2026-07-24 12:29:26,292 [INFO]    👉 Để bật ComfyUI: Mở Terminal tại tools/ComfyUI và chạy 'python main.py'
+2026-07-24 12:29:26,293 [INFO] 🎨 Đã khởi tạo prompt render cho request: 'Tạo sprite nhân vật Rồng Lửa Cổ Đại cho game'
+2026-07-24 12:29:26,392 [INFO] 💾 Đã lưu ảnh render gốc: assets/raw/tạo_sprite_nhân_vật_rồng_lửa_c.png
+2026-07-24 12:29:26,503 [INFO] ✂️ Xóa nền PIL fallback thành công: assets/transparent/tạo_sprite_nhân_vật_rồng_lửa_c.png
+2026-07-24 12:29:26,586 [INFO] 🔍 Upscale Real-ESRGAN/Lanczos 4x & Sync: assets/final/tạo_sprite_nhân_vật_rồng_lửa_c.png -> public/assets/
+2026-07-24 12:29:26,587 [INFO] 📝 Đã cập nhật manifest: assets/manifest.json (tạo_sprite_nhân_vật_rồng_lửa_c)
+2026-07-24 12:37:21,797 [INFO] ============================================================
+2026-07-24 12:37:21,797 [INFO] 🚀 THỰC THI PIPELINE ĐỒ HỌA CHO YÊU CẦU: 'Tạo sprite nhân vật Dũng Sĩ Clicker theo thiết kế docs/characters/main_character_tap_hero.md'
+2026-07-24 12:37:21,797 [INFO] ============================================================
+2026-07-24 12:37:22,014 [INFO] 🖥️ OS: Windows (10.0.26200)
+2026-07-24 12:37:22,015 [INFO] 🐍 Python Executable: C:\Users\LENOVO\AppData\Local\Python\pythoncore-3.14-64\python.exe
+2026-07-24 12:37:22,015 [INFO] 📦 Virtual Environment: Global/System Python
+2026-07-24 12:37:22,015 [INFO] 
+🔍 DEPENDENCY DIAGNOSTICS:
+2026-07-24 12:37:22,015 [INFO]   ✅ PIL (Pillow): Sẵn sàng
+2026-07-24 12:37:22,015 [INFO]   ⚠️ rembg: Chưa cài đặt (dùng fallback)
+2026-07-24 12:37:22,015 [INFO]   ✅ urllib: Sẵn sàng
+2026-07-24 12:37:22,015 [INFO]   ✅ json: Sẵn sàng
+2026-07-24 12:37:24,136 [INFO] ⚠️ ComfyUI chưa được khởi động tại http://127.0.0.1:8188.
+2026-07-24 12:37:24,136 [INFO]    👉 Để bật ComfyUI: Mở Terminal tại tools/ComfyUI và chạy 'python main.py'
+2026-07-24 12:37:24,137 [INFO] 🎨 Đã khởi tạo prompt render cho request: 'Tạo sprite nhân vật Dũng Sĩ Clicker theo thiết kế docs/characters/main_character_tap_hero.md'
+2026-07-24 12:37:24,168 [INFO] 💾 Đã lưu ảnh render gốc: assets/raw/tạo_sprite_nhân_vật_dũng_sĩ_cl.png
+2026-07-24 12:37:24,238 [INFO] ✂️ Xóa nền PIL fallback thành công: assets/transparent/tạo_sprite_nhân_vật_dũng_sĩ_cl.png
+2026-07-24 12:37:24,341 [INFO] 🔍 Upscale Real-ESRGAN/Lanczos 4x & Sync: assets/final/tạo_sprite_nhân_vật_dũng_sĩ_cl.png -> public/assets/
+2026-07-24 12:37:24,343 [INFO] 📝 Đã cập nhật manifest: assets/manifest.json (tạo_sprite_nhân_vật_dũng_sĩ_cl)

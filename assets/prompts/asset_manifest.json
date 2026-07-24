@@ -1,0 +1,11 @@
+{
+  "request": "Test pipeline",
+  "status": "processed",
+  "tools_pipeline": [
+    "tools/ComfyUI",
+    "tools/rembg",
+    "tools/Real-ESRGAN",
+    "tools/Pixelorama",
+    "tools/godogen"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "assets": {
+    "tạo_sprite_nhân_vật_rồng_lửa_c": {
+      "request": "Tạo sprite nhân vật Rồng Lửa Cổ Đại cho game",
+      "raw_file": "assets/raw/tạo_sprite_nhân_vật_rồng_lửa_c.png",
+      "transparent_file": "assets/transparent/tạo_sprite_nhân_vật_rồng_lửa_c.png",
+      "final_file": "assets/final/tạo_sprite_nhân_vật_rồng_lửa_c.png",
+      "public_file": "public/assets/tạo_sprite_nhân_vật_rồng_lửa_c.png",
+      "updated_at": "2026-07-24T12:29:26.586597"
+    },
+    "tạo_sprite_nhân_vật_dũng_sĩ_cl": {
+      "request": "Tạo sprite nhân vật Dũng Sĩ Clicker theo thiết kế docs/characters/main_character_tap_hero.md",
+      "raw_file": "assets/raw/tạo_sprite_nhân_vật_dũng_sĩ_cl.png",
+      "transparent_file": "assets/transparent/tạo_sprite_nhân_vật_dũng_sĩ_cl.png",
+      "final_file": "assets/final/tạo_sprite_nhân_vật_dũng_sĩ_cl.png",
+      "public_file": "public/assets/tạo_sprite_nhân_vật_dũng_sĩ_cl.png",
+      "updated_at": "2026-07-24T12:37:24.342501"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "pipeline_version": "2.0.0",
+  "project_name": "Tap Tap Clicker Multiplayer Asset Pipeline",
+  "comfyui": {
+    "host": "127.0.0.1",
+    "port": 8188,
+    "api_endpoint": "http://127.0.0.1:8188/prompt",
+    "default_sampler": "euler",
+    "default_steps": 20,
+    "default_cfg": 8.0,
+    "output_dir": "assets/raw"
+  },
+  "rembg": {
+    "enabled": true,
+    "tool_path": "tools/rembg",
+    "model": "u2net",
+    "output_dir": "assets/transparent"
+  },
+  "real_esrgan": {
+    "enabled": true,
+    "tool_path": "tools/Real-ESRGAN",
+    "model_name": "RealESRGAN_x4plus",
+    "outscale": 4,
+    "output_dir": "assets/final"
+  },
+  "pixelorama": {
+    "enabled": true,
+    "tool_path": "tools/Pixelorama",
+    "export_format": "png"
+  },
+  "godogen": {
+    "enabled": true,
+    "tool_path": "tools/godogen"
+  },
+  "paths": {
+    "prompts": "assets/prompts",
+    "raw": "assets/raw",
+    "transparent": "assets/transparent",
+    "final": "assets/final",
+    "manifest": "assets/manifest.json",
+    "public": "public/assets",
+    "logs": "logs/asset_pipeline.log"
+  }
+}

@@ -10,9 +10,13 @@ from docx.oxml.ns import nsdecls
 def build_perfect_game_report():
     sys.stdout.reconfigure(encoding='utf-8')
 
-    template_file = [f for f in os.listdir('.') if f.endswith('.docx') and 'BaoCao_GameClicker' not in f][0]
+    templates = [f for f in os.listdir('.') if f.endswith('.docx') and 'BaoCao_GameClicker' not in f]
+    if templates:
+        template_file = templates[0]
+    else:
+        template_file = 'BaoCao_GameClicker.docx'
+
     print(f"Loading cover template from: {template_file}")
-    
     doc = docx.Document(template_file)
 
     # 1. SET PRINT-READY MARGINS (Left: 3.0 cm, Right: 2.0 cm, Top: 2.0 cm, Bottom: 2.0 cm)
