@@ -79,82 +79,74 @@ function App() {
     const handleOffline = () => {
       setNetworkOnLine(false);
       setSocketConnected(false);
-      // Force offline screen transition if we were online playing
-      if (playMode === 'online') {
-        alert('Mất kết nối mạng! Trò chơi đã được chuyển về chế độ Ngoại tuyến.');
-        setPlayMode('offline');
-        setGameScreen('menu');
-      }
     };
-
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
-    // Socket.io connection setup (only connect if not static GitHub Pages without backend)
+  // Socket.io connection — created ONCE on mount, never recreated
+  useEffect(() => {
     const isGitHubPages = window.location.hostname.includes('github.io');
-    let createdSocket = null;
-    
-    if (!isGitHubPages) {
-      try {
-        createdSocket = io(window.location.origin, {
-          reconnectionAttempts: 3,
-          timeout: 5000,
-          autoConnect: true
-        });
-        
-        socketRef.current = createdSocket;
+    if (isGitHubPages) {
+      setSocketConnected(false);
+      return;
+    }
 
-        createdSocket.on('connect', () => {
-          console.log('Connected to server over Socket.io');
-          setSocketConnected(true);
-        });
+    let socket;
+    try {
+      socket = io(window.location.origin, {
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        timeout: 10000,
+        autoConnect: true
+      });
 
-        createdSocket.on('disconnect', () => {
-          console.log('Disconnected from server');
-          setSocketConnected(false);
-          if (playMode === 'online') {
-            alert('Mất kết nối tới máy chủ! Trở về menu chính.');
-            setPlayMode(null);
-            setGameScreen('menu');
-          }
-        });
+      socketRef.current = socket;
 
-        createdSocket.on('connect_error', () => {
-          setSocketConnected(false);
-        });
+      socket.on('connect', () => {
+        console.log('Connected to server over Socket.io');
+        setSocketConnected(true);
+      });
 
-        // Real-time room listeners
-        createdSocket.on('roomUpdated', (data) => {
-          setRoomData(data);
-          if (data.code) setRoomCode(data.code);
-        });
-
-        createdSocket.on('gameStarted', (data) => {
-          setRoomData(data);
-          setGameScreen('playing');
-        });
-
-        createdSocket.on('gameFinished', (data) => {
-          setRoomData(data);
-          setGameScreen('gameover');
-        });
-      } catch (err) {
-        console.warn('Socket connection skipped or failed:', err);
+      socket.on('disconnect', () => {
+        console.log('Disconnected from server');
         setSocketConnected(false);
-      }
-    } else {
+      });
+
+      socket.on('connect_error', (err) => {
+        console.warn('Socket connect_error:', err.message);
+        setSocketConnected(false);
+      });
+
+      // Real-time room listeners
+      socket.on('roomUpdated', (data) => {
+        setRoomData(data);
+        if (data.code) setRoomCode(data.code);
+      });
+
+      socket.on('gameStarted', (data) => {
+        setRoomData(data);
+        setGameScreen('playing');
+      });
+
+      socket.on('gameFinished', (data) => {
+        setRoomData(data);
+        setGameScreen('gameover');
+      });
+    } catch (err) {
+      console.warn('Socket initialization failed:', err);
       setSocketConnected(false);
     }
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-      // Only disconnect if a socket was actually created
-      if (createdSocket) {
-        createdSocket.disconnect();
-      }
+      if (socket) socket.disconnect();
     };
-  }, [playMode]);
+  }, []); // <-- Empty array: runs only ONCE on mount
+
 
   // Persist offline state to localStorage on changes
   useEffect(() => {
