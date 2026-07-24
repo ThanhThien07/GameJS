@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
+import mysql from 'mysql2/promise';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,6 +12,28 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// MySQL Connection Pool Setup for Railway & Cloud DB
+let dbPool = null;
+const dbHost = process.env.MYSQLHOST || process.env.DB_HOST;
+const dbUser = process.env.MYSQLUSER || process.env.DB_USER;
+
+if (dbHost && dbUser) {
+  try {
+    dbPool = mysql.createPool({
+      host: dbHost,
+      port: process.env.MYSQLPORT || process.env.DB_PORT || 3306,
+      user: dbUser,
+      password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD,
+      database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || process.env.DB_NAME || 'railway',
+      waitForConnections: true,
+      connectionLimit: 10
+    });
+    console.log(`🐬 MySQL Pool initialized for host: ${dbHost}`);
+  } catch (err) {
+    console.warn('MySQL pool initialization skipped:', err.message);
+  }
+}
 
 // Serve static files from the React build directory
 app.use(express.static(path.join(__dirname, 'dist')));
