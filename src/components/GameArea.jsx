@@ -377,10 +377,11 @@ function GameArea({
   };
 
   // ----------------------------------------
-  // BUY UPGRADES (OFFLINE HANDLERS)
+  // BUY UPGRADES (BALANCED COMMERCIAL CLICKER ECONOMY)
   // ----------------------------------------
   const getOfflineUpgradeCost = (baseCost, currentLevel) => {
-    return Math.floor(baseCost * Math.pow(1.5, currentLevel));
+    // Balanced exponential scaling 1.85x per level to ensure progressive challenge
+    return Math.floor(baseCost * Math.pow(1.85, currentLevel));
   };
 
   const buyOfflineUpgrade = (upKey, isDpc, valueAdded, baseCost) => {
@@ -403,46 +404,50 @@ function GameArea({
     }
   };
 
-  // Dynamic Theme-Filtered Upgrades System
+  // Dynamic Theme-Filtered Upgrades System (Rebalanced progressive stats & base costs)
   const getFilteredUpgrades = () => {
     let clickTools = [];
     let autoWorkers = [];
 
     if (theme === 'wood') {
       clickTools = [
-        { key: 'battleAxe', name: 'Rìu Chặt Củi', desc: 'Click +5 DPC', cost: 10, val: 5, isDpc: true, icon: Wrench, statLabel: '+5 DPC' },
-        { key: 'crystalAxe', name: 'Rìu Thạch Anh', desc: 'Click +25 DPC', cost: 150, val: 25, isDpc: true, icon: Wrench, statLabel: '+25 DPC' },
-        { key: 'mythicSaw', name: 'Cưa Cổ Thụ', desc: 'Click +120 DPC', cost: 1000, val: 120, isDpc: true, icon: Zap, statLabel: '+120 DPC' }
+        { key: 'battleAxe', name: 'Rìu Chặt Củi', desc: 'Click +1 DPC', cost: 20, val: 1, isDpc: true, icon: Wrench, statLabel: '+1 DPC' },
+        { key: 'crystalAxe', name: 'Rìu Thạch Anh', desc: 'Click +6 DPC', cost: 450, val: 6, isDpc: true, icon: Wrench, statLabel: '+6 DPC' },
+        { key: 'mythicSaw', name: 'Cưa Cổ Thụ', desc: 'Click +35 DPC', cost: 4500, val: 35, isDpc: true, icon: Zap, statLabel: '+35 DPC' },
+        { key: 'godChainsaw', name: 'Máy Cưa Thần Thoại', desc: 'Click +200 DPC', cost: 45000, val: 200, isDpc: true, icon: Sparkles, statLabel: '+200 DPC' }
       ];
       autoWorkers = [
-        { key: 'apprenticeLumberjack', name: 'Tiều Phu Tập Sự', desc: 'Chặt gỗ +1/s auto', cost: 50, val: 1, isDpc: false, icon: Trees, statLabel: '+1/s auto' },
-        { key: 'logCart', name: 'Xe Kéo Gỗ Rừng', desc: 'Vận chuyển gỗ +10/s auto', cost: 300, val: 10, isDpc: false, icon: Truck, statLabel: '+10/s auto' },
-        { key: 'autoChainsaw', name: 'Máy Cưa Tự Động', desc: 'Chặt đốn gỗ +120/s auto', cost: 1500, val: 120, isDpc: false, icon: Factory, statLabel: '+120/s auto' }
+        { key: 'apprenticeLumberjack', name: 'Tiều Phu Tập Sự', desc: 'Chặt gỗ +1/s auto', cost: 75, val: 1, isDpc: false, icon: Trees, statLabel: '+1/s auto' },
+        { key: 'logCart', name: 'Xe Kéo Gỗ Rừng', desc: 'Vận chuyển +12/s auto', cost: 1200, val: 12, isDpc: false, icon: Truck, statLabel: '+12/s auto' },
+        { key: 'autoChainsaw', name: 'Máy Cưa Tự Động', desc: 'Chặt đốn +90/s auto', cost: 15000, val: 90, isDpc: false, icon: Factory, statLabel: '+90/s auto' },
+        { key: 'lumberYard', name: 'Lâm Trường Siêu Cấp', desc: 'Khai thác +600/s auto', cost: 150000, val: 600, isDpc: false, icon: Factory, statLabel: '+600/s auto' }
       ];
     } else if (theme === 'monster') {
       clickTools = [
-        { key: 'clicker', name: 'Găng Tay Sắt', desc: 'Click +1 DPC', cost: 10, val: 1, isDpc: true, icon: MousePointerClick, statLabel: '+1 DPC' },
-        { key: 'diamondSword', name: 'Kiếm Kim Cương', desc: 'Click +25 DPC', cost: 150, val: 25, isDpc: true, icon: Swords, statLabel: '+25 DPC' },
-        { key: 'godSlayer', name: 'Trảm Thần Đạo', desc: 'Click +120 DPC', cost: 1000, val: 120, isDpc: true, icon: Flame, statLabel: '+120 DPC' },
-        { key: 'ultimateRelic', name: 'Thần Khí Tối Thượng', desc: 'Click +500 DPC', cost: 5000, val: 500, isDpc: true, icon: Sparkles, statLabel: '+500 DPC' }
+        { key: 'clicker', name: 'Găng Tay Sắt', desc: 'Click +1 DPC', cost: 20, val: 1, isDpc: true, icon: MousePointerClick, statLabel: '+1 DPC' },
+        { key: 'diamondSword', name: 'Kiếm Kim Cương', desc: 'Click +6 DPC', cost: 450, val: 6, isDpc: true, icon: Swords, statLabel: '+6 DPC' },
+        { key: 'godSlayer', name: 'Trảm Thần Đạo', desc: 'Click +35 DPC', cost: 4500, val: 35, isDpc: true, icon: Flame, statLabel: '+35 DPC' },
+        { key: 'ultimateRelic', name: 'Thần Khí Tối Thượng', desc: 'Click +200 DPC', cost: 45000, val: 200, isDpc: true, icon: Sparkles, statLabel: '+200 DPC' }
       ];
       autoWorkers = [
-        { key: 'apprenticeHero', name: 'Dũng Sĩ Tập Sự', desc: 'Săn quái +1/s auto', cost: 50, val: 1, isDpc: false, icon: Swords, statLabel: '+1/s auto' },
-        { key: 'paladinWorker', name: 'Hiệp Sĩ Thánh Điện', desc: 'Đánh quái +10/s auto', cost: 300, val: 10, isDpc: false, icon: Swords, statLabel: '+10/s auto' },
-        { key: 'mageWorker', name: 'Phù Thủy Ma Pháp', desc: 'Chưởng phép +120/s auto', cost: 1500, val: 120, isDpc: false, icon: Sparkles, statLabel: '+120/s auto' }
+        { key: 'apprenticeHero', name: 'Dũng Sĩ Tập Sự', desc: 'Săn quái +1/s auto', cost: 75, val: 1, isDpc: false, icon: Swords, statLabel: '+1/s auto' },
+        { key: 'paladinWorker', name: 'Hiệp Sĩ Thánh Điện', desc: 'Đánh quái +12/s auto', cost: 1200, val: 12, isDpc: false, icon: Swords, statLabel: '+12/s auto' },
+        { key: 'mageWorker', name: 'Phù Thủy Ma Pháp', desc: 'Chưởng phép +90/s auto', cost: 15000, val: 90, isDpc: false, icon: Sparkles, statLabel: '+90/s auto' },
+        { key: 'ancientDragon', name: 'Rồng Thần Cổ Đại', desc: 'Phun lửa +600/s auto', cost: 150000, val: 600, isDpc: false, icon: Flame, statLabel: '+600/s auto' }
       ];
     } else {
       // Default: Stone Mining Theme & Capybara / Button
       clickTools = [
-        { key: 'stonePickaxe', name: 'Cuốc Đá Cổ', desc: 'Click +1 DPC', cost: 10, val: 1, isDpc: true, icon: Pickaxe, statLabel: '+1 DPC' },
-        { key: 'diamondPickaxe', name: 'Cuốc Kim Cương', desc: 'Click +25 DPC', cost: 150, val: 25, isDpc: true, icon: Gem, statLabel: '+25 DPC' },
-        { key: 'laserHammer', name: 'Búa Laze Tinh Thể', desc: 'Click +120 DPC', cost: 1000, val: 120, isDpc: true, icon: Zap, statLabel: '+120 DPC' }
+        { key: 'stonePickaxe', name: 'Cuốc Đá Cổ', desc: 'Click +1 DPC', cost: 20, val: 1, isDpc: true, icon: Pickaxe, statLabel: '+1 DPC' },
+        { key: 'diamondPickaxe', name: 'Cuốc Kim Cương', desc: 'Click +6 DPC', cost: 450, val: 6, isDpc: true, icon: Gem, statLabel: '+6 DPC' },
+        { key: 'laserHammer', name: 'Búa Laze Tinh Thể', desc: 'Click +35 DPC', cost: 4500, val: 35, isDpc: true, icon: Zap, statLabel: '+35 DPC' },
+        { key: 'atomicSmasher', name: 'Đập Quặng Hạt Nhân', desc: 'Click +200 DPC', cost: 45000, val: 200, isDpc: true, icon: Sparkles, statLabel: '+200 DPC' }
       ];
       autoWorkers = [
-        { key: 'pickaxe', name: 'Steve Thợ Mỏ', desc: 'Đục đá +1/s auto', cost: 50, val: 1, isDpc: false, icon: Pickaxe, statLabel: '+1/s auto' },
-        { key: 'minecart', name: 'Xe Goòng Mỏ', desc: 'Khai thác +10/s auto', cost: 300, val: 10, isDpc: false, icon: ShoppingCart, statLabel: '+10/s auto' },
-        { key: 'drill', name: 'Máy Khoan Laze', desc: 'Khai quật +120/s auto', cost: 1500, val: 120, isDpc: false, icon: Wrench, statLabel: '+120/s auto' },
-        { key: 'excavator', name: 'Xe Máy Xúc', desc: 'Đào quặng +1000/s auto', cost: 8000, val: 1000, isDpc: false, icon: Truck, statLabel: '+1k/s auto' }
+        { key: 'pickaxe', name: 'Steve Thợ Mỏ', desc: 'Đục đá +1/s auto', cost: 75, val: 1, isDpc: false, icon: Pickaxe, statLabel: '+1/s auto' },
+        { key: 'minecart', name: 'Xe Goòng Mỏ', desc: 'Khai thác +12/s auto', cost: 1200, val: 12, isDpc: false, icon: ShoppingCart, statLabel: '+12/s auto' },
+        { key: 'drill', name: 'Máy Khoan Laze', desc: 'Khai quật +90/s auto', cost: 15000, val: 90, isDpc: false, icon: Wrench, statLabel: '+90/s auto' },
+        { key: 'excavator', name: 'Giàn Khoan Siêu Cấp', desc: 'Đào quặng +600/s auto', cost: 150000, val: 600, isDpc: false, icon: Truck, statLabel: '+600/s auto' }
       ];
     }
 
