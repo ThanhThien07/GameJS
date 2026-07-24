@@ -394,56 +394,35 @@ function GameArea({
   };
 
   const renderClickObject = () => {
+    let imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_red_button.png`;
+    let imgAlt = 'Red Button';
+
     if (theme === 'monster') {
-      return (
-        <svg viewBox="0 0 200 200" className="w-48 h-48 mx-auto drop-shadow-md">
-          <path d="M50 40 Q40 20 20 30 Q40 50 60 60 Z" fill="#b91c1c" />
-          <path d="M150 40 Q160 20 180 30 Q160 50 140 60 Z" fill="#b91c1c" />
-          <ellipse cx="100" cy="110" rx="80" ry="70" fill="#ef4444" />
-          <ellipse cx="100" cy="115" rx="70" ry="60" fill="#dc2626" />
-          <circle cx="68" cy="95" r="18" fill="white" />
-          <circle cx="68" cy="95" r="8" fill="#0f172a" />
-          <circle cx="64" cy="91" r="4" fill="white" />
-          <circle cx="132" cy="95" r="18" fill="white" />
-          <circle cx="132" cy="95" r="8" fill="#0f172a" />
-          <circle cx="128" cy="91" r="4" fill="white" />
-          <ellipse cx="53" cy="115" rx="12" ry="6" fill="#fca5a5" opacity="0.8" />
-          <ellipse cx="147" cy="115" rx="12" ry="6" fill="#fca5a5" opacity="0.8" />
-          <path d="M48 72 L85 85" stroke="#b91c1c" strokeWidth="5" strokeLinecap="round" />
-          <path d="M152 72 L115 85" stroke="#b91c1c" strokeWidth="5" strokeLinecap="round" />
-          <path d="M80 135 Q100 155 120 135" stroke="#0f172a" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-          <polygon points="85,135 92,145 99,135" fill="white" />
-          <polygon points="101,135 108,145 115,135" fill="white" />
-        </svg>
-      );
+      imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_monster.png`;
+      imgAlt = 'Monster Boss';
     } else if (theme === 'wood') {
-      return (
-        <svg viewBox="0 0 200 200" className="w-48 h-48 mx-auto drop-shadow-sm">
-          <circle cx="100" cy="65" r="50" fill="#047857" />
-          <circle cx="65" cy="88" r="40" fill="#10b981" />
-          <circle cx="135" cy="88" r="40" fill="#10b981" />
-          <rect x="82" y="95" width="36" height="80" rx="6" fill="#78350f" />
-          <path d="M65 175 C75 168 85 162 90 175 M135 175 C125 168 115 162 110 175" stroke="#78350f" strokeWidth="12" strokeLinecap="round" />
-          <path d="M82 135 L102 128 L82 120 Z" fill="#d97706" />
-          <path d="M118 148 L98 140 L118 132 Z" fill="#d97706" />
-          <line x1="100" y1="100" x2="100" y2="170" stroke="#451a03" strokeWidth="2.5" strokeDasharray="6,6" />
-        </svg>
-      );
-    } else {
-      return (
-        <svg viewBox="0 0 200 200" className="w-48 h-48 mx-auto drop-shadow-sm">
-          <polygon points="35,160 25,95 55,45 100,25 145,45 175,95 165,160" fill="#475569" />
-          <polygon points="45,150 37,100 65,55 100,38 135,55 163,100 155,150" fill="#64748b" />
-          <polygon points="70,75 82,62 88,77 76,88" fill="#eab308" />
-          <polygon points="125,65 135,77 122,88 112,77" fill="#eab308" />
-          <polygon points="88,115 105,102 115,115 98,132" fill="#facc15" />
-          <polyline points="100,38 105,72 88,95" stroke="#334155" strokeWidth="3.5" strokeLinecap="round" fill="none" />
-          <polyline points="128,95 142,118 132,138" stroke="#334155" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-          <path d="M45 45 L50 40 L45 35 L40 40 Z" fill="#fef08a" />
-          <path d="M155 35 L160 30 L155 25 L150 30 Z" fill="#fef08a" />
-        </svg>
-      );
+      imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_wood.png`;
+      imgAlt = 'Tree Stump';
+    } else if (theme === 'stone') {
+      imgSrc = `${import.meta.env.BASE_URL}assets/cartoon_stone.png`;
+      imgAlt = 'Crystal Gem Ore';
     }
+
+    return (
+      <div className="relative group cursor-pointer select-none">
+        <img
+          src={imgSrc}
+          alt={imgAlt}
+          className="w-56 h-56 md:w-64 md:h-64 object-contain mx-auto cartoon-clicker-object transition-transform duration-100"
+        />
+        {/* Pointer Cursor Arrow Overlay like reference image */}
+        <div className="absolute -bottom-2 -right-2 pointer-events-none group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
+          <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="filter drop-shadow-[0_4px_0_#000]">
+            <path d="M20 10 L80 50 L50 60 L35 90 L20 10 Z" fill="white" stroke="black" strokeWidth="6" strokeLinejoin="round" />
+          </svg>
+        </div>
+      </div>
+    );
   };
 
   return (
