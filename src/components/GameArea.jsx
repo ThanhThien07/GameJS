@@ -274,7 +274,8 @@ function GameArea({
       setTargetMaxHp(100);
       setEnergy(0);
       setIsMultiplierActive(false);
-      localStorage.setItem('offline_clicker_state_v1', JSON.stringify(freshState));
+      sessionStorage.setItem('session_clicker_state_v1', JSON.stringify(freshState));
+      localStorage.removeItem('offline_clicker_state_v1');
       setShowSettingsModal(false);
       spawnFloatingText('🔄 ĐÃ RESET GAME THÀNH CÔNG!', 50, 50, '#ef4444');
     }

@@ -24,9 +24,10 @@ function App() {
   const [roomData, setRoomData] = useState(null);
   const [selectedTheme, setSelectedTheme] = useState('monster'); // 'monster' | 'wood' | 'stone'
 
-  // Offline game state (stored in localStorage)
+  // Session-scoped game state (stored in sessionStorage: persists across F5 reloads, clears on tab/browser close)
   const [offlineState, setOfflineState] = useState(() => {
-    const saved = localStorage.getItem('offline_clicker_state_v1');
+    localStorage.removeItem('offline_clicker_state_v1'); // Clear legacy long-term localStorage
+    const saved = sessionStorage.getItem('session_clicker_state_v1');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -72,6 +73,11 @@ function App() {
       }
     };
   });
+
+  // Save offline state to sessionStorage so it persists across F5 reloads but resets when tab is closed
+  useEffect(() => {
+    sessionStorage.setItem('session_clicker_state_v1', JSON.stringify(offlineState));
+  }, [offlineState]);
 
   // Track network connectivity
   useEffect(() => {
