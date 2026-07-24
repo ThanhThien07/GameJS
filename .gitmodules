@@ -1,3 +1,18 @@
 [submodule "godogen"]
 	path = godogen
 	url = https://github.com/htdt/godogen.git
+[submodule "tools/ComfyUI"]
+	path = tools/ComfyUI
+	url = https://github.com/comfyanonymous/ComfyUI.git
+[submodule "tools/Pixelorama"]
+	path = tools/Pixelorama
+	url = https://github.com/Orama-Interactive/Pixelorama.git
+[submodule "tools/rembg"]
+	path = tools/rembg
+	url = https://github.com/danielgatis/rembg.git
+[submodule "tools/Real-ESRGAN"]
+	path = tools/Real-ESRGAN
+	url = https://github.com/xinntao/Real-ESRGAN.git
+[submodule "tools/Krita-AI"]
+	path = tools/Krita-AI
+	url = https://github.com/Acly/krita-ai-diffusion.git
