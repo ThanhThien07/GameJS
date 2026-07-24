@@ -244,6 +244,42 @@ function GameArea({
   };
 
   // ----------------------------------------
+  // IN-MEMORY LIVE GAME DATA RESET (NO F5 REFRESH NEEDED)
+  // ----------------------------------------
+  const handleResetGameData = () => {
+    if (window.confirm('Bạn có chắc chắn muốn RESET chơi lại từ đầu? Tất cả tiền và nâng cấp sẽ trở về 0!')) {
+      const freshState = {
+        money: 0,
+        dpc: 1,
+        dps: 0,
+        soulCrystals: 0,
+        totalClicks: 0,
+        totalGoldEarned: 0,
+        rebirthCount: 0,
+        upgrades: {
+          clicker: 0,
+          battleAxe: 0,
+          diamondSword: 0,
+          pickaxe: 0,
+          minecart: 0,
+          drill: 0,
+          excavator: 0,
+          miningRig: 0
+        }
+      };
+      setOfflineState(freshState);
+      setLevel(1);
+      setTargetHp(100);
+      setTargetMaxHp(100);
+      setEnergy(0);
+      setIsMultiplierActive(false);
+      localStorage.setItem('offline_clicker_state_v1', JSON.stringify(freshState));
+      setShowSettingsModal(false);
+      spawnFloatingText('🔄 ĐÃ RESET GAME THÀNH CÔNG!', 50, 50, '#ef4444');
+    }
+  };
+
+  // ----------------------------------------
   // PRESTIGE / REBIRTH HANDLER
   // ----------------------------------------
   const handlePerformRebirth = () => {
@@ -820,16 +856,26 @@ function GameArea({
               </button>
 
               {mode === 'offline' && (
-                <button
-                  onClick={() => {
-                    setShowSettingsModal(false);
-                    setShowRebirthModal(true);
-                  }}
-                  className="w-full bg-purple-900/40 hover:bg-purple-900/60 p-3 rounded-2xl flex items-center justify-between font-bold text-sm border border-purple-700/50 text-purple-300"
-                >
-                  <span>Điện Trùng Sinh</span>
-                  <RotateCcw size={18} />
-                </button>
+                <>
+                  <button
+                    onClick={() => {
+                      setShowSettingsModal(false);
+                      setShowRebirthModal(true);
+                    }}
+                    className="w-full bg-purple-900/40 hover:bg-purple-900/60 p-3 rounded-2xl flex items-center justify-between font-bold text-sm border border-purple-700/50 text-purple-300"
+                  >
+                    <span>Điện Trùng Sinh</span>
+                    <RotateCcw size={18} />
+                  </button>
+
+                  <button
+                    onClick={handleResetGameData}
+                    className="w-full bg-amber-950/40 hover:bg-amber-950/60 p-3 rounded-2xl flex items-center justify-between font-bold text-sm border border-amber-700/50 text-amber-300"
+                  >
+                    <span>🔄 Reset Chơi Lại Từ Đầu</span>
+                    <RotateCcw size={18} className="text-amber-400" />
+                  </button>
+                </>
               )}
 
               <button
