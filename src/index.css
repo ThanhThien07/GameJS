@@ -602,6 +602,20 @@ body {
 /* ==============================================
    MOCKUP BLUEPRINT DESIGN SYSTEM EXTENSIONS
    ============================================== */
+/* ==============================================
+   RETRO 2D / 2.5D PIXEL ART STYLING UTILITIES
+   ============================================== */
+.pixel-art {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+
+.pixel-font {
+  font-family: 'Silkscreen', 'Press Start 2P', monospace;
+  letter-spacing: 0.05em;
+}
+
 .rune-platform-glow {
   position: absolute;
   bottom: -15px;
@@ -610,11 +624,12 @@ body {
   width: 220px;
   height: 220px;
   border-radius: 50%;
-  border: 3px dashed #38bdf8;
-  box-shadow: 0 0 35px rgba(56, 189, 248, 0.5), inset 0 0 25px rgba(56, 189, 248, 0.4);
+  border: 4px dashed #38bdf8;
+  box-shadow: 0 0 35px rgba(56, 189, 248, 0.6), inset 0 0 25px rgba(56, 189, 248, 0.4);
   animation: rotateRune 20s linear infinite;
   pointer-events: none;
   z-index: 0;
+  image-rendering: pixelated;
 }
 
 @keyframes rotateRune {

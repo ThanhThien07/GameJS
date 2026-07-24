@@ -89,7 +89,7 @@ function ThemeSelector({ selectedTheme, onSelectTheme, onBack }) {
                   <img 
                     src={theme.image} 
                     alt={theme.name} 
-                    className="w-full h-full max-w-[96px] max-h-[96px] object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-200 z-10"
+                    className="w-full h-full max-w-[96px] max-h-[96px] object-contain pixel-art filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-200 z-10"
                   />
                 </div>
                 <h3 className="text-base font-black text-white transition-colors mt-2 mb-1">

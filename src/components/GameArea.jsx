@@ -486,7 +486,7 @@ function GameArea({
         <img
           src={imgSrc}
           alt={imgAlt}
-          className="w-48 h-48 md:w-64 md:h-64 max-w-[280px] max-h-[380px] object-contain mx-auto cartoon-clicker-object transition-transform duration-100 z-10 relative drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)] group-hover:scale-105"
+          className="w-48 h-48 md:w-64 md:h-64 max-w-[280px] max-h-[380px] object-contain mx-auto cartoon-clicker-object pixel-art transition-transform duration-100 z-10 relative drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)] group-hover:scale-105"
         />
       </div>
     );
