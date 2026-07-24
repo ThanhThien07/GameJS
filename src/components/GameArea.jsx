@@ -32,6 +32,10 @@ import {
   Gamepad2
 } from 'lucide-react';
 import { soundManager } from '../utils/audio';
+import PixelButton from './pixel/PixelButton';
+import PixelPanel from './pixel/PixelPanel';
+import PixelProgressBar from './pixel/PixelProgressBar';
+import PixelCurrency from './pixel/PixelCurrency';
 
 function GameArea({
   mode,
@@ -499,161 +503,110 @@ function GameArea({
   };
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto min-h-screen bg-[#0f172a] text-slate-100 flex flex-col font-['Outfit',sans-serif] relative pb-12 overflow-x-hidden">
-      
-      {/* 1. HEADER RESOURCE BAR (TOP - MATCHING MOCKUP BLUEPRINT) */}
-      <header className="w-full bg-[#1e293b]/90 backdrop-blur-md border-b border-slate-800 px-4 md:px-8 py-3 flex items-center justify-between z-30 sticky top-0 shadow-lg">
+    <div className="w-full max-w-[1440px] mx-auto min-h-screen bg-[#0f172a] text-slate-100 flex flex-col font-['Silkscreen',monospace] relative pb-12 overflow-x-hidden">
+      {/* 1. HEADER RESOURCE BAR (TOP - RETRO PIXEL ART HUD) */}
+      <header className="w-full bg-[#1e293b] border-b-4 border-[#0f172a] px-4 md:px-8 py-3 flex items-center justify-between z-30 sticky top-0 shadow-[0_4px_0px_#000000] font-['Silkscreen',monospace]">
         {/* Left: Branding Logo */}
         <div className="flex items-center gap-3 cursor-pointer" onClick={onLeave}>
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-md">
-            <Gamepad2 size={22} />
+          <div className="w-9 h-9 border-2 border-[#0f172a] bg-[#78350f] text-[#fef08a] flex items-center justify-center font-bold text-lg shadow-[2px_2px_0px_#000000]">
+            🎮
           </div>
           <div>
-            <h1 className="text-base md:text-lg font-black tracking-wider text-white uppercase leading-none">
-              TAP TAP
+            <h1 className="text-sm md:text-base font-black tracking-wider text-amber-400 uppercase leading-none drop-shadow-[1px_1px_0px_#000000]">
+              TAP TAP CLICKER
             </h1>
-            <span className="text-[10px] text-blue-400 font-extrabold tracking-widest block uppercase mt-0.5">
-              CLICKER MULTIPLAYER
+            <span className="text-[9px] text-purple-400 font-extrabold tracking-widest block uppercase mt-0.5">
+              PIXEL MULTIPLAYER
             </span>
           </div>
         </div>
 
         {/* Center / Right: Resource Badges & Settings */}
-        <div className="flex items-center gap-3 md:gap-6">
+        <div className="flex items-center gap-2 md:gap-4">
           {/* Gold Badge */}
-          <div className="flex items-center gap-2 bg-[#0f172a] border border-slate-700/80 px-3.5 py-1.5 rounded-full shadow-inner">
-            <div className="w-6 h-6 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs shadow-md">
-              🪙
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="font-black text-sm text-amber-400 leading-none">
-                {mode === 'offline' ? formatNumber(Math.floor(offlineState.money)) : formatNumber(getMyCompPlayer()?.score || 0)}
-              </span>
-              <span className="text-[9px] text-emerald-400 font-bold leading-none mt-0.5">
-                +{mode === 'offline' ? formatNumber(offlineState.dps) : formatNumber(roomData?.players.find(p => p.id === socketId)?.dps || 0)}/s
-              </span>
-            </div>
-            <button className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs hover:bg-blue-500">
-              <Plus size={12} />
-            </button>
-          </div>
+          <PixelCurrency
+            icon="🪙"
+            amount={mode === 'offline' ? formatNumber(Math.floor(offlineState.money)) : formatNumber(getMyCompPlayer()?.score || 0)}
+            rate={`+${mode === 'offline' ? formatNumber(offlineState.dps) : formatNumber(roomData?.players.find(p => p.id === socketId)?.dps || 0)}/s`}
+            variant="gold"
+          />
 
           {/* Diamond Badge */}
-          <div className="flex items-center gap-2 bg-[#0f172a] border border-slate-700/80 px-3.5 py-1.5 rounded-full shadow-inner">
-            <div className="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center font-black text-xs shadow-md">
-              💎
-            </div>
-            <span className="font-black text-sm text-purple-300">
-              {offlineState.soulCrystals ? offlineState.soulCrystals.toLocaleString() : '1,250'}
-            </span>
-            <button className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs hover:bg-blue-500">
-              <Plus size={12} />
-            </button>
-          </div>
+          <PixelCurrency
+            icon="💎"
+            amount={offlineState.soulCrystals ? offlineState.soulCrystals.toLocaleString() : '1,250'}
+            variant="purple"
+          />
 
           {/* Settings Gear Button */}
-          <button
+          <PixelButton
             onClick={() => setShowSettingsModal(true)}
-            className="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center transition-colors shadow-md"
+            variant="dark"
+            size="sm"
             title="Cài đặt"
           >
-            <Settings size={18} />
-          </button>
+            ⚙️
+          </PixelButton>
         </div>
       </header>
 
       {/* 2. MAIN LAYOUT CONTAINER (SIDEBAR + GAME ARENA + BOOST CARDS) */}
       <div className="w-full flex flex-col md:flex-row flex-1 p-3 md:p-6 gap-6 items-start">
         
-        {/* LEFT SIDEBAR NAVIGATION MENU (WIDTH ~190px - MATCHING MOCKUP) */}
-        <aside className="w-full md:w-[200px] shrink-0 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 z-20">
-          <button
+        {/* LEFT SIDEBAR NAVIGATION MENU (PIXEL ICON TOOLTIP BAR) */}
+        <aside className="w-full md:w-[180px] shrink-0 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 z-20 font-['Silkscreen',monospace]">
+          <PixelButton
             onClick={() => setActiveTab('home')}
-            className={`w-full p-3 rounded-2xl flex items-center gap-3 transition-all text-left border ${
-              activeTab === 'home'
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 border-blue-400 text-white font-black shadow-lg shadow-blue-500/25 scale-102'
-                : 'bg-[#1e293b]/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-[#1e293b]'
-            }`}
+            variant={activeTab === 'home' ? 'gold' : 'dark'}
+            size="md"
+            className="w-full justify-start"
+            title="Trang chủ"
           >
-            <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
-              <Home size={18} />
-            </div>
-            <div className="flex flex-col min-w-0">
-              <span className="font-extrabold text-xs tracking-wider uppercase">BẤM</span>
-              <span className="text-[10px] opacity-75 font-semibold">Trang chủ</span>
-            </div>
-          </button>
+            🏠 TRANG CHỦ
+          </PixelButton>
 
-          <button
+          <PixelButton
             onClick={() => setActiveTab('upgrades')}
-            className={`w-full p-3 rounded-2xl flex items-center gap-3 transition-all text-left border ${
-              activeTab === 'upgrades'
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 border-blue-400 text-white font-black shadow-lg shadow-blue-500/25'
-                : 'bg-[#1e293b]/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-[#1e293b]'
-            }`}
+            variant={activeTab === 'upgrades' ? 'purple' : 'dark'}
+            size="md"
+            className="w-full justify-start"
+            title="Nâng cấp sức mạnh"
           >
-            <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
-              <Zap size={18} />
-            </div>
-            <div className="flex flex-col min-w-0">
-              <span className="font-extrabold text-xs tracking-wider uppercase">NÂNG CẤP</span>
-              <span className="text-[10px] opacity-75 font-semibold">Sức mạnh</span>
-            </div>
-          </button>
+            ⚔️ NÂNG CẤP
+          </PixelButton>
 
-          <button
+          <PixelButton
             onClick={() => setActiveTab('items')}
-            className={`w-full p-3 rounded-2xl flex items-center gap-3 transition-all text-left border ${
-              activeTab === 'items'
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 border-blue-400 text-white font-black shadow-lg shadow-blue-500/25'
-                : 'bg-[#1e293b]/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-[#1e293b]'
-            }`}
+            variant={activeTab === 'items' ? 'blue' : 'dark'}
+            size="md"
+            className="w-full justify-start"
+            title="Túi đồ & vật phẩm"
           >
-            <div className="w-9 h-9 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center shrink-0">
-              <Package size={18} />
-            </div>
-            <div className="flex flex-col min-w-0">
-              <span className="font-extrabold text-xs tracking-wider uppercase">VẬT PHẨM</span>
-              <span className="text-[10px] opacity-75 font-semibold">Túi đồ</span>
-            </div>
-          </button>
+            🎒 VẬT PHẨM
+          </PixelButton>
 
-          <button
+          <PixelButton
             onClick={() => {
               setActiveTab('achievements');
               setShowAchievementsModal(true);
             }}
-            className={`w-full p-3 rounded-2xl flex items-center gap-3 transition-all text-left border ${
-              activeTab === 'achievements'
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 border-blue-400 text-white font-black shadow-lg shadow-blue-500/25'
-                : 'bg-[#1e293b]/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-[#1e293b]'
-            }`}
+            variant={activeTab === 'achievements' ? 'gold' : 'dark'}
+            size="md"
+            className="w-full justify-start"
+            title="Thành tựu"
           >
-            <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
-              <Trophy size={18} />
-            </div>
-            <div className="flex flex-col min-w-0">
-              <span className="font-extrabold text-xs tracking-wider uppercase">THÀNH TÍCH</span>
-              <span className="text-[10px] opacity-75 font-semibold">Thành tựu</span>
-            </div>
-          </button>
+            🏆 THÀNH TÍCH
+          </PixelButton>
 
-          <button
+          <PixelButton
             onClick={() => setActiveTab('shop')}
-            className={`w-full p-3 rounded-2xl flex items-center gap-3 transition-all text-left border ${
-              activeTab === 'shop'
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 border-blue-400 text-white font-black shadow-lg shadow-blue-500/25'
-                : 'bg-[#1e293b]/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-[#1e293b]'
-            }`}
+            variant={activeTab === 'shop' ? 'green' : 'dark'}
+            size="md"
+            className="w-full justify-start"
+            title="Cửa hàng"
           >
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-              <Store size={18} />
-            </div>
-            <div className="flex flex-col min-w-0">
-              <span className="font-extrabold text-xs tracking-wider uppercase">CỬA HÀNG</span>
-              <span className="text-[10px] opacity-75 font-semibold">Cửa hàng</span>
-            </div>
-          </button>
+            🛒 CỬA HÀNG
+          </PixelButton>
         </aside>
 
         {/* CENTER MAIN GAMEPLAY ARENA & DYNAMIC TAB VIEWS */}
