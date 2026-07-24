@@ -1,0 +1,3 @@
+[submodule "godogen"]
+	path = godogen
+	url = https://github.com/htdt/godogen.git
