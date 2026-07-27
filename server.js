@@ -72,6 +72,7 @@ const COMP_UPGRADES = [
 
 // Server ticks for active games
 setInterval(() => {
+  if (rooms.size === 0) return; // Skip when no active rooms
   rooms.forEach((room, roomCode) => {
     if (room.status === 'playing') {
       // 1. Handle time ticking down for competitive mode
@@ -295,9 +296,9 @@ io.on('connection', (socket) => {
       console.log(`Player ${player.name} ready state: ${player.isReady}`);
       io.to(code).emit('roomUpdated', room);
 
-      // Auto start game if 3 players/bots are in the room and all are ready
+      // Auto start game if >= 2 players/bots are in the room and all are ready
       const allReady = room.players.every(p => p.isReady);
-      if (room.players.length === 3 && allReady) {
+      if (room.players.length >= 2 && allReady) {
         room.status = 'playing';
         io.to(code).emit('gameStarted', room);
         console.log(`Game started in room ${code}`);
@@ -350,7 +351,7 @@ io.on('connection', (socket) => {
   // 6. Buy Upgrade in Competitive Mode
   socket.on('buyCompUpgrade', ({ code, upgradeId }, callback) => {
     const room = rooms.get(code);
-    if (!room || room.status !== 'playing') return;
+    if (!room || room.status !== 'playing') return callback?.({ success: false, message: 'Trận chưa bắt đầu hoặc phòng không tồn tại!' });
 
     const player = room.players.find(p => p.id === socket.id);
     if (!player) return;
@@ -382,7 +383,7 @@ io.on('connection', (socket) => {
   // 7. Buy Shared Upgrade in Co-op Mode
   socket.on('buyCoopUpgrade', ({ code, upgradeId }, callback) => {
     const room = rooms.get(code);
-    if (!room || room.status !== 'playing') return;
+    if (!room || room.status !== 'playing') return callback?.({ success: false, message: 'Trận chưa bắt đầu hoặc phòng không tồn tại!' });
 
     const upgrade = room.coopUpgrades[upgradeId];
     if (!upgrade) return callback({ success: false, message: 'Nâng cấp không hợp lệ!' });

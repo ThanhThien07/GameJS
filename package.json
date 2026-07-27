@@ -4,6 +4,7 @@
   "description": "A multiplayer and offline tap-tap clicker game with custom themes, competitive and co-op modes.",
   "main": "server.js",
   "type": "module",
+  "engines": { "node": ">=18" },
   "scripts": {
     "dev:server": "node server.js",
     "dev:client": "vite",
