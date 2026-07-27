@@ -550,11 +550,11 @@ function GameArea({
         </div>
       </header>
 
-      {/* 2. MAIN LAYOUT CONTAINER (SIDEBAR + GAME ARENA + BOOST CARDS) */}
-      <div className="w-full flex flex-col md:flex-row flex-1 p-3 md:p-6 gap-6 items-start">
+      {/* 2. MAIN LAYOUT CONTAINER (3 : 7 : 2 GRID RATIO AS INSTRUCTED) */}
+      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-4 p-3 md:p-6 items-start">
         
-        {/* LEFT SIDEBAR NAVIGATION MENU (PIXEL ICON TOOLTIP BAR) */}
-        <aside className="w-full md:w-[180px] shrink-0 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 z-20 font-['Silkscreen',monospace]">
+        {/* LEFT SIDEBAR NAVIGATION MENU (COL-SPAN-3 = 3/12) */}
+        <aside className="lg:col-span-3 w-full flex flex-col gap-2 z-20 font-['Silkscreen',monospace]">
           <PixelButton
             onClick={() => setActiveTab('home')}
             variant={activeTab === 'home' ? 'gold' : 'dark'}
@@ -783,7 +783,7 @@ function GameArea({
             </div>
           </main>
         ) : (
-          <PixelPanel className="flex-1 w-full flex flex-col items-center justify-between relative overflow-hidden min-h-[520px] font-['Silkscreen',monospace]">
+          <PixelPanel className="lg:col-span-7 w-full flex flex-col items-center justify-between relative overflow-hidden min-h-[520px] font-['Silkscreen',monospace]">
             {/* Flying Damage/Gold Numbers */}
             {floatingTexts.map(t => (
               <span
@@ -870,10 +870,10 @@ function GameArea({
           </PixelPanel>
         )}
 
-        {/* RIGHT SIDE UTILITY BOOST CARDS (MATCHING MOCKUP RIGHT CARDS) */}
-        <aside className="w-full md:w-[150px] shrink-0 flex flex-row md:flex-col gap-4 justify-center font-['Silkscreen',monospace]">
+        {/* RIGHT SIDE UTILITY BOOST CARDS (COL-SPAN-2 = 2/12) */}
+        <aside className="lg:col-span-2 w-full flex flex-col gap-4 font-['Silkscreen',monospace]">
           {/* Boost x2 Card */}
-          <PixelPanel className="flex-1 p-3 flex flex-col items-center justify-center text-center">
+          <PixelPanel className="p-3 flex flex-col items-center justify-center text-center">
             <div className="w-10 h-10 bg-[#3b0764] border-2 border-purple-500 text-purple-300 flex items-center justify-center font-bold text-base mb-2">
               x2
             </div>
@@ -882,7 +882,7 @@ function GameArea({
           </PixelPanel>
 
           {/* Daily Gift Card */}
-          <PixelPanel className="flex-1 p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-amber-400">
+          <PixelPanel className="p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-amber-400">
             <div className="w-10 h-10 bg-[#78350f] border-2 border-amber-500 text-amber-400 flex items-center justify-center text-lg mb-2">
               🎁
             </div>
