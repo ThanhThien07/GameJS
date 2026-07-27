@@ -783,7 +783,7 @@ function GameArea({
             </div>
           </main>
         ) : (
-          <main className="flex-1 w-full bg-[#1e293b]/60 border border-slate-800 rounded-3xl p-4 md:p-6 flex flex-col items-center justify-between relative overflow-hidden min-h-[520px]">
+          <PixelPanel className="flex-1 w-full flex flex-col items-center justify-between relative overflow-hidden min-h-[520px] font-['Silkscreen',monospace]">
             {/* Flying Damage/Gold Numbers */}
             {floatingTexts.map(t => (
               <span
@@ -801,57 +801,39 @@ function GameArea({
 
             {/* TOP CHARACTER STATS & ENERGY BAR */}
             <div className="w-full max-w-md flex flex-col items-center z-10 gap-2">
-              <span className="text-[10px] font-black text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-0.5 rounded-full tracking-wider uppercase">
+              <span className="text-[9px] font-bold text-amber-400 bg-[#78350f] border-2 border-amber-500 px-3 py-0.5 uppercase tracking-wider">
                 ⚡ SẮC NỔ ACTIVE ⚡
               </span>
 
-              {/* Energy / Frenzy Bar */}
-              <div className="w-full bg-[#0f172a] border border-slate-700/80 p-2.5 rounded-2xl shadow-md">
-                <div className="flex justify-between text-[11px] font-black mb-1.5">
-                  <span className="text-blue-400 flex items-center gap-1">
-                    <Flame size={14} className="text-amber-400 animate-pulse" /> THANH NỘ BỔ TRỢ (x2)
-                  </span>
-                  <span className="text-amber-400">{isMultiplierActive ? 'X2 FRENZY RUNNING' : `${energy}%`}</span>
-                </div>
-                <div className="w-full bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700">
-                  <div
-                    className={`h-full transition-all duration-200 ${
-                      isMultiplierActive
-                        ? 'bg-gradient-to-r from-amber-400 via-purple-500 to-blue-500 animate-pulse'
-                        : 'bg-gradient-to-r from-blue-600 to-indigo-500'
-                    }`}
-                    style={{ width: `${isMultiplierActive ? (multiplierTimer / 6) * 100 : energy}%` }}
-                  ></div>
-                </div>
-              </div>
+              {/* Pixel Energy / Frenzy Bar */}
+              <PixelProgressBar
+                value={isMultiplierActive ? multiplierTimer : energy}
+                max={isMultiplierActive ? 6 : 100}
+                label="🔥 THANH NỘ BỔ TRỢ (x2)"
+                variant={isMultiplierActive ? 'purple' : 'gold'}
+                height="h-3.5"
+                className="w-full"
+              />
 
               {/* Buff Tags */}
-              <div className="flex gap-2 text-xs font-black">
-                <button
+              <div className="flex gap-2 text-xs font-bold mt-1">
+                <PixelButton
                   onClick={handleActivateFrenzy}
                   disabled={frenzyCd > 0 || frenzyActive}
-                  className={`px-3 py-1 rounded-xl border transition-all flex items-center gap-1.5 ${
-                    frenzyActive
-                      ? 'bg-rose-600 border-rose-400 text-white animate-pulse'
-                      : frenzyCd > 0
-                      ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed'
-                      : 'bg-rose-500/20 border-rose-500/40 text-rose-300 hover:bg-rose-500/30'
-                  }`}
+                  variant={frenzyActive ? 'red' : 'dark'}
+                  size="sm"
                 >
                   🔥 Cuồng Phong (x2 DPC) {frenzyActive ? `${frenzyTimer}s` : frenzyCd > 0 ? `(${frenzyCd}s)` : ''}
-                </button>
+                </PixelButton>
 
-                <button
+                <PixelButton
                   onClick={handleActivateGoldenRush}
                   disabled={goldenRushCd > 0}
-                  className={`px-3 py-1 rounded-xl border transition-all flex items-center gap-1.5 ${
-                    goldenRushCd > 0
-                      ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed'
-                      : 'bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30'
-                  }`}
+                  variant="gold"
+                  size="sm"
                 >
                   ⚡ Bão Vàng {goldenRushCd > 0 ? `(${goldenRushCd}s)` : ''}
-                </button>
+                </PixelButton>
               </div>
             </div>
 
@@ -866,45 +848,47 @@ function GameArea({
             {/* BOTTOM CLICK POWER & MAIN GOLD CTA BUTTON */}
             <div className="w-full flex flex-col items-center gap-3 z-10 mt-2">
               <div className="text-center">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Click Power</span>
-                <span className="text-3xl md:text-4xl font-black text-white tracking-wide block drop-shadow-md">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Click Power</span>
+                <span className="text-2xl md:text-3xl font-black text-white tracking-wide block drop-shadow-[2px_2px_0px_#000000]">
                   +{mode === 'offline' ? offlineState.dpc : (getMyCompPlayer()?.dpc || 1)}
                 </span>
-                <span className="text-[11px] text-purple-300 font-extrabold flex items-center justify-center gap-1 mt-0.5">
+                <span className="text-[10px] text-purple-300 font-bold flex items-center justify-center gap-1 mt-0.5">
                   ⚒️ Nâng Cấp Công Cụ Click
                 </span>
               </div>
 
               {/* GIANT GOLD PRIMARY CLICK BUTTON (MATCHING MOCKUP "BẤM NGAY") */}
-              <button
+              <PixelButton
                 onClick={handleTap}
-                className="cta-gold-button text-xl py-4 px-12 rounded-full shadow-2xl flex items-center justify-center gap-3 cursor-pointer active:scale-95 transition-transform"
+                variant="gold"
+                size="xl"
+                className="cta-gold-button text-lg py-3.5 px-10 shadow-2xl flex items-center justify-center gap-2 cursor-pointer active:translate-y-1"
               >
-                <MousePointerClick size={24} className="text-slate-950 animate-bounce" /> BẤM NGAY
-              </button>
+                👆 BẤM NGAY
+              </PixelButton>
             </div>
-          </main>
+          </PixelPanel>
         )}
 
         {/* RIGHT SIDE UTILITY BOOST CARDS (MATCHING MOCKUP RIGHT CARDS) */}
-        <aside className="w-full md:w-[150px] shrink-0 flex flex-row md:flex-col gap-4 justify-center">
+        <aside className="w-full md:w-[150px] shrink-0 flex flex-row md:flex-col gap-4 justify-center font-['Silkscreen',monospace]">
           {/* Boost x2 Card */}
-          <div className="flex-1 bg-[#1e293b] border border-slate-800 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-lg group hover:border-purple-500/50 transition-all">
-            <div className="w-12 h-12 rounded-2xl bg-purple-600/20 text-purple-400 flex items-center justify-center font-black text-xl mb-2 group-hover:scale-110 transition-transform">
+          <PixelPanel className="flex-1 p-3 flex flex-col items-center justify-center text-center">
+            <div className="w-10 h-10 bg-[#3b0764] border-2 border-purple-500 text-purple-300 flex items-center justify-center font-bold text-base mb-2">
               x2
             </div>
-            <span className="text-[10px] font-mono text-purple-300 font-bold">23:45:12</span>
-            <span className="text-[11px] font-black text-slate-200 mt-0.5 uppercase tracking-wider">BOOST X2</span>
-          </div>
+            <span className="text-[9px] text-purple-300 font-bold">23:45:12</span>
+            <span className="text-[10px] text-white font-bold mt-0.5 uppercase">BOOST X2</span>
+          </PixelPanel>
 
           {/* Daily Gift Card */}
-          <div className="flex-1 bg-[#1e293b] border border-slate-800 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-lg group hover:border-amber-500/50 transition-all cursor-pointer">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-              <Gift size={24} />
+          <PixelPanel className="flex-1 p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-amber-400">
+            <div className="w-10 h-10 bg-[#78350f] border-2 border-amber-500 text-amber-400 flex items-center justify-center text-lg mb-2">
+              🎁
             </div>
-            <span className="text-xs font-black text-amber-400 uppercase">QUÀ NGÀY</span>
-            <span className="text-[9px] text-slate-400 font-bold mt-0.5">Nhận quà</span>
-          </div>
+            <span className="text-[10px] text-amber-400 font-bold uppercase">QUÀ NGÀY</span>
+            <span className="text-[8px] text-slate-400 font-bold mt-0.5">Nhận quà</span>
+          </PixelPanel>
         </aside>
 
       </div>
@@ -933,47 +917,46 @@ function GameArea({
               const canAfford = offlineState.money >= cost;
 
               return (
-                <div
+                <PixelPanel
                   key={up.key}
-                  className={`upgrade-card-grid group ${!canAfford ? 'opacity-70' : ''}`}
+                  className={`flex flex-col justify-between text-left font-['Silkscreen',monospace] ${!canAfford ? 'opacity-75' : ''}`}
                 >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-11 h-11 rounded-2xl bg-slate-900 border border-slate-700 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
-                      <IconComp size={22} />
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="w-10 h-10 bg-[#0f172a] border-2 border-[#334155] flex items-center justify-center text-amber-400 font-bold">
+                      <IconComp size={20} />
                     </div>
-                    <span className="text-[10px] font-black bg-purple-900/60 text-purple-300 border border-purple-700/50 px-2 py-0.5 rounded-full">
+                    <span className="text-[9px] font-bold bg-[#3b0764] text-purple-300 border-2 border-purple-500 px-2 py-0.5 uppercase">
                       Lv. {curLvl}
                     </span>
                   </div>
 
-                  <div className="mb-3">
-                    <h4 className="font-extrabold text-sm text-slate-100 mb-0.5 group-hover:text-amber-400 transition-colors">
+                  <div className="mb-2">
+                    <h4 className="font-bold text-xs text-white mb-0.5 truncate uppercase">
                       {up.name}
                     </h4>
-                    <span className="text-xs font-bold text-purple-400 block">{up.statLabel}</span>
+                    <span className="text-[10px] font-bold text-purple-400 block">{up.statLabel}</span>
                   </div>
 
-                  {/* Progress Bar inside Card */}
-                  <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mb-3">
-                    <div
-                      className="bg-amber-400 h-full rounded-full transition-all"
-                      style={{ width: `${Math.min(100, (offlineState.money / cost) * 100)}%` }}
-                    ></div>
-                  </div>
+                  {/* Pixel Progress Bar inside Card */}
+                  <PixelProgressBar
+                    value={offlineState.money}
+                    max={cost}
+                    height="h-2"
+                    variant="gold"
+                    className="mb-3"
+                  />
 
                   {/* Price Button Badge */}
-                  <button
+                  <PixelButton
                     onClick={() => buyOfflineUpgrade(up.key, up.isDpc, up.val, up.cost)}
                     disabled={!canAfford}
-                    className={`w-full py-2.5 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-md ${
-                      canAfford
-                        ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white cursor-pointer active:scale-95'
-                        : 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
-                    }`}
+                    variant={canAfford ? 'green' : 'dark'}
+                    size="sm"
+                    className="w-full"
                   >
-                    <span>🪙 {cost.toLocaleString()}</span>
-                  </button>
-                </div>
+                    🪙 {cost.toLocaleString()}
+                  </PixelButton>
+                </PixelPanel>
               );
             });
           })()}
