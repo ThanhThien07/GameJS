@@ -1,167 +1,56 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&display=swap');
 
-/* ============================================================
-   ROOT — Pixel RPG Design Tokens
-   ============================================================ */
+* { box-sizing: border-box; }
+
 :root {
-  font-family: 'Silkscreen', 'Press Start 2P', monospace;
-  color-scheme: dark;
-  --bg-main: #0f172a;
-  --bg-surface: #1e293b;
-  --pixel-gold: #f59e0b;
-  --pixel-purple: #7c3aed;
-  --pixel-green: #16a34a;
-  --pixel-red: #dc2626;
-  --pixel-blue: #2563eb;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  color: #f8fafc;
-  background-color: #0f172a;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: none; /* keep pixel crisp */
-  -moz-osx-font-smoothing: unset;
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2333;
+  --border: rgba(255,255,255,0.07);
+  --gold: #f59e0b;
+  --gold-light: #fcd34d;
+  --purple: #8b5cf6;
+  --blue: #3b82f6;
+  --green: #22c55e;
+  --red: #ef4444;
+  --text: #e2e8f0;
+  --text-muted: #64748b;
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  min-width: 320px;
+  margin: 0; padding: 0;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
-  background: #0f172a;
-  /* Pixel grid pattern */
-  background-image:
-    linear-gradient(rgba(51, 65, 85, 0.3) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(51, 65, 85, 0.3) 1px, transparent 1px);
-  background-size: 16px 16px;
-  color: var(--text-primary);
   overflow-x: hidden;
 }
 
 #root {
   width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0;
-  text-align: left;
+  min-height: 100vh;
 }
 
-/* ============================================================
-   PIXEL UTILITY CLASSES
-   ============================================================ */
-.pixel-art {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  -ms-interpolation-mode: nearest-neighbor;
+/* ── Floating score numbers ── */
+.floating-text {
+  position: absolute;
+  font-weight: 900;
+  font-size: 1.1rem;
+  pointer-events: none;
+  animation: floatUp 0.8s ease-out forwards;
+  z-index: 50;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  white-space: nowrap;
 }
 
-.pixel-font {
-  font-family: 'Silkscreen', 'Press Start 2P', monospace;
-  letter-spacing: 0.05em;
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(0.9); }
+  40%  { transform: translateY(-18px) scale(1.15); }
+  100% { opacity: 0; transform: translateY(-52px) scale(1); }
 }
 
-/* ============================================================
-   PIXEL BORDER SHADOW (replaces glass/modern border-radius)
-   ============================================================ */
-.pixel-panel {
-  background: #1e293b;
-  border: 3px solid #334155;
-  box-shadow: 4px 4px 0 #000000;
-  image-rendering: pixelated;
-}
-
-.pixel-panel:hover {
-  border-color: #475569;
-}
-
-/* ============================================================
-   STATUS BADGES — pixel style (no rounded pill)
-   ============================================================ */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'Silkscreen', monospace;
-  font-weight: 700;
-  font-size: 0.7rem;
-  padding: 3px 8px;
-  border: 2px solid;
-}
-
-.status-online {
-  background: #14532d;
-  color: #86efac;
-  border-color: #16a34a;
-}
-
-.status-offline {
-  background: #450a0a;
-  color: #fca5a5;
-  border-color: #dc2626;
-}
-
-/* ============================================================
-   BUTTONS — pixel style
-   ============================================================ */
-.btn-primary {
-  background: #7c3aed;
-  border: 2px solid #a78bfa;
-  border-bottom: 4px solid #4c1d95;
-  color: #ffffff !important;
-  padding: 0.6rem 1.2rem;
-  font-family: 'Silkscreen', monospace;
-  font-weight: 700;
-  font-size: 0.75rem;
-  cursor: pointer;
-  box-shadow: 3px 3px 0 #000000;
-  transition: all 0.08s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-transform: uppercase;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: #8b5cf6;
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 #000000;
-  border-bottom-width: 2px;
-}
-
-.btn-primary:disabled {
-  background: #334155;
-  color: #64748b !important;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* ============================================================
-   GAME CLICK AREA ANIMATIONS
-   ============================================================ */
-.cartoon-clicker-object {
-  cursor: pointer;
-  transition: transform 0.08s ease;
-}
-
-.cartoon-clicker-object:hover {
-  filter: brightness(1.1);
-}
-
-.clicker-object {
-  cursor: pointer;
-  transition: transform 0.08s ease;
-}
-
-.clicker-object:hover { transform: scale(1.05); }
-.clicker-object:active { transform: scale(0.92); }
-
-.click-shake {
-  animation: clickBounce 0.12s ease-in-out;
-}
+/* ── Monster click animation ── */
+.click-shake { animation: clickBounce 0.12s ease-in-out; }
 
 @keyframes clickBounce {
   0%   { transform: scale(1); }
@@ -169,89 +58,39 @@ body {
   100% { transform: scale(1); }
 }
 
-/* ============================================================
-   FLOATING SCORE NUMBERS
-   ============================================================ */
-.floating-text {
+/* ── Platform glow ring ── */
+.platform-glow {
   position: absolute;
-  font-family: 'Silkscreen', 'Press Start 2P', monospace;
-  font-weight: 700;
-  font-size: 1rem;
-  pointer-events: none;
-  animation: floatUp 0.85s ease-out forwards;
-  z-index: 50;
-  text-shadow: 2px 2px 0 #000000;
-  white-space: nowrap;
-}
-
-@keyframes floatUp {
-  0%   { opacity: 1; transform: translateY(0) scale(0.9); }
-  30%  { transform: translateY(-16px) scale(1.2); }
-  100% { opacity: 0; transform: translateY(-50px) scale(1); }
-}
-
-/* ============================================================
-   RUNE PLATFORM GLOW (battle arena)
-   ============================================================ */
-.rune-platform-glow {
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
+  bottom: 0; left: 50%;
   transform: translateX(-50%) rotateX(72deg);
-  width: 180px;
-  height: 180px;
+  width: 200px; height: 200px;
   border-radius: 50%;
-  border: 3px dashed #38bdf8;
-  box-shadow: 0 0 28px rgba(56, 189, 248, 0.5), inset 0 0 20px rgba(56, 189, 248, 0.3);
-  animation: rotateRune 20s linear infinite;
+  background: radial-gradient(ellipse, rgba(99,102,241,0.25) 0%, transparent 70%);
+  border: 2px solid rgba(99,102,241,0.4);
+  box-shadow: 0 0 40px rgba(99,102,241,0.35), 0 0 80px rgba(99,102,241,0.15);
+  animation: spinPlatform 12s linear infinite;
   pointer-events: none;
-  z-index: 0;
 }
 
-@keyframes rotateRune {
+@keyframes spinPlatform {
   from { transform: translateX(-50%) rotateX(72deg) rotate(0deg); }
   to   { transform: translateX(-50%) rotateX(72deg) rotate(360deg); }
 }
 
-/* ============================================================
-   CTA GOLD PIXEL BUTTON
-   ============================================================ */
-.cta-gold-button {
-  background: #f59e0b;
-  color: #0f172a !important;
-  font-family: 'Silkscreen', 'Press Start 2P', monospace;
-  font-weight: 900;
-  border: 3px solid #78350f;
-  border-bottom: 5px solid #78350f;
-  box-shadow: 3px 3px 0 #000000;
-  transition: all 0.08s ease;
-  user-select: none;
-}
-
-.cta-gold-button:hover { background: #fbbf24; }
-
-.cta-gold-button:active {
-  transform: translate(2px, 2px);
-  border-bottom-width: 3px;
-  box-shadow: 1px 1px 0 #000000;
-}
-
-/* ============================================================
-   SLOW BOUNCE (logo animation)
-   ============================================================ */
-@keyframes bounce-slow {
+/* ── Slow bounce ── */
+@keyframes bounceSlow {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-6px); }
 }
+.bounce-slow { animation: bounceSlow 2.2s ease-in-out infinite; }
 
-.animate-bounce-slow {
-  animation: bounce-slow 2s ease-in-out infinite;
+/* ── Pixel art images ── */
+.pixel-art {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
-/* ============================================================
-   SCROLLBAR (pixel style)
-   ============================================================ */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0f172a; }
-::-webkit-scrollbar-thumb { background: #334155; border: 1px solid #000; }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }

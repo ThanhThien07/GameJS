@@ -1,162 +1,122 @@
 import React from 'react';
 
-function MultiplayerLobby({
-  roomData,
-  socketId,
-  onToggleReady,
-  onAddBot,
-  onLeave,
-  onThemeSelect,
-  selectedTheme
-}) {
+export default function MultiplayerLobby({ roomData, socketId, onToggleReady, onAddBot, onLeave, onThemeSelect, selectedTheme }) {
   if (!roomData) return null;
-
   const { code, mode, players } = roomData;
   const myPlayer = players.find(p => p.id === socketId);
 
-  const copyRoomCode = () => {
-    navigator.clipboard.writeText(code);
-    alert(`Đã sao chép mã phòng: ${code}`);
-  };
-
   const themes = [
-    { id: 'monster', name: '⚔ ĐÁNH QUÁI', color: 'border-red-500 bg-red-900/30' },
-    { id: 'wood',    name: '🪵 CHẶT GỖ',  color: 'border-green-500 bg-green-900/30' },
-    { id: 'stone',   name: '🪨 ĐÀO ĐÁ',   color: 'border-amber-500 bg-amber-900/30' },
+    { id: 'monster', icon: '⚔️', label: 'Đánh Quái' },
+    { id: 'wood',    icon: '🪓', label: 'Chặt Gỗ'   },
+    { id: 'stone',   icon: '⛏️', label: 'Đào Đá'    },
   ];
 
   return (
-    <div
-      className="min-h-screen w-full bg-[#0f172a] flex flex-col"
-      style={{ fontFamily: "'Press Start 2P', 'Silkscreen', monospace" }}
-    >
+    <div className="min-h-screen bg-[#0d1117] flex flex-col" style={{ fontFamily: "'Be Vietnam Pro', sans-serif" }}>
+
       {/* Header */}
-      <header className="w-full bg-[#1e293b] border-b-4 border-black px-6 py-3 flex items-center justify-between sticky top-0 z-10 shadow-[0_4px_0_#000]">
-        <button
-          onClick={onLeave}
-          className="bg-[#0f172a] border-2 border-[#334155] text-slate-300 px-3 py-2 text-[9px] font-black uppercase shadow-[2px_2px_0_#000] hover:border-amber-400 active:translate-y-0.5"
-        >
-          ← THOÁT PHÒNG
+      <header className="flex items-center justify-between px-5 py-3 bg-[#161b22] border-b border-white/5 sticky top-0 z-10">
+        <button onClick={onLeave} className="text-xs font-semibold text-slate-400 hover:text-white bg-[#1c2333] border border-white/8 rounded-xl px-3 py-2 transition-colors">
+          ← Thoát phòng
         </button>
-        <h1 className="text-xs font-black text-amber-400 uppercase">
-          {mode === 'coop' ? '✨ PHÒNG HỢP TÁC' : '⚔ ĐẤU TRƯỜNG COMPETITIVE'}
+        <h1 className="text-sm font-black text-white">
+          {mode === 'coop' ? '✨ Phòng Hợp Tác' : '⚔️ Đấu Trường 1v1'}
         </h1>
-        <div className="w-28" />
+        <div className="w-24" />
       </header>
 
       {/* Body */}
       <div className="flex-1 flex flex-col lg:flex-row gap-4 p-4">
 
-        {/* Left: Room code + theme */}
-        <div className="lg:w-64 shrink-0 flex flex-col gap-4">
+        {/* Room code + theme */}
+        <div className="lg:w-64 shrink-0 flex flex-col gap-3">
 
-          {/* Room code card */}
-          <div className="bg-[#1e293b] border-3 border-[#334155] shadow-[4px_4px_0_#000] p-4 flex flex-col gap-3">
-            <div className="text-[8px] text-amber-400 font-black uppercase">Mã phòng game</div>
+          <div className="bg-[#161b22] border border-white/8 rounded-2xl p-4">
+            <div className="text-[9px] text-slate-500 font-bold uppercase mb-2">Mã phòng</div>
             <div
-              onClick={copyRoomCode}
-              className="bg-[#0f172a] border-2 border-amber-500 py-3 px-4 text-center cursor-pointer hover:border-amber-300 shadow-[2px_2px_0_#000] active:translate-y-0.5"
+              onClick={() => navigator.clipboard.writeText(code).then(() => alert(`Copied: ${code}`))}
+              className="bg-[#0d1117] border border-amber-500/30 rounded-xl p-3 text-center cursor-pointer hover:border-amber-400/50 transition-colors mb-2"
             >
-              <div className="text-xl font-black tracking-widest text-amber-300">{code}</div>
-              <div className="text-[8px] text-slate-400 mt-1">📋 Nhấn để sao chép</div>
+              <div className="text-2xl font-black tracking-[0.2em] text-amber-300">{code}</div>
+              <div className="text-[9px] text-slate-500 mt-0.5">📋 Nhấn để sao chép</div>
             </div>
-            <p className="text-[8px] text-slate-400">Gửi mã này cho bạn bè gia nhập!</p>
+            <p className="text-[9px] text-slate-500 text-center">Gửi mã này cho bạn bè!</p>
           </div>
 
-          {/* Theme selector */}
-          <div className="bg-[#1e293b] border-3 border-[#334155] shadow-[4px_4px_0_#000] p-4 flex flex-col gap-2">
-            <div className="text-[8px] text-slate-300 font-black uppercase mb-1">Chủ đề trận đấu</div>
-            {themes.map((t) => {
-              const isSelected = selectedTheme === t.id;
-              return (
+          <div className="bg-[#161b22] border border-white/8 rounded-2xl p-4">
+            <div className="text-[9px] text-slate-500 font-bold uppercase mb-2">Chủ đề trận</div>
+            <div className="flex flex-col gap-1.5">
+              {themes.map(t => (
                 <button
                   key={t.id}
                   onClick={() => onThemeSelect(t.id)}
-                  className={`w-full py-2 px-3 border-2 text-[8px] font-black uppercase shadow-[2px_2px_0_#000] active:translate-y-0.5 text-left transition-colors
-                    ${isSelected ? `${t.color} border-current text-white` : 'bg-[#0f172a] border-[#334155] text-slate-400 hover:border-slate-500'}`}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-colors text-left ${
+                    selectedTheme === t.id
+                      ? 'bg-amber-500/20 border border-amber-500/40 text-amber-300'
+                      : 'bg-[#0d1117] border border-white/5 text-slate-400 hover:border-white/15'}`}
                 >
-                  {isSelected ? '✓ ' : ''}{t.name}
+                  {t.icon} {t.label} {selectedTheme === t.id && '✓'}
                 </button>
-              );
-            })}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Right: Player slots */}
-        <div className="flex-1 bg-[#1e293b] border-3 border-[#334155] shadow-[4px_4px_0_#000] p-4 flex flex-col gap-4">
-          <div className="flex justify-between items-center border-b-2 border-[#334155] pb-3">
-            <h3 className="text-[9px] font-black text-white uppercase">
-              Thành viên ({players.length}/3)
-            </h3>
+        {/* Players */}
+        <div className="flex-1 bg-[#161b22] border border-white/8 rounded-2xl p-4 flex flex-col">
+          <div className="flex justify-between items-center mb-4 pb-3 border-b border-white/5">
+            <h2 className="text-sm font-black text-white">Người chơi ({players.length}/3)</h2>
             {players.length < 3 && (
               <button
                 onClick={onAddBot}
-                className="bg-purple-700 border-2 border-purple-500 text-white text-[8px] font-black px-3 py-1.5 uppercase shadow-[2px_2px_0_#000] hover:bg-purple-600 active:translate-y-0.5"
+                className="bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/30 text-purple-300 text-[10px] font-bold px-3 py-1.5 rounded-xl transition-colors"
               >
-                🤖 Thêm Bot AI
+                🤖 Thêm Bot
               </button>
             )}
           </div>
 
-          {/* Slots */}
-          <div className="flex flex-col gap-3">
-            {[0, 1, 2].map((slotIdx) => {
-              const player = players[slotIdx];
-              if (player) {
-                const isMe = player.id === socketId;
-                return (
-                  <div
-                    key={player.id}
-                    className={`flex justify-between items-center px-4 py-3 border-2 shadow-[2px_2px_0_#000]
-                      ${isMe ? 'bg-purple-900/40 border-purple-500' : 'bg-[#0f172a] border-[#334155]'}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-[#78350f] text-amber-300 border-2 border-amber-500 flex items-center justify-center font-black text-sm shadow-[1px_1px_0_#000]">
-                        {player.isBot ? '🤖' : '👾'}
-                      </div>
-                      <div className="text-[9px] font-black text-white">
-                        {player.name} {isMe ? <span className="text-purple-400">(BẠN)</span> : ''}
-                      </div>
+          <div className="flex flex-col gap-2 flex-1">
+            {[0, 1, 2].map(i => {
+              const p = players[i];
+              const isMe = p?.id === socketId;
+              if (p) return (
+                <div key={p.id} className={`flex justify-between items-center p-3 rounded-xl border transition-colors ${isMe ? 'bg-purple-900/20 border-purple-500/25' : 'bg-[#0d1117] border-white/5'}`}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-amber-900/40 border border-amber-500/30 flex items-center justify-center text-lg">
+                      {p.isBot ? '🤖' : '👾'}
                     </div>
                     <div>
-                      {player.isReady ? (
-                        <span className="text-[8px] bg-green-900 text-green-300 border-2 border-green-600 py-0.5 px-2 font-black uppercase shadow-[1px_1px_0_#000]">
-                          ✓ Sẵn sàng
-                        </span>
-                      ) : (
-                        <span className="text-[8px] bg-[#78350f] text-amber-300 border-2 border-amber-500 py-0.5 px-2 font-black uppercase shadow-[1px_1px_0_#000]">
-                          Chờ...
-                        </span>
-                      )}
+                      <div className="text-xs font-bold text-white">{p.name} {isMe && <span className="text-purple-400">(Bạn)</span>}</div>
+                      {p.isBot && <div className="text-[8px] text-slate-500">AI Bot</div>}
                     </div>
                   </div>
-                );
-              } else {
-                return (
-                  <div
-                    key={`empty-${slotIdx}`}
-                    className="border-2 border-dashed border-[#334155] px-4 py-3 text-center text-slate-500 text-[8px] font-black"
-                  >
-                    👾 Vị trí trống...
-                  </div>
-                );
-              }
+                  <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${p.isReady ? 'text-green-300 bg-green-900/30 border-green-700/50' : 'text-amber-300 bg-amber-900/20 border-amber-700/30'}`}>
+                    {p.isReady ? '✓ Sẵn sàng' : '⏳ Chờ'}
+                  </span>
+                </div>
+              );
+              return (
+                <div key={`e${i}`} className="flex items-center justify-center p-3 rounded-xl border border-dashed border-white/8 text-slate-600 text-[10px] font-semibold">
+                  👾 Vị trí trống...
+                </div>
+              );
             })}
           </div>
 
-          {/* Ready button */}
-          <div className="flex flex-col sm:flex-row gap-3 items-center justify-between border-t-2 border-[#334155] pt-4 mt-auto">
-            <p className="text-[8px] text-slate-400 leading-relaxed max-w-xs">
-              💡 Bắt đầu khi có ≥ 2 người bấm SẴN SÀNG.
+          {/* Action row */}
+          <div className="flex items-center justify-between pt-3 border-t border-white/5 mt-3 gap-3">
+            <p className="text-[9px] text-slate-500 flex-1">
+              💡 Bắt đầu khi ≥ 2 người bấm Sẵn Sàng.
             </p>
             <button
               onClick={onToggleReady}
-              className={`px-6 py-3 border-2 border-b-4 text-[9px] font-black uppercase shadow-[3px_3px_0_#000] active:translate-y-0.5 active:border-b-2 transition-all
-                ${myPlayer?.isReady
-                  ? 'bg-amber-500 border-amber-300 border-b-amber-700 text-black hover:bg-amber-400'
-                  : 'bg-green-600 border-green-400 border-b-green-900 text-white hover:bg-green-500'}`}
+              className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all active:scale-[0.97] ${
+                myPlayer?.isReady
+                  ? 'bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500/30'
+                  : 'bg-green-600 hover:bg-green-500 border border-green-500/50 text-white shadow-lg shadow-green-500/20'}`}
             >
-              {myPlayer?.isReady ? '✕ Hủy Sẵn Sàng' : '⚔ Sẵn Sàng Ngay'}
+              {myPlayer?.isReady ? '✕ Hủy' : '⚔️ Sẵn Sàng'}
             </button>
           </div>
         </div>
@@ -164,5 +124,3 @@ function MultiplayerLobby({
     </div>
   );
 }
-
-export default MultiplayerLobby;

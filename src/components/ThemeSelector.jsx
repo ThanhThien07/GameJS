@@ -1,121 +1,93 @@
 import React, { useState } from 'react';
 
-function ThemeSelector({ selectedTheme, onSelectTheme, onBack }) {
-  const [activeThemeId, setActiveThemeId] = useState(selectedTheme || 'monster');
+const THEMES = [
+  {
+    id: 'monster',
+    name: 'Đánh Quái Vật',
+    icon: '⚔️',
+    desc: 'Chiến đấu với quái thú, nhấp chuột gây sát thương',
+    glow: 'from-red-900/40 to-rose-900/40 border-red-500/30',
+    badge: 'bg-red-500',
+  },
+  {
+    id: 'wood',
+    name: 'Tiều Phu Chặt Gỗ',
+    icon: '🪓',
+    desc: 'Đốn hạ cây cổ thụ, thu hoạch gỗ kiếm tiền',
+    glow: 'from-green-900/40 to-emerald-900/40 border-green-500/30',
+    badge: 'bg-green-500',
+  },
+  {
+    id: 'stone',
+    name: 'Thợ Mỏ Đào Đá',
+    icon: '⛏️',
+    desc: 'Khai thác quặng khoáng từ hang mỏ bí ẩn',
+    glow: 'from-amber-900/40 to-yellow-900/40 border-amber-500/30',
+    badge: 'bg-amber-500',
+  },
+];
 
-  const themes = [
-    {
-      id: 'monster',
-      name: 'ĐÁNH QUÁI VẬT',
-      desc: 'Chiến đấu chống lại quái thú cổ xưa. Nhấp chuột để gây sát thương và đoạt vàng!',
-      image: `${import.meta.env.BASE_URL}assets/pixel_monster.png`,
-      badge: '⚔️ SĂN QUÁI',
-      borderColor: 'border-red-500',
-      activeBg: 'bg-red-900/30',
-      btnBg: 'bg-red-600 border-red-400 hover:bg-red-500',
-    },
-    {
-      id: 'wood',
-      name: 'TIỀU PHU CHẶT GỖ',
-      desc: 'Đốn hạ thân cây cổ thụ khổng lồ. Nhấp đốn gỗ kiếm tiền bán lâm sản!',
-      image: `${import.meta.env.BASE_URL}assets/pixel_wood.png`,
-      badge: '🪵 CHẶT GỖ',
-      borderColor: 'border-green-500',
-      activeBg: 'bg-green-900/30',
-      btnBg: 'bg-green-600 border-green-400 hover:bg-green-500',
-    },
-    {
-      id: 'stone',
-      name: 'THỢ MỎ ĐÀO ĐÁ',
-      desc: 'Khai thác khối quặng thạch anh ẩn giấu sâu dưới hang mỏ bí ẩn!',
-      image: `${import.meta.env.BASE_URL}assets/pixel_stone.png`,
-      badge: '🪨 ĐÀO ĐÁ',
-      borderColor: 'border-amber-500',
-      activeBg: 'bg-amber-900/30',
-      btnBg: 'bg-amber-500 border-amber-300 hover:bg-amber-400 text-black',
-    },
-  ];
+export default function ThemeSelector({ selectedTheme, onSelectTheme, onBack }) {
+  const [active, setActive] = useState(selectedTheme || 'monster');
 
   return (
-    <div
-      className="min-h-screen w-full bg-[#0f172a] flex flex-col"
-      style={{ fontFamily: "'Press Start 2P', 'Silkscreen', monospace" }}
-    >
+    <div className="min-h-screen bg-[#0d1117] flex flex-col" style={{ fontFamily: "'Be Vietnam Pro', sans-serif" }}>
+
       {/* Header */}
-      <header className="w-full bg-[#1e293b] border-b-4 border-black px-6 py-3 flex items-center justify-between sticky top-0 z-10 shadow-[0_4px_0_#000]">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 bg-[#0f172a] border-2 border-[#334155] text-slate-300 px-3 py-2 text-[9px] font-black uppercase shadow-[2px_2px_0_#000] hover:border-amber-400 active:translate-y-0.5"
-        >
-          ← QUAY LẠI
+      <header className="flex items-center justify-between px-5 py-3 bg-[#161b22] border-b border-white/5">
+        <button onClick={onBack} className="flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white bg-[#1c2333] border border-white/8 rounded-xl px-3 py-2 transition-colors">
+          ← Quay lại
         </button>
-        <h1 className="text-xs font-black text-amber-400 uppercase">CHỌN 1 TRONG 3 MÀN CHƠI</h1>
-        <div className="w-28" />
+        <div>
+          <h1 className="text-sm font-black text-white text-center">CHỌN CHỦ ĐỀ</h1>
+          <p className="text-[9px] text-slate-500 text-center">Chọn màn chơi bạn muốn</p>
+        </div>
+        <div className="w-20" />
       </header>
 
-      {/* Body */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-10">
-
-        {/* 3 Theme Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-          {themes.map((theme) => {
-            const isSelected = activeThemeId === theme.id;
+      {/* Theme cards */}
+      <div className="flex-1 flex flex-col items-center justify-center p-6">
+        <div className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-3 gap-4">
+          {THEMES.map(t => {
+            const isSelected = active === t.id;
             return (
               <div
-                key={theme.id}
-                onClick={() => setActiveThemeId(theme.id)}
-                className={`bg-[#1e293b] border-4 p-5 flex flex-col items-center text-center cursor-pointer shadow-[4px_4px_0_#000] transition-transform active:translate-y-1
-                  ${isSelected ? `${theme.borderColor} ${theme.activeBg}` : 'border-[#334155] hover:border-slate-500'}`}
+                key={t.id}
+                onClick={() => setActive(t.id)}
+                className={`bg-gradient-to-b ${t.glow} border-2 rounded-2xl p-5 flex flex-col items-center text-center cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] ${isSelected ? 'ring-2 ring-amber-500/60 ring-offset-2 ring-offset-[#0d1117]' : ''}`}
               >
-                {/* Top Badge Row */}
-                <div className="w-full flex justify-between items-center mb-3">
-                  {isSelected ? (
-                    <span className="text-[8px] px-2 py-0.5 bg-amber-400 text-black font-black border border-amber-600 uppercase shadow-[1px_1px_0_#000]">
-                      ✓ ĐÃ CHỌN
-                    </span>
-                  ) : <div />}
-                  <span className="text-[8px] px-2 py-0.5 bg-[#0f172a] text-slate-300 font-black border border-[#334155] uppercase">
-                    {theme.badge}
-                  </span>
-                </div>
+                {isSelected && (
+                  <div className="self-stretch flex justify-between mb-3">
+                    <span className="text-[8px] font-black text-amber-400 bg-amber-400/15 border border-amber-400/30 rounded-full px-2 py-0.5">✓ ĐÃ CHỌN</span>
+                    <span className={`text-[8px] text-white font-bold ${t.badge} rounded-full px-2 py-0.5`}>{t.icon}</span>
+                  </div>
+                )}
 
-                {/* Sprite / Image */}
-                <div className="w-28 h-28 flex items-center justify-center my-4">
-                  <img
-                    src={theme.image}
-                    alt={theme.name}
-                    className="w-full h-full object-contain pixel-art"
-                    style={{ imageRendering: 'pixelated' }}
-                  />
-                </div>
+                <div className="text-5xl mb-3">{t.icon}</div>
+                <h3 className="text-sm font-black text-white mb-1.5">{t.name}</h3>
+                <p className="text-[10px] text-slate-400 leading-relaxed mb-4">{t.desc}</p>
 
-                {/* Name & Desc */}
-                <h3 className="text-[10px] font-black text-white uppercase mb-2">{theme.name}</h3>
-                <p className="text-slate-400 text-[8px] leading-relaxed mb-4">{theme.desc}</p>
-
-                {/* Select Button */}
                 <button
-                  onClick={(e) => { e.stopPropagation(); setActiveThemeId(theme.id); onSelectTheme(theme.id); }}
-                  className={`w-full py-2.5 text-[9px] font-black uppercase border-2 shadow-[2px_2px_0_#000] active:translate-y-0.5 transition-transform text-white
-                    ${theme.btnBg}`}
+                  onClick={e => { e.stopPropagation(); setActive(t.id); onSelectTheme(t.id); }}
+                  className={`w-full py-2.5 rounded-xl text-[10px] font-black uppercase transition-all ${
+                    isSelected
+                      ? 'bg-amber-400 text-gray-900 hover:bg-amber-300 shadow-lg shadow-amber-500/20'
+                      : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/8'}`}
                 >
-                  {isSelected ? '▶ VÀO TRẬN' : 'CHỌN MÀN'}
+                  {isSelected ? '▶ VÀO TRẬN' : 'Chọn màn này'}
                 </button>
               </div>
             );
           })}
         </div>
 
-        {/* Bottom CTA */}
         <button
-          onClick={() => onSelectTheme(activeThemeId)}
-          className="mt-8 w-full max-w-md bg-amber-400 border-b-4 border-amber-700 border-2 border-amber-300 text-black text-xs font-black py-4 uppercase shadow-[4px_4px_0_#000] hover:bg-amber-300 active:translate-y-1 transition-all"
+          onClick={() => onSelectTheme(active)}
+          className="mt-6 w-full max-w-sm bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-gray-900 font-black py-4 rounded-2xl text-sm shadow-xl shadow-amber-500/20 active:scale-[0.98] transition-all"
         >
-          🎮 VÀO TRẬN CHƠI MÀN ĐÃ CHỌN
+          🎮 VÀO TRẬN NGAY
         </button>
       </div>
     </div>
   );
 }
-
-export default ThemeSelector;
