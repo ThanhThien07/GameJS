@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
-import { Wifi, WifiOff, Globe, HardDrive } from 'lucide-react';
 import MainMenu from './components/MainMenu';
 import ThemeSelector from './components/ThemeSelector';
 import GameArea from './components/GameArea';
@@ -22,11 +21,11 @@ function App() {
   const [playerName, setPlayerName] = useState(() => localStorage.getItem('clicker_player_name') || 'Người chơi 1');
   const [roomCode, setRoomCode] = useState('');
   const [roomData, setRoomData] = useState(null);
-  const [selectedTheme, setSelectedTheme] = useState('monster'); // 'monster' | 'wood' | 'stone'
+  const [selectedTheme, setSelectedTheme] = useState('monster');
 
-  // Session-scoped game state (stored in sessionStorage: persists across F5 reloads, clears on tab/browser close)
+  // Session-scoped game state
   const [offlineState, setOfflineState] = useState(() => {
-    localStorage.removeItem('offline_clicker_state_v1'); // Clear legacy long-term localStorage
+    localStorage.removeItem('offline_clicker_state_v1');
     const saved = sessionStorage.getItem('session_clicker_state_v1');
     if (saved) {
       try {
@@ -62,45 +61,34 @@ function App() {
       totalGoldEarned: 0,
       rebirthCount: 0,
       upgrades: {
-        clicker: 0,
-        battleAxe: 0,
-        diamondSword: 0,
-        pickaxe: 0,
-        minecart: 0,
-        drill: 0,
-        excavator: 0,
-        miningRig: 0
+        clicker: 0, battleAxe: 0, diamondSword: 0,
+        pickaxe: 0, minecart: 0, drill: 0,
+        excavator: 0, miningRig: 0
       }
     };
   });
 
-  // Save offline state to sessionStorage so it persists across F5 reloads but resets when tab is closed
   useEffect(() => {
     sessionStorage.setItem('session_clicker_state_v1', JSON.stringify(offlineState));
+  }, [offlineState]);
+
+  useEffect(() => {
+    localStorage.setItem('offline_clicker_state_v1', JSON.stringify(offlineState));
   }, [offlineState]);
 
   // Track network connectivity
   useEffect(() => {
     const handleOnline = () => setNetworkOnLine(true);
-    const handleOffline = () => {
-      setNetworkOnLine(false);
-      setSocketConnected(false);
-    };
+    const handleOffline = () => { setNetworkOnLine(false); setSocketConnected(false); };
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
+    return () => { window.removeEventListener('online', handleOnline); window.removeEventListener('offline', handleOffline); };
   }, []);
 
-  // Socket.io connection — created ONCE on mount, never recreated
+  // Socket.io connection — created ONCE on mount
   useEffect(() => {
     const isGitHubPages = window.location.hostname.includes('github.io');
-    if (isGitHubPages) {
-      setSocketConnected(false);
-      return;
-    }
+    if (isGitHubPages) { setSocketConnected(false); return; }
 
     let socket;
     try {
@@ -110,139 +98,67 @@ function App() {
         timeout: 10000,
         autoConnect: true
       });
-
       socketRef.current = socket;
+      socket.on('connect', () => setSocketConnected(true));
+      socket.on('disconnect', () => setSocketConnected(false));
+      socket.on('connect_error', () => setSocketConnected(false));
+      socket.on('roomUpdated', (data) => { setRoomData(data); if (data.code) setRoomCode(data.code); });
+      socket.on('gameStarted', (data) => { setRoomData(data); setGameScreen('playing'); });
+      socket.on('gameFinished', (data) => { setRoomData(data); setGameScreen('gameover'); });
+    } catch (err) { setSocketConnected(false); }
 
-      socket.on('connect', () => {
-        console.log('Connected to server over Socket.io');
-        setSocketConnected(true);
-      });
+    return () => { if (socket) socket.disconnect(); };
+  }, []);
 
-      socket.on('disconnect', () => {
-        console.log('Disconnected from server');
-        setSocketConnected(false);
-      });
-
-      socket.on('connect_error', (err) => {
-        console.warn('Socket connect_error:', err.message);
-        setSocketConnected(false);
-      });
-
-      // Real-time room listeners
-      socket.on('roomUpdated', (data) => {
-        setRoomData(data);
-        if (data.code) setRoomCode(data.code);
-      });
-
-      socket.on('gameStarted', (data) => {
-        setRoomData(data);
-        setGameScreen('playing');
-      });
-
-      socket.on('gameFinished', (data) => {
-        setRoomData(data);
-        setGameScreen('gameover');
-      });
-    } catch (err) {
-      console.warn('Socket initialization failed:', err);
-      setSocketConnected(false);
-    }
-
-    return () => {
-      if (socket) socket.disconnect();
-    };
-  }, []); // <-- Empty array: runs only ONCE on mount
-
-
-  // Persist offline state to localStorage on changes
-  useEffect(() => {
-    localStorage.setItem('offline_clicker_state_v1', JSON.stringify(offlineState));
-  }, [offlineState]);
-
-  // Combined Online Status (system is online AND backend socket is connected)
   const isOnlineAvailable = networkOnLine && socketConnected;
 
-  // Persist player name
   const handleSaveName = (name) => {
     setPlayerName(name);
     localStorage.setItem('clicker_player_name', name);
   };
 
-  // Create Socket Room
   const handleCreateRoom = (modeType) => {
     if (!isOnlineAvailable) return;
     setOnlineModeType(modeType);
-    
-    socketRef.current.emit('createRoom', { 
-      mode: modeType, 
-      playerName: playerName || 'Người chơi 1' 
-    }, (response) => {
-      if (response && response.success) {
-        setRoomData(response.room);
-        setRoomCode(response.room.code);
-        setGameScreen('lobby');
-      } else {
-        alert('Không thể tạo phòng. Vui lòng thử lại!');
-      }
+    socketRef.current.emit('createRoom', { mode: modeType, playerName: playerName || 'Người chơi 1' }, (response) => {
+      if (response && response.success) { setRoomData(response.room); setRoomCode(response.room.code); setGameScreen('lobby'); }
+      else alert('Không thể tạo phòng. Vui lòng thử lại!');
     });
   };
 
-  // Join Socket Room
   const handleJoinRoom = (code) => {
     if (!isOnlineAvailable) return;
-    
-    socketRef.current.emit('joinRoom', { 
-      code, 
-      playerName: playerName || 'Người chơi 2' 
-    }, (response) => {
-      if (response && response.success) {
-        setRoomData(response.room);
-        setRoomCode(response.room.code);
-        setOnlineModeType(response.room.mode);
-        setGameScreen('lobby');
-      } else {
-        alert(response.message || 'Mã phòng không hợp lệ!');
-      }
+    socketRef.current.emit('joinRoom', { code, playerName: playerName || 'Người chơi 2' }, (response) => {
+      if (response && response.success) { setRoomData(response.room); setRoomCode(response.room.code); setOnlineModeType(response.room.mode); setGameScreen('lobby'); }
+      else alert(response.message || 'Mã phòng không hợp lệ!');
     });
   };
 
-  // Add Bot to current room
   const handleAddBot = () => {
     if (!isOnlineAvailable || !roomCode) return;
-    socketRef.current.emit('addBot', { code: roomCode }, (res) => {
-      if (!res.success) alert(res.message);
-    });
+    socketRef.current.emit('addBot', { code: roomCode }, (res) => { if (!res.success) alert(res.message); });
   };
 
-  // Toggle Ready in current room
   const handleToggleReady = () => {
     if (!isOnlineAvailable || !roomCode) return;
     socketRef.current.emit('toggleReady', { code: roomCode });
   };
 
-  // Online Click Action
   const handleOnlineClick = () => {
     if (!isOnlineAvailable || !roomCode) return;
     socketRef.current.emit('clickItem', { code: roomCode });
   };
 
-  // Buy upgrade in competitive mode
   const handleBuyCompUpgrade = (upgradeId) => {
     if (!isOnlineAvailable || !roomCode) return;
-    socketRef.current.emit('buyCompUpgrade', { code: roomCode, upgradeId }, (res) => {
-      if (!res.success) alert(res.message);
-    });
+    socketRef.current.emit('buyCompUpgrade', { code: roomCode, upgradeId }, (res) => { if (!res.success) alert(res.message); });
   };
 
-  // Buy shared upgrade in co-op mode
   const handleBuyCoopUpgrade = (upgradeId) => {
     if (!isOnlineAvailable || !roomCode) return;
-    socketRef.current.emit('buyCoopUpgrade', { code: roomCode, upgradeId }, (res) => {
-      if (!res.success) alert(res.message);
-    });
+    socketRef.current.emit('buyCoopUpgrade', { code: roomCode, upgradeId }, (res) => { if (!res.success) alert(res.message); });
   };
 
-  // Return to menu
   const handleBackToMenu = () => {
     setGameScreen('menu');
     setPlayMode(null);
@@ -252,146 +168,99 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-between items-center py-4 relative">
-      {/* Network & Mode status header (Only when active in game/lobby) */}
-      {gameScreen !== 'menu' && (
-        <header className="w-full max-w-4xl flex flex-wrap justify-between items-center px-4 py-3 glass-panel z-10 gap-3 mb-6">
-          <div className="flex items-center gap-2">
-            <span className="font-extrabold text-lg tracking-wider gradient-text">
-              🌟 SIÊU CLICKER TAM HỢP 🌟
-            </span>
-            <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">v1.1.0</span>
-          </div>
+    <div
+      className="min-h-screen w-full bg-[#0f172a]"
+      style={{ fontFamily: "'Press Start 2P', 'Silkscreen', monospace" }}
+    >
+      {/* ── Screen Router: each screen is full-width, no centering wrapper ── */}
 
-          {/* Real-time Connectivity Status Badge */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              {isOnlineAvailable ? (
-                <span className="status-badge status-online">
-                  <Wifi size={14} className="animate-pulse" /> Trực Tuyến
-                </span>
-              ) : (
-                <span className="status-badge status-offline">
-                  <WifiOff size={14} /> Ngoại Tuyến
-                </span>
-              )}
-            </div>
-            
-            {playMode && (
-              <div className="flex items-center gap-1.5 text-sm bg-purple-100 px-3 py-1 rounded-full border border-purple-300">
-                {playMode === 'online' ? <Globe size={14} className="text-purple-600" /> : <HardDrive size={14} className="text-pink-600" />}
-                <span className="capitalize font-semibold text-purple-700">
-                  {playMode === 'online' ? `Online (${onlineModeType === 'coop' ? 'Hợp Tác' : 'Thi Đấu'})` : 'Offline'}
-                </span>
-              </div>
-            )}
-          </div>
-        </header>
+      {gameScreen === 'menu' && (
+        <MainMenu
+          isOnline={isOnlineAvailable}
+          playerName={playerName}
+          onSaveName={handleSaveName}
+          onSelectOffline={() => { setPlayMode('offline'); setGameScreen('theme-select'); }}
+          onSelectOnlineComp={() => { setPlayMode('online'); handleCreateRoom('competitive'); }}
+          onSelectOnlineCoop={() => { setPlayMode('online'); handleCreateRoom('coop'); }}
+          onJoinRoom={handleJoinRoom}
+        />
       )}
 
-      {/* Screen Router */}
-      <main className="w-full flex-grow flex justify-center items-center px-2">
-        {gameScreen === 'menu' && (
-          <MainMenu
-            isOnline={isOnlineAvailable}
-            playerName={playerName}
-            onSaveName={handleSaveName}
-            onSelectOffline={() => {
-              setPlayMode('offline');
-              setGameScreen('theme-select');
-            }}
-            onSelectOnlineComp={() => {
-              setPlayMode('online');
-              handleCreateRoom('competitive');
-            }}
-            onSelectOnlineCoop={() => {
-              setPlayMode('online');
-              handleCreateRoom('coop');
-            }}
-            onJoinRoom={handleJoinRoom}
-          />
-        )}
+      {gameScreen === 'theme-select' && (
+        <ThemeSelector
+          selectedTheme={selectedTheme}
+          onSelectTheme={(themeName) => { setSelectedTheme(themeName); setGameScreen('playing'); }}
+          onBack={handleBackToMenu}
+        />
+      )}
 
-        {gameScreen === 'theme-select' && (
-          <ThemeSelector
-            selectedTheme={selectedTheme}
-            onSelectTheme={(themeName) => {
-              setSelectedTheme(themeName);
-              setGameScreen('playing');
-            }}
-            onBack={handleBackToMenu}
-          />
-        )}
+      {gameScreen === 'lobby' && (
+        <MultiplayerLobby
+          roomData={roomData}
+          socketId={socketRef.current?.id}
+          onToggleReady={handleToggleReady}
+          onAddBot={handleAddBot}
+          onLeave={handleBackToMenu}
+          onThemeSelect={(t) => setSelectedTheme(t)}
+          selectedTheme={selectedTheme}
+        />
+      )}
 
-        {gameScreen === 'lobby' && (
-          <MultiplayerLobby
-            roomData={roomData}
-            socketId={socketRef.current?.id}
-            onToggleReady={handleToggleReady}
-            onAddBot={handleAddBot}
-            onLeave={handleBackToMenu}
-            onThemeSelect={(t) => setSelectedTheme(t)}
-            selectedTheme={selectedTheme}
-          />
-        )}
+      {gameScreen === 'playing' && (
+        <GameArea
+          mode={playMode}
+          onlineType={onlineModeType}
+          theme={selectedTheme}
+          offlineState={offlineState}
+          setOfflineState={setOfflineState}
+          roomData={roomData}
+          socketId={socketRef.current?.id}
+          onOnlineClick={handleOnlineClick}
+          onBuyCompUpgrade={handleBuyCompUpgrade}
+          onBuyCoopUpgrade={handleBuyCoopUpgrade}
+          onLeave={handleBackToMenu}
+          socket={socketRef.current}
+        />
+      )}
 
-        {gameScreen === 'playing' && (
-          <GameArea
-            mode={playMode}
-            onlineType={onlineModeType}
-            theme={selectedTheme}
-            offlineState={offlineState}
-            setOfflineState={setOfflineState}
-            roomData={roomData}
-            socketId={socketRef.current?.id}
-            onOnlineClick={handleOnlineClick}
-            onBuyCompUpgrade={handleBuyCompUpgrade}
-            onBuyCoopUpgrade={handleBuyCoopUpgrade}
-            onLeave={handleBackToMenu}
-            socket={socketRef.current}
-          />
-        )}
+      {gameScreen === 'gameover' && roomData && (
+        <div
+          className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#0f172a]"
+          style={{ fontFamily: "'Silkscreen', monospace" }}
+        >
+          <div className="bg-[#1e293b] border-4 border-amber-500 max-w-2xl w-full p-8 shadow-[6px_6px_0_#000] text-center">
+            <h2 className="text-lg font-black text-amber-400 mb-4 uppercase">🏆 KẾT QUẢ TRẬN ĐẤU 🏆</h2>
+            <p className="text-slate-300 mb-6 text-xs">Trận đấu competitive đã kết thúc! Thứ hạng:</p>
 
-        {gameScreen === 'gameover' && roomData && (
-          <div className="w-full max-w-2xl glass-panel p-8 text-center animate-bounce-slow">
-            <h2 className="text-3xl font-extrabold text-neon-glow text-yellow-400 mb-6 tracking-wide">🏆 KẾT QUẢ TRẬN ĐẤU 🏆</h2>
-            <p className="text-gray-300 mb-6 font-medium text-lg">Trận đấu competitive đã kết thúc! Thứ hạng các người chơi:</p>
-            
-            <div className="space-y-4 mb-8">
-              {[...roomData.players]
-                .sort((a, b) => b.score - a.score)
-                .map((player, idx) => {
-                  const isMe = player.id === socketRef.current?.id;
-                  const rankColors = ['bg-yellow-500/25 border-yellow-500 text-yellow-300', 'bg-slate-400/25 border-slate-400 text-slate-300', 'bg-amber-700/25 border-amber-700 text-amber-500'];
-                  return (
-                    <div 
-                      key={player.id} 
-                      className={`flex justify-between items-center px-6 py-4 rounded-xl border ${idx < 3 ? rankColors[idx] : 'bg-gray-800/40 border-gray-700'} ${isMe ? 'ring-2 ring-purple-500' : ''}`}
-                    >
-                      <div className="flex items-center gap-3 font-semibold">
-                        <span className="text-xl font-black">#{idx + 1}</span>
-                        <span>{player.name} {isMe ? '(Bạn)' : ''}</span>
-                        {player.isBot && <span className="text-xs bg-purple-900/60 px-1.5 py-0.5 rounded text-purple-300 border border-purple-700">AI</span>}
-                      </div>
-                      <div className="text-right">
-                        <div className="font-extrabold text-xl">{player.score.toLocaleString()}💰</div>
-                        <div className="text-xs opacity-75">{player.clicks} Click</div>
-                      </div>
+            <div className="flex flex-col gap-3 mb-8">
+              {[...roomData.players].sort((a, b) => b.score - a.score).map((player, idx) => {
+                const isMe = player.id === socketRef.current?.id;
+                const rankBg = ['bg-amber-900/40 border-amber-500', 'bg-slate-700/40 border-slate-500', 'bg-orange-900/40 border-orange-700'];
+                return (
+                  <div key={player.id} className={`flex justify-between items-center px-4 py-3 border-2 ${idx < 3 ? rankBg[idx] : 'bg-[#0f172a] border-[#334155]'} ${isMe ? 'ring-2 ring-purple-500' : ''}`}>
+                    <div className="flex items-center gap-3 text-xs font-black">
+                      <span>#{idx + 1}</span>
+                      <span>{player.name} {isMe ? '(Bạn)' : ''}</span>
+                      {player.isBot && <span className="text-[8px] bg-purple-900 border border-purple-500 px-1 text-purple-300">AI</span>}
                     </div>
-                  );
-                })}
+                    <div className="text-right">
+                      <div className="text-sm font-black text-amber-400">{player.score.toLocaleString()}🪙</div>
+                      <div className="text-[9px] text-slate-400">{player.clicks} Click</div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            <button onClick={handleBackToMenu} className="btn-primary">
+            <button
+              onClick={handleBackToMenu}
+              className="bg-amber-400 border-b-4 border-amber-700 border-2 border-amber-300 text-black text-xs font-black px-8 py-3 uppercase shadow-[4px_4px_0_#000] hover:bg-amber-300 active:translate-y-1 transition-all"
+            >
               Trở về Menu Chính
             </button>
           </div>
-        )}
-      </main>
-
-      <footer className="mt-8 text-xs text-slate-400 font-medium">
-        Nguyễn Hoàng Hùng (501250384) — Dự Án Game Clicker Học Tập
-      </footer>
+        </div>
+      )}
     </div>
   );
 }
