@@ -14,6 +14,29 @@ const NAV_ITEMS = [
 ];
 
 /* ─────────────────────────────────────────────
+   DAILY GIFT CONFIG & STREAK HELPERS
+───────────────────────────────────────────── */
+const DAILY_REWARDS = [
+  { day: 1, gold: 500,    crystals: 0 },
+  { day: 2, gold: 1500,   crystals: 0 },
+  { day: 3, gold: 3500,   crystals: 0 },
+  { day: 4, gold: 8000,   crystals: 0 },
+  { day: 5, gold: 20000,  crystals: 0 },
+  { day: 6, gold: 50000,  crystals: 0 },
+  { day: 7, gold: 100000, crystals: 5 }
+];
+
+function getTodayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function getYesterdayStr() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().split('T')[0];
+}
+
+/* ─────────────────────────────────────────────
    HELPER
 ───────────────────────────────────────────── */
 function fmt(n) {
@@ -22,7 +45,6 @@ function fmt(n) {
   return Math.floor(n).toString();
 }
 
-// Balanced difficulty upgrade cost scaling factor (2.0)
 function getUpgradeCost(base, level) {
   return Math.floor(base * Math.pow(2.0, level));
 }
@@ -56,7 +78,30 @@ export default function GameArea({
   const [showSettings, setShowSettings]       = useState(false);
   const [showRebirth, setShowRebirth]         = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
+  const [showDailyGift, setShowDailyGift]     = useState(false);
   const lastClick = useRef(0);
+
+  /* Daily streak tracking state in localStorage */
+  const [streakInfo, setStreakInfo] = useState(() => {
+    const saved = localStorage.getItem('daily_streak_data_v1');
+    const today = getTodayStr();
+    const yesterday = getYesterdayStr();
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const last = parsed.lastClaimDate;
+        if (last === today) {
+          return { streakDay: parsed.streakDay || 1, claimedToday: true, lastClaimDate: last };
+        } else if (last === yesterday) {
+          return { streakDay: parsed.streakDay || 1, claimedToday: false, lastClaimDate: last };
+        } else {
+          // Reset streak if skipped day
+          return { streakDay: 1, claimedToday: false, lastClaimDate: last };
+        }
+      } catch (e) {}
+    }
+    return { streakDay: 1, claimedToday: false, lastClaimDate: '' };
+  });
 
   /* floating text helper */
   const spawn = useCallback((text, x, y, color = '#f59e0b') => {
@@ -65,7 +110,7 @@ export default function GameArea({
     setTimeout(() => setFloats(f => f.filter(t => t.id !== id)), 850);
   }, []);
 
-  /* defeat target — monster HP scaling increased to 1.45 for balanced challenge */
+  /* defeat target */
   const defeatTarget = useCallback((lv) => {
     const reward = lv * 20 + Math.floor(Math.random() * lv * 15);
     spawn(`💥 PHÁ VỠ! +${reward}💰`, 50, 45, '#22c55e');
@@ -127,6 +172,28 @@ export default function GameArea({
     };
   }, [socket, spawn]);
 
+  /* Claim Daily Gift */
+  const claimDailyGift = () => {
+    if (streakInfo.claimedToday) return;
+    soundManager.playBuy();
+    const reward = DAILY_REWARDS.find(r => r.day === streakInfo.streakDay) || DAILY_REWARDS[0];
+    
+    setOfflineState(p => ({
+      ...p,
+      money: p.money + reward.gold,
+      soulCrystals: (p.soulCrystals || 0) + (reward.crystals || 0),
+      totalGoldEarned: (p.totalGoldEarned || 0) + reward.gold
+    }));
+
+    const today = getTodayStr();
+    const nextStreak = (streakInfo.streakDay % 7) + 1;
+    const updated = { streakDay: nextStreak, lastClaimDate: today };
+    setStreakInfo({ streakDay: nextStreak, claimedToday: true, lastClaimDate: today });
+    localStorage.setItem('daily_streak_data_v1', JSON.stringify(updated));
+
+    spawn(`🎁 NHẬN QUÀ NGÀY ${streakInfo.streakDay}! +${reward.gold.toLocaleString()}🪙`, 50, 40, '#ec4899');
+  };
+
   /* skills */
   const activateFrenzy = () => {
     if (frenzyCd > 0 || frenzy) return;
@@ -150,6 +217,7 @@ export default function GameArea({
     setOfflineState(fresh); setLevel(1); setHp(100); setMaxHp(100); setEnergy(0); setMultiplier(false);
     sessionStorage.setItem('session_clicker_state_v1', JSON.stringify(fresh));
     localStorage.removeItem('offline_clicker_state_v1');
+    localStorage.removeItem('clicker_backup_save_v1');
     setShowSettings(false);
     spawn('🔄 RESET THÀNH CÔNG!', 50, 50, '#ef4444');
   };
@@ -162,7 +230,7 @@ export default function GameArea({
     spawn(`🌟 TRÙNG SINH! +${crystals} Tinh Thể`, 50, 50, '#a855f7');
   };
 
-  /* tap action — exact match between gold earned & floating damage */
+  /* tap action */
   const handleTap = (e) => {
     soundManager.playClick();
     setShaking(true); setTimeout(() => setShaking(false), 120);
@@ -196,7 +264,7 @@ export default function GameArea({
     }
   };
 
-  /* Theme-specific 4 upgrade items with dynamic costs and stats */
+  /* Theme-specific 4 upgrade items */
   const getUpgrades = () => {
     const list = {
       monster: [
@@ -236,7 +304,6 @@ export default function GameArea({
     spawn(`✅ +${up.baseVal} DPC!`, 50, 20, '#22c55e');
   };
 
-  /* click target sprite image based on theme */
   const clickImg = () => {
     const base = import.meta.env.BASE_URL;
     const map = { monster:`${base}assets/pixel_monster.png`, wood:`${base}assets/pixel_wood.png`, stone:`${base}assets/pixel_stone.png` };
@@ -248,7 +315,6 @@ export default function GameArea({
   const gold = mode === 'offline' ? offlineState.money : (me?.score || 0);
   const dps  = mode === 'offline' ? offlineState.dps  : (me?.dps  || 0);
   const upgrades = getUpgrades();
-
   const stageBgClass = `bg-stage-${theme || 'monster'}`;
 
   /* ─── RENDER ─── */
@@ -283,7 +349,7 @@ export default function GameArea({
           {/* Diamond */}
           <div className="currency-pill-purple">
             <span style={{ fontSize: '16px' }}>💎</span>
-            <div className="fw-bold text-light" style={{ fontSize: '12px' }}>{(offlineState.soulCrystals || 1250).toLocaleString()}</div>
+            <div className="fw-bold text-light" style={{ fontSize: '12px' }}>{(offlineState.soulCrystals || 0).toLocaleString()}</div>
             <button className="btn-plus-icon-purple">+</button>
           </div>
 
@@ -404,13 +470,23 @@ export default function GameArea({
             <div className="text-white fw-bold text-uppercase lh-1 mt-1" style={{ fontSize: '9px' }}>BOOST X2</div>
           </div>
 
-          {/* Daily Gift */}
-          <div className="boost-card-pink">
+          {/* Daily Gift (QUÀ NGÀY 🎁) */}
+          <div
+            onClick={() => setShowDailyGift(true)}
+            className="boost-card-pink position-relative"
+          >
+            {!streakInfo.claimedToday && (
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light" style={{ fontSize: '8px' }}>
+                NEW
+              </span>
+            )}
             <div className="d-flex align-items-center justify-content-center rounded-3 mx-auto mb-2" style={{ width: '42px', height: '42px', backgroundColor: 'rgba(236,72,153,0.3)', border: '1px solid rgba(236,72,153,0.5)', fontSize: '20px' }}>
               🎁
             </div>
             <div className="text-light fw-bold text-uppercase lh-1" style={{ fontSize: '9px' }}>QUÀ NGÀY</div>
-            <div className="text-secondary lh-1 mt-1" style={{ fontSize: '8px' }}>Nhận quà</div>
+            <div className="text-pink fw-semibold lh-1 mt-1" style={{ fontSize: '8px', color: '#f472b6' }}>
+              {streakInfo.claimedToday ? '✓ Đã nhận' : 'Nhận ngay!'}
+            </div>
           </div>
         </aside>
       </div>
@@ -454,16 +530,82 @@ export default function GameArea({
           MODALS
           ══════════════════════════════════════ */}
 
+      {/* Daily Gift Modal (QUÀ NGÀY 🎁) */}
+      {showDailyGift && (
+        <div className="modal d-block bg-dark bg-opacity-75 z-50" tabIndex="-1" onClick={() => setShowDailyGift(false)}>
+          <div className="modal-dialog modal-dialog-centered modal-md" onClick={e => e.stopPropagation()}>
+            <div className="modal-content glass-panel-main border border-pink text-light p-4 rounded-4">
+              <div className="d-flex justify-content-between align-items-center border-bottom border-secondary border-opacity-30 pb-3 mb-3">
+                <div className="d-flex align-items-center gap-2">
+                  <span style={{ fontSize: '24px' }}>🎁</span>
+                  <div>
+                    <h5 className="h6 fw-black text-pink uppercase m-0" style={{ color: '#f472b6' }}>ĐIỂM DANH QUÀ NGÀY</h5>
+                    <p className="text-secondary m-0" style={{ fontSize: '10px' }}>Đăng nhập liên tục để nhận thưởng lớn nhất!</p>
+                  </div>
+                </div>
+                <button type="button" className="btn-close btn-close-white" onClick={() => setShowDailyGift(false)}></button>
+              </div>
+
+              {/* 7-Day Rewards Grid */}
+              <div className="row g-2 mb-3">
+                {DAILY_REWARDS.map(r => {
+                  const isCurrent = streakInfo.streakDay === r.day;
+                  const isPast = r.day < streakInfo.streakDay || (streakInfo.claimedToday && isCurrent);
+                  return (
+                    <div key={r.day} className="col-4 col-md-3">
+                      <div
+                        className={`p-2.5 rounded-3 border text-center transition-all ${
+                          isCurrent && !streakInfo.claimedToday
+                            ? 'bg-pink bg-opacity-20 border-pink text-light shadow-lg scale-105 ring-2 ring-pink'
+                            : isPast
+                            ? 'bg-dark bg-opacity-60 border-secondary border-opacity-30 text-secondary'
+                            : 'bg-dark bg-opacity-40 border-secondary border-opacity-20 text-light'
+                        }`}
+                      >
+                        <div className="fw-bold uppercase mb-1" style={{ fontSize: '9px' }}>Ngày {r.day}</div>
+                        <div style={{ fontSize: '20px' }}>{r.crystals > 0 ? '💎' : '🪙'}</div>
+                        <div className="fw-black text-warning mt-1" style={{ fontSize: '10px' }}>+{fmt(r.gold)}</div>
+                        {r.crystals > 0 && <div className="fw-black text-purple" style={{ fontSize: '9px' }}>+{r.crystals} 💎</div>}
+                        <div className="mt-1" style={{ fontSize: '8px' }}>
+                          {isPast ? <span className="text-success fw-bold">✓ Đã nhận</span> : isCurrent ? <span className="text-warning fw-bold">Hôm nay</span> : <span className="text-secondary">Chờ...</span>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Action Claim Button */}
+              <button
+                onClick={claimDailyGift}
+                disabled={streakInfo.claimedToday}
+                className={`btn w-100 fw-black py-2.5 rounded-3 uppercase shadow-lg ${
+                  streakInfo.claimedToday
+                    ? 'btn-secondary opacity-50'
+                    : 'btn-danger text-light'
+                }`}
+                style={{
+                  fontSize: '13px',
+                  background: streakInfo.claimedToday ? undefined : 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)'
+                }}
+              >
+                {streakInfo.claimedToday ? '✓ ĐÃ NHẬN QUÀ HÔM NAY' : `🎁 NHẬN QUÀ NGÀY ${streakInfo.streakDay}`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Settings Modal */}
       {showSettings && (
-        <div className="modal d-block bg-dark bg-opacity-75" tabIndex="-1" onClick={() => setShowSettings(false)}>
+        <div className="modal d-block bg-dark bg-opacity-75 z-50" tabIndex="-1" onClick={() => setShowSettings(false)}>
           <div className="modal-dialog modal-dialog-centered modal-sm" onClick={e => e.stopPropagation()}>
-            <div className="modal-content bg-dark border border-secondary">
-              <div className="modal-header border-bottom border-secondary">
+            <div className="modal-content bg-dark border border-secondary p-3 rounded-4">
+              <div className="modal-header border-bottom border-secondary pb-2 mb-2">
                 <h5 className="modal-title text-light fw-bold" style={{ fontSize: '14px' }}>⚙️ CÀI ĐẶT GAME</h5>
                 <button type="button" className="btn-close btn-close-white" onClick={() => setShowSettings(false)}></button>
               </div>
-              <div className="modal-body d-flex flex-column gap-2">
+              <div className="modal-body d-flex flex-column gap-2 p-0">
                 <button onClick={() => { soundManager.toggleMute(); setMuted(!muted); }} className="btn btn-outline-light d-flex justify-content-between text-start" style={{ fontSize: '12px' }}>
                   <span>Âm thanh</span><span>{muted ? '🔇' : '🔊'}</span>
                 </button>
@@ -486,15 +628,15 @@ export default function GameArea({
 
       {/* Rebirth Modal */}
       {showRebirth && (
-        <div className="modal d-block bg-dark bg-opacity-75" tabIndex="-1" onClick={() => setShowRebirth(false)}>
+        <div className="modal d-block bg-dark bg-opacity-75 z-50" tabIndex="-1" onClick={() => setShowRebirth(false)}>
           <div className="modal-dialog modal-dialog-centered" onClick={e => e.stopPropagation()}>
-            <div className="modal-content bg-dark border border-purple">
-              <div className="modal-header border-bottom border-purple">
+            <div className="modal-content bg-dark border border-purple p-3 rounded-4">
+              <div className="modal-header border-bottom border-purple pb-2 mb-2">
                 <h5 className="modal-title text-purple fw-bold" style={{ fontSize: '14px' }}>⚡ ĐIỆN TRÙNG SINH</h5>
                 <button type="button" className="btn-close btn-close-white" onClick={() => setShowRebirth(false)}></button>
               </div>
-              <div className="modal-body text-center">
-                <p className="text-secondary" style={{ fontSize: '11px' }}>Reset tiền & nâng cấp để nhận Tinh Thể Linh Hồn vĩnh viễn!</p>
+              <div className="modal-body text-center p-0">
+                <p className="text-secondary mb-2" style={{ fontSize: '11px' }}>Reset tiền & nâng cấp để nhận Tinh Thể Linh Hồn vĩnh viễn!</p>
                 <div className="bg-surface-dark border border-purple rounded p-3 mb-3 text-start" style={{ fontSize: '12px' }}>
                   <div className="d-flex justify-content-between mb-1"><span className="text-secondary">Tiền vàng:</span><span className="text-warning fw-bold">{Math.floor(offlineState.money).toLocaleString()} 🪙</span></div>
                   <div className="d-flex justify-content-between mb-1"><span className="text-secondary">Tinh thể hiện có:</span><span className="text-purple fw-bold">💎 {offlineState.soulCrystals || 0}</span></div>
@@ -502,7 +644,7 @@ export default function GameArea({
                 </div>
                 <div className="d-flex gap-2">
                   <button onClick={() => setShowRebirth(false)} className="btn btn-secondary flex-grow-1" style={{ fontSize: '12px' }}>Hủy</button>
-                  <button onClick={doRebirth} disabled={offlineState.money < 50000} className="btn btn-purple flex-grow-1" style={{ fontSize: '12px' }}>Trùng Sinh!</button>
+                  <button onClick={doRebirth} disabled={offlineState.money < 50000} className="btn btn-purple flex-grow-1 text-white" style={{ fontSize: '12px', background: '#8b5cf6' }}>Trùng Sinh!</button>
                 </div>
               </div>
             </div>
@@ -512,14 +654,14 @@ export default function GameArea({
 
       {/* Achievements Modal */}
       {showAchievements && (
-        <div className="modal d-block bg-dark bg-opacity-75" tabIndex="-1" onClick={() => setShowAchievements(false)}>
+        <div className="modal d-block bg-dark bg-opacity-75 z-50" tabIndex="-1" onClick={() => setShowAchievements(false)}>
           <div className="modal-dialog modal-dialog-centered" onClick={e => e.stopPropagation()}>
-            <div className="modal-content bg-dark border border-warning">
-              <div className="modal-header border-bottom border-warning">
+            <div className="modal-content bg-dark border border-warning p-3 rounded-4">
+              <div className="modal-header border-bottom border-warning pb-2 mb-2">
                 <h5 className="modal-title text-warning fw-bold" style={{ fontSize: '14px' }}>🏆 BẢNG THÀNH TỰU</h5>
                 <button type="button" className="btn-close btn-close-white" onClick={() => setShowAchievements(false)}></button>
               </div>
-              <div className="modal-body d-flex flex-column gap-2" style={{ maxHeight: '250px', overflowY: 'auto' }}>
+              <div className="modal-body d-flex flex-column gap-2 p-0" style={{ maxHeight: '250px', overflowY: 'auto' }}>
                 {[
                   { label:'👉 Nhấp Nháy Nhẹ Nhàng', desc:`Đạt 100 click (${offlineState.totalClicks||0}/100)`,       done:(offlineState.totalClicks||0)    >= 100    },
                   { label:'💰 Triệu Phú Clicker',    desc:`Tích 100,000 vàng (${Math.floor(offlineState.totalGoldEarned||0).toLocaleString()}/100,000)`, done:(offlineState.totalGoldEarned||0) >= 100000 },
