@@ -249,9 +249,11 @@ export default function GameArea({
   const dps  = mode === 'offline' ? offlineState.dps  : (me?.dps  || 0);
   const upgrades = getUpgrades();
 
+  const stageBgClass = `bg-stage-${theme || 'monster'}`;
+
   /* ─── RENDER ─── */
   return (
-    <div className="d-flex flex-column min-vh-100 bg-dark text-light" style={{ fontFamily: "'Be Vietnam Pro', sans-serif" }}>
+    <div className={`d-flex flex-column min-vh-100 text-light ${stageBgClass}`} style={{ fontFamily: "'Be Vietnam Pro', sans-serif" }}>
 
       {/* ══════════════════════════════════════
           HEADER
