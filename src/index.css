@@ -1,30 +1,26 @@
-:root {
-  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
-  font-weight: 500;
-  color-scheme: dark;
-  
-  /* MASTER UI SYSTEM DESIGN TOKENS */
-  --bg-main: #0F172A;
-  --bg-surface: #1E293B;
-  --bg-surface-hover: #273449;
-  --primary-purple: #8B5CF6;
-  --primary-blue: #3B82F6;
-  --accent-gold: #F59E0B;
-  --success-green: #10B981;
-  --danger-red: #EF4444;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --radius-button: 12px;
-  --radius-card: 16px;
-  --radius-modal: 20px;
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap');
 
+/* ============================================================
+   ROOT — Pixel RPG Design Tokens
+   ============================================================ */
+:root {
+  font-family: 'Silkscreen', 'Press Start 2P', monospace;
+  color-scheme: dark;
+  --bg-main: #0f172a;
+  --bg-surface: #1e293b;
+  --pixel-gold: #f59e0b;
+  --pixel-purple: #7c3aed;
+  --pixel-green: #16a34a;
+  --pixel-red: #dc2626;
+  --pixel-blue: #2563eb;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
   color: #f8fafc;
   background-color: #0f172a;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: none; /* keep pixel crisp */
+  -moz-osx-font-smoothing: unset;
 }
 
 body {
@@ -32,9 +28,12 @@ body {
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: var(--bg-main);
-  background-image: radial-gradient(#334155 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
+  background: #0f172a;
+  /* Pixel grid pattern */
+  background-image:
+    linear-gradient(rgba(51, 65, 85, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(51, 65, 85, 0.3) 1px, transparent 1px);
+  background-size: 16px 16px;
   color: var(--text-primary);
   overflow-x: hidden;
 }
@@ -47,564 +46,9 @@ body {
   text-align: left;
 }
 
-/* ==============================================
-   DARK MODE ADAPTABILITY (Fixes browser Dark Mode extensions)
-   ============================================== */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f8fafc;
-    background-color: #0f172a;
-  }
-  body {
-    background: #0f172a;
-    background-image: radial-gradient(#334155 1.5px, transparent 1.5px);
-  }
-  .glass-panel, .block-panel {
-    background: #1e293b !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
-  }
-  .block-panel-header {
-    background: #0f172a !important;
-    border-color: #334155 !important;
-    color: #cbd5e1 !important;
-  }
-  .text-slate-800, .text-slate-700, .text-slate-600 {
-    color: #f1f5f9 !important;
-  }
-  .text-slate-500 {
-    color: #cbd5e1 !important;
-  }
-  .bg-slate-50 {
-    background-color: #1e293b !important;
-    color: #f8fafc !important;
-  }
-  .bg-white {
-    background-color: #1e293b !important;
-    color: #f8fafc !important;
-  }
-  .btn-secondary {
-    background: #1e293b !important;
-    border-color: #475569 !important;
-    color: #f8fafc !important;
-  }
-  .upgrade-row-modern {
-    background: #1e293b !important;
-    border-color: #334155 !important;
-  }
-  .upgrade-row-name {
-    color: #f8fafc !important;
-  }
-}
-
-/* ==============================================
-   GLASS PANELS
-   ============================================== */
-.glass-panel {
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #0f172a;
-}
-
-.glass-panel:hover {
-  border-color: #94a3b8;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-}
-
-/* ==============================================
-   GRADIENT TEXT & DARK MODE SAFE FALLBACK
-   ============================================== */
-.gradient-text {
-  color: #a855f7; /* Dark mode & browser extension fallback */
-  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* KPI Metric Cards like Dashboard Reference */
-.kpi-card {
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 10px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-  transition: all 0.2s ease;
-  text-align: left;
-}
-.kpi-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-}
-.kpi-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-/* ==============================================
-   BUTTONS
-   ============================================== */
-.btn-primary {
-  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
-  border: none;
-  color: #ffffff !important;
-  padding: 0.8rem 1.6rem;
-  border-radius: 14px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
-  transition: all 0.15s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translateY(1px);
-}
-
-.btn-primary:disabled {
-  background: #cbd5e1;
-  color: #94a3b8 !important;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.btn-secondary {
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #334155;
-  padding: 0.75rem 1.3rem;
-  border-radius: 14px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-  transition: all 0.15s ease;
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background: #f8fafc;
-  color: #0f172a;
-  border-color: #94a3b8;
-  transform: translateY(-2px);
-}
-
-/* ==============================================
-   BLOCK PANELS (GAME 3-COLUMN LAYOUT)
-   ============================================== */
-.block-panel {
-  background: #ffffff;
-  border: 2px solid #e2e8f0;
-  border-radius: 18px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-  color: #0f172a;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.block-panel-header {
-  background: #f8fafc;
-  border-bottom: 2px solid #e2e8f0;
-  padding: 10px 14px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 800;
-  font-size: 0.85rem;
-  color: #475569;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border-radius: 14px 14px 0 0;
-  margin: -14px -14px 14px -14px;
-  text-align: left;
-}
-
-/* ==============================================
-   GAME HEADER BANNER
-   ============================================== */
-.screenshot-banner {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a21caf 100%);
-  border-radius: 16px;
-  padding: 10px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  color: white !important;
-  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
-}
-
-/* ==============================================
-   CENTER CLICK AREA - THEMED BACKGROUNDS
-   ============================================== */
-.game-theme-container {
-  border-radius: 22px;
-  border: 2px solid #e2e8f0;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  overflow: hidden;
-  position: relative;
-}
-
-.theme-bg-monster {
-  background: linear-gradient(160deg, #fff5f5 0%, #ffe3e3 60%, #fecaca 100%);
-  border-color: #fca5a5;
-}
-
-.theme-bg-wood {
-  background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 60%, #bbf7d0 100%);
-  border-color: #86efac;
-}
-
-.theme-bg-stone {
-  background: linear-gradient(160deg, #f8fafc 0%, #e2e8f0 60%, #cbd5e1 100%);
-  border-color: #94a3b8;
-}
-
-/* Capybara / default sunny theme */
-.sunburst-container {
-  background: linear-gradient(160deg, #06b6d4 0%, #0ea5e9 40%, #38bdf8 100%);
-  border-radius: 22px;
-  border: 2px solid #7dd3fc;
-  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.25);
-  overflow: hidden;
-  position: relative;
-}
-
-.sunburst-rays {
-  position: absolute;
-  inset: 0;
-  border-radius: 22px;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(255, 235, 59, 0.18) 10deg,
-    transparent 20deg,
-    transparent 25deg,
-    rgba(255, 235, 59, 0.18) 35deg,
-    transparent 45deg,
-    transparent 50deg,
-    rgba(255, 235, 59, 0.18) 60deg,
-    transparent 70deg,
-    transparent 80deg,
-    rgba(255, 235, 59, 0.18) 90deg,
-    transparent 100deg,
-    transparent 110deg,
-    rgba(255, 235, 59, 0.18) 120deg,
-    transparent 130deg,
-    transparent 155deg,
-    rgba(255, 235, 59, 0.18) 165deg,
-    transparent 175deg,
-    transparent 200deg,
-    rgba(255, 235, 59, 0.18) 210deg,
-    transparent 220deg,
-    transparent 240deg,
-    rgba(255, 235, 59, 0.18) 250deg,
-    transparent 260deg,
-    transparent 285deg,
-    rgba(255, 235, 59, 0.18) 295deg,
-    transparent 305deg,
-    transparent 330deg,
-    rgba(255, 235, 59, 0.18) 340deg,
-    transparent 350deg
-  );
-  animation: rotateSunburst 18s linear infinite;
-  pointer-events: none;
-  z-index: 0;
-}
-
-@keyframes rotateSunburst {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* ==============================================
-   CLICK OBJECT & ANIMATIONS
-   ============================================== */
-.cartoon-clicker-object {
-  cursor: pointer;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.18));
-  transition: transform 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.1s ease;
-}
-
-.cartoon-clicker-object:hover {
-  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.28)) brightness(1.05);
-}
-
-.clicker-object {
-  cursor: pointer;
-  transition: transform 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.clicker-object:hover {
-  transform: scale(1.05);
-}
-
-.clicker-object:active {
-  transform: scale(0.92);
-}
-
-.click-shake {
-  animation: clickBounce 0.12s ease-in-out;
-}
-
-@keyframes clickBounce {
-  0% { transform: scale(1); }
-  50% { transform: scale(0.88); }
-  100% { transform: scale(1); }
-}
-
-/* ==============================================
-   FLOATING SCORE NUMBERS
-   ============================================== */
-.floating-text {
-  position: absolute;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900;
-  font-size: 1.4rem;
-  pointer-events: none;
-  animation: floatUp 0.85s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-  z-index: 50;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  white-space: nowrap;
-}
-
-@keyframes floatUp {
-  0% {
-    opacity: 1;
-    transform: translateY(0) scale(0.8);
-  }
-  30% {
-    transform: translateY(-20px) scale(1.25);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-60px) scale(1);
-  }
-}
-
-/* ==============================================
-   MULTIPLIER CIRCLE (ENERGY x2 BUTTON)
-   ============================================== */
-.multiplier-circle-ad {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #8b5cf6 0%, #db2777 100%);
-  color: white !important;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 3px solid rgba(255,255,255,0.4);
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-  transition: all 0.2s ease;
-  cursor: default;
-  user-select: none;
-}
-
-/* ==============================================
-   UPGRADE ITEM ROWS
-   ============================================== */
-.upgrade-list-scroll {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 500px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.upgrade-row-modern {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  position: relative;
-  overflow: hidden;
-  user-select: none;
-  width: 100%;
-}
-
-.upgrade-row-modern:hover:not(:disabled) {
-  border-color: #7c3aed;
-  background: #f5f3ff;
-  transform: translateX(3px);
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
-}
-
-.upgrade-row-modern:active:not(:disabled) {
-  transform: translateX(1px);
-}
-
-.upgrade-row-modern:disabled {
-  background: #f8fafc;
-  border-color: #f1f5f9;
-  color: #94a3b8;
-  cursor: not-allowed;
-}
-
-.upgrade-row-icon-box {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  border: 1px solid #cbd5e1;
-  background: #f8fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.upgrade-row-modern:hover:not(:disabled) .upgrade-row-icon-box {
-  border-color: #a78bfa;
-  background: #ede9fe;
-}
-
-.upgrade-row-details {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  margin-left: 10px;
-  flex-grow: 1;
-  min-width: 0;
-}
-
-.upgrade-row-name {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  font-size: 0.82rem;
-  color: #0f172a;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.upgrade-row-stat {
-  font-size: 0.72rem;
-  color: #64748b;
-  font-weight: 600;
-  margin-top: 1px;
-}
-
-.upgrade-row-price-btn {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: 10px;
-  color: #166534;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 800;
-  font-size: 0.75rem;
-  padding: 5px 10px;
-  min-width: 70px;
-  text-align: center;
-  transition: all 0.15s ease;
-  flex-shrink: 0;
-}
-
-.upgrade-row-modern:hover:not(:disabled) .upgrade-row-price-btn {
-  background: #dcfce7;
-  border-color: #86efac;
-}
-
-.upgrade-row-modern:disabled .upgrade-row-price-btn {
-  background: #e2e8f0;
-  color: #94a3b8;
-  border-color: #cbd5e1;
-}
-
-.upgrade-row-level {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  font-size: 0.62rem;
-  font-weight: 800;
-  background: #7c3aed;
-  color: white !important;
-  padding: 1px 6px;
-  border-radius: 9999px;
-  line-height: 1.4;
-}
-
-/* ==============================================
-   STATUS BADGES
-   ============================================== */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  font-size: 0.8rem;
-  padding: 4px 12px;
-  border-radius: 9999px;
-  border: 1px solid #cbd5e1;
-}
-
-.status-online {
-  background: #dcfce7;
-  color: #166534;
-  border-color: #86efac;
-}
-
-.status-offline {
-  background: #ffe4e6;
-  color: #9f1239;
-  border-color: #fca5a5;
-}
-
-/* ==============================================
-   CARTOON TITLE TEXTS (CENTER PANEL HEADER)
-   ============================================== */
-.cartoon-title {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-
-.cartoon-title-sub {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
-}
-
-/* ==============================================
-   MOCKUP BLUEPRINT DESIGN SYSTEM EXTENSIONS
-   ============================================== */
-/* ==============================================
-   RETRO 2D / 2.5D PIXEL ART STYLING UTILITIES
-   ============================================== */
+/* ============================================================
+   PIXEL UTILITY CLASSES
+   ============================================================ */
 .pixel-art {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
@@ -616,62 +60,198 @@ body {
   letter-spacing: 0.05em;
 }
 
+/* ============================================================
+   PIXEL BORDER SHADOW (replaces glass/modern border-radius)
+   ============================================================ */
+.pixel-panel {
+  background: #1e293b;
+  border: 3px solid #334155;
+  box-shadow: 4px 4px 0 #000000;
+  image-rendering: pixelated;
+}
+
+.pixel-panel:hover {
+  border-color: #475569;
+}
+
+/* ============================================================
+   STATUS BADGES — pixel style (no rounded pill)
+   ============================================================ */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Silkscreen', monospace;
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border: 2px solid;
+}
+
+.status-online {
+  background: #14532d;
+  color: #86efac;
+  border-color: #16a34a;
+}
+
+.status-offline {
+  background: #450a0a;
+  color: #fca5a5;
+  border-color: #dc2626;
+}
+
+/* ============================================================
+   BUTTONS — pixel style
+   ============================================================ */
+.btn-primary {
+  background: #7c3aed;
+  border: 2px solid #a78bfa;
+  border-bottom: 4px solid #4c1d95;
+  color: #ffffff !important;
+  padding: 0.6rem 1.2rem;
+  font-family: 'Silkscreen', monospace;
+  font-weight: 700;
+  font-size: 0.75rem;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #000000;
+  transition: all 0.08s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #8b5cf6;
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #000000;
+  border-bottom-width: 2px;
+}
+
+.btn-primary:disabled {
+  background: #334155;
+  color: #64748b !important;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ============================================================
+   GAME CLICK AREA ANIMATIONS
+   ============================================================ */
+.cartoon-clicker-object {
+  cursor: pointer;
+  transition: transform 0.08s ease;
+}
+
+.cartoon-clicker-object:hover {
+  filter: brightness(1.1);
+}
+
+.clicker-object {
+  cursor: pointer;
+  transition: transform 0.08s ease;
+}
+
+.clicker-object:hover { transform: scale(1.05); }
+.clicker-object:active { transform: scale(0.92); }
+
+.click-shake {
+  animation: clickBounce 0.12s ease-in-out;
+}
+
+@keyframes clickBounce {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.88); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================================
+   FLOATING SCORE NUMBERS
+   ============================================================ */
+.floating-text {
+  position: absolute;
+  font-family: 'Silkscreen', 'Press Start 2P', monospace;
+  font-weight: 700;
+  font-size: 1rem;
+  pointer-events: none;
+  animation: floatUp 0.85s ease-out forwards;
+  z-index: 50;
+  text-shadow: 2px 2px 0 #000000;
+  white-space: nowrap;
+}
+
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(0.9); }
+  30%  { transform: translateY(-16px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-50px) scale(1); }
+}
+
+/* ============================================================
+   RUNE PLATFORM GLOW (battle arena)
+   ============================================================ */
 .rune-platform-glow {
   position: absolute;
-  bottom: -15px;
+  bottom: -8px;
   left: 50%;
   transform: translateX(-50%) rotateX(72deg);
-  width: 220px;
-  height: 220px;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
-  border: 4px dashed #38bdf8;
-  box-shadow: 0 0 35px rgba(56, 189, 248, 0.6), inset 0 0 25px rgba(56, 189, 248, 0.4);
+  border: 3px dashed #38bdf8;
+  box-shadow: 0 0 28px rgba(56, 189, 248, 0.5), inset 0 0 20px rgba(56, 189, 248, 0.3);
   animation: rotateRune 20s linear infinite;
   pointer-events: none;
   z-index: 0;
-  image-rendering: pixelated;
 }
 
 @keyframes rotateRune {
   from { transform: translateX(-50%) rotateX(72deg) rotate(0deg); }
-  to { transform: translateX(-50%) rotateX(72deg) rotate(360deg); }
+  to   { transform: translateX(-50%) rotateX(72deg) rotate(360deg); }
 }
 
-.upgrade-card-grid {
-  background: #1e293b;
-  border: 1.5px solid #334155;
-  border-radius: 16px;
-  padding: 12px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-align: left;
-}
-
-.upgrade-card-grid:hover:not(:disabled) {
-  border-color: #8b5cf6;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
-}
-
+/* ============================================================
+   CTA GOLD PIXEL BUTTON
+   ============================================================ */
 .cta-gold-button {
   background: #f59e0b;
   color: #0f172a !important;
   font-family: 'Silkscreen', 'Press Start 2P', monospace;
   font-weight: 900;
-  border: 4px solid #78350f;
-  box-shadow: inset -4px -4px 0px rgba(180,83,9,0.8), inset 4px 4px 0px rgba(254,240,138,0.9), 4px 4px 0px #000000;
+  border: 3px solid #78350f;
+  border-bottom: 5px solid #78350f;
+  box-shadow: 3px 3px 0 #000000;
   transition: all 0.08s ease;
   user-select: none;
 }
 
-.cta-gold-button:hover {
-  background: #fbbf24;
-}
+.cta-gold-button:hover { background: #fbbf24; }
 
 .cta-gold-button:active {
   transform: translate(2px, 2px);
-  box-shadow: inset -2px -2px 0px rgba(180,83,9,0.8), inset 2px 2px 0px rgba(254,240,138,0.9), 2px 2px 0px #000000;
+  border-bottom-width: 3px;
+  box-shadow: 1px 1px 0 #000000;
 }
 
+/* ============================================================
+   SLOW BOUNCE (logo animation)
+   ============================================================ */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
+
+/* ============================================================
+   SCROLLBAR (pixel style)
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border: 1px solid #000; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }

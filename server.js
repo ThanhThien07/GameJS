@@ -49,6 +49,33 @@ const io = new Server(server, {
 // Port configuration
 const PORT = process.env.PORT || 3000;
 
+// ── Helper: save match results to leaderboard ──────────────────────────────
+async function saveToLeaderboard(playerName, score, clicks, gameMode) {
+  if (!dbPool) return;
+  try {
+    await dbPool.execute(
+      'INSERT INTO leaderboard (player_name, score, clicks, game_mode) VALUES (?, ?, ?, ?)',
+      [playerName, score, clicks, gameMode]
+    );
+    console.log(`📊 Leaderboard saved: ${playerName} score=${score} mode=${gameMode}`);
+  } catch (err) {
+    console.warn('Leaderboard save error:', err.message);
+  }
+}
+
+// ── REST: GET /api/leaderboard ──────────────────────────────────────────────
+app.get('/api/leaderboard', async (req, res) => {
+  if (!dbPool) return res.json({ rows: [], note: 'No DB connected' });
+  try {
+    const [rows] = await dbPool.execute(
+      'SELECT player_name, score, clicks, game_mode, created_at FROM leaderboard ORDER BY score DESC LIMIT 20'
+    );
+    res.json({ rows });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Game State Management
 const rooms = new Map();
 
@@ -115,20 +142,27 @@ setInterval(() => {
 
         if (room.timer <= 0) {
           room.status = 'gameover';
+          // Save human player scores to leaderboard
+          room.players.filter(p => !p.isBot).forEach(p => {
+            saveToLeaderboard(p.name, p.score, p.clicks, 'competitive');
+          });
           io.to(roomCode).emit('gameFinished', room);
         } else {
           io.to(roomCode).emit('roomUpdated', room);
         }
       }
 
-      // 2. Co-op Mode (Chế độ 3)
+      // 2. Co-op Mode (5-minute countdown)
       if (room.mode === 'coop') {
+        // Init co-op timer on first tick (300 seconds = 5 min)
+        if (room.coopTimer === undefined) room.coopTimer = 300;
+        room.coopTimer -= 1;
+
         // Ticking auto clicker resources for co-op mode (shared pool)
         const autoClickerDps = room.coopUpgrades.autoClick.level * 2;
         if (autoClickerDps > 0) {
           room.coopResources.money += autoClickerDps;
-          
-          // Auto clicks also have a small chance to drop materials (1% per auto-dps)
+          // Auto clicks also have a small chance to drop materials
           for (let i = 0; i < autoClickerDps; i++) {
             if (Math.random() < 0.05) {
               const items = ['wood', 'stone', 'meat'];
@@ -141,15 +175,11 @@ setInterval(() => {
         // Simulate Bot clicks in co-op mode
         room.players.forEach(player => {
           if (player.isBot) {
-            // Bots click and contribute to shared money
             const damageUpgradeLevel = room.coopUpgrades.damage.level;
             const multiplier = 1 + (room.coopUpgrades.multiplier.level - 1) * 0.2;
             const clickVal = Math.floor(damageUpgradeLevel * multiplier);
-
             const clickCount = Math.floor(Math.random() * 3) + 1;
             room.coopResources.money += clickVal * clickCount;
-
-            // Materials drop rate for bot clicks (10% chance)
             for (let i = 0; i < clickCount; i++) {
               if (Math.random() < 0.10) {
                 const items = ['wood', 'stone', 'meat'];
@@ -160,7 +190,16 @@ setInterval(() => {
           }
         });
 
-        io.to(roomCode).emit('roomUpdated', room);
+        // Co-op end condition: timer reaches 0
+        if (room.coopTimer <= 0) {
+          room.status = 'gameover';
+          room.players.filter(p => !p.isBot).forEach(p => {
+            saveToLeaderboard(p.name, room.coopResources.money, p.clicks, 'coop');
+          });
+          io.to(roomCode).emit('gameFinished', { ...room, finalMoney: room.coopResources.money });
+        } else {
+          io.to(roomCode).emit('roomUpdated', { ...room, coopTimer: room.coopTimer });
+        }
       }
     }
   });
@@ -444,6 +483,8 @@ io.on('connection', (socket) => {
           rooms.delete(roomCode);
           console.log(`Room ${roomCode} deleted due to empty human players`);
         } else {
+          // Notify remaining players someone left
+          io.to(roomCode).emit('playerLeft', { playerName: removedPlayer.name, room });
           io.to(roomCode).emit('roomUpdated', room);
         }
       }
