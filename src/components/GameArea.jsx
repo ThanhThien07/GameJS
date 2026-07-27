@@ -503,604 +503,349 @@ function GameArea({
   };
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto min-h-screen bg-[#0f172a] text-slate-100 flex flex-col font-['Silkscreen',monospace] relative pb-12 overflow-x-hidden">
-      {/* 1. HEADER RESOURCE BAR (TOP - RETRO PIXEL ART HUD) */}
-      <header className="w-full bg-[#1e293b] border-b-4 border-[#0f172a] px-4 md:px-8 py-3 flex items-center justify-between z-30 sticky top-0 shadow-[0_4px_0px_#000000] font-['Silkscreen',monospace]">
-        {/* Left: Branding Logo */}
-        <div className="flex items-center gap-3 cursor-pointer" onClick={onLeave}>
-          <div className="w-9 h-9 border-2 border-[#0f172a] bg-[#78350f] text-[#fef08a] flex items-center justify-center font-bold text-lg shadow-[2px_2px_0px_#000000]">
+    <div
+      className="w-full max-w-[1440px] mx-auto min-h-screen bg-[#0f172a] text-slate-100 flex flex-col"
+      style={{ fontFamily: "'Press Start 2P', 'Silkscreen', monospace" }}
+    >
+
+      {/* ═══════════════════════════════════════════════════
+          HEADER — Logo | Gold | Diamond | Settings
+          ═══════════════════════════════════════════════════ */}
+      <header className="w-full bg-[#1e293b] border-b-4 border-black px-4 py-2 flex items-center justify-between sticky top-0 z-30 shadow-[0_4px_0_#000]">
+        {/* Logo */}
+        <div className="flex items-center gap-2 cursor-pointer" onClick={onLeave}>
+          <div className="w-9 h-9 bg-[#78350f] border-2 border-black text-yellow-300 flex items-center justify-center text-base shadow-[2px_2px_0_#000]">
             🎮
           </div>
           <div>
-            <h1 className="text-sm md:text-base font-black tracking-wider text-amber-400 uppercase leading-none drop-shadow-[1px_1px_0px_#000000]">
-              TAP TAP CLICKER
-            </h1>
-            <span className="text-[9px] text-purple-400 font-extrabold tracking-widest block uppercase mt-0.5">
-              PIXEL MULTIPLAYER
-            </span>
+            <div className="text-xs font-black text-amber-400 uppercase leading-none">TAP TAP</div>
+            <div className="text-xs font-black text-amber-400 uppercase leading-none">CLICKER</div>
           </div>
         </div>
 
-        {/* Center / Right: Resource Badges & Settings */}
-        <div className="flex items-center gap-2 md:gap-4">
-          {/* Gold Badge */}
-          <PixelCurrency
-            icon="🪙"
-            amount={mode === 'offline' ? formatNumber(Math.floor(offlineState.money)) : formatNumber(getMyCompPlayer()?.score || 0)}
-            rate={`+${mode === 'offline' ? formatNumber(offlineState.dps) : formatNumber(roomData?.players.find(p => p.id === socketId)?.dps || 0)}/s`}
-            variant="gold"
-          />
+        {/* Currency HUD */}
+        <div className="flex items-center gap-2">
+          {/* Gold */}
+          <div className="flex items-center gap-1.5 bg-[#0f172a] border-2 border-amber-500 px-2 py-1 shadow-[2px_2px_0_#000]">
+            <span className="text-base leading-none">🪙</span>
+            <div className="text-left">
+              <div className="text-[9px] font-black text-amber-300 leading-none">
+                {mode === 'offline'
+                  ? formatNumber(Math.floor(offlineState.money))
+                  : formatNumber(getMyCompPlayer()?.score || 0)}
+              </div>
+              <div className="text-[8px] text-amber-500 leading-none">
+                +{mode === 'offline'
+                  ? formatNumber(offlineState.dps)
+                  : formatNumber(roomData?.players.find(p => p.id === socketId)?.dps || 0)}/s
+              </div>
+            </div>
+            <button className="ml-1 w-5 h-5 bg-amber-500 border border-black text-black text-[10px] font-black flex items-center justify-center">+</button>
+          </div>
 
-          {/* Diamond Badge */}
-          <PixelCurrency
-            icon="💎"
-            amount={offlineState.soulCrystals ? offlineState.soulCrystals.toLocaleString() : '1,250'}
-            variant="purple"
-          />
+          {/* Diamond */}
+          <div className="flex items-center gap-1.5 bg-[#0f172a] border-2 border-purple-500 px-2 py-1 shadow-[2px_2px_0_#000]">
+            <span className="text-base leading-none">💎</span>
+            <div className="text-[9px] font-black text-purple-300 leading-none">
+              {(offlineState.soulCrystals || 0).toLocaleString()}
+            </div>
+            <button className="ml-1 w-5 h-5 bg-purple-500 border border-black text-white text-[10px] font-black flex items-center justify-center">+</button>
+          </div>
 
-          {/* Settings Gear Button */}
-          <PixelButton
+          {/* Settings */}
+          <button
             onClick={() => setShowSettingsModal(true)}
-            variant="dark"
-            size="sm"
-            title="Cài đặt"
+            className="w-8 h-8 bg-[#1e293b] border-2 border-[#334155] text-slate-300 flex items-center justify-center text-sm shadow-[2px_2px_0_#000] hover:border-amber-400"
           >
-            ⚙️
-          </PixelButton>
+            ⚙
+          </button>
         </div>
       </header>
 
-      {/* 2. MAIN LAYOUT CONTAINER (3 : 7 : 2 GRID RATIO AS INSTRUCTED) */}
-      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-4 p-3 md:p-6 items-start">
-        
-        {/* LEFT SIDEBAR NAVIGATION MENU (COL-SPAN-3 = 3/12) */}
-        <aside className="lg:col-span-3 w-full flex flex-col gap-2 z-20 font-['Silkscreen',monospace]">
-          <PixelButton
-            onClick={() => setActiveTab('home')}
-            variant={activeTab === 'home' ? 'gold' : 'dark'}
-            size="md"
-            className="w-full justify-start"
-            title="Trang chủ"
-          >
-            🏠 TRANG CHỦ
-          </PixelButton>
+      {/* ═══════════════════════════════════════════════════
+          BODY — 3-column layout: Left(3) | Center(7) | Right(2)
+          ═══════════════════════════════════════════════════ */}
+      <div className="flex flex-1 gap-3 p-3 items-start overflow-hidden">
 
-          <PixelButton
-            onClick={() => setActiveTab('upgrades')}
-            variant={activeTab === 'upgrades' ? 'purple' : 'dark'}
-            size="md"
-            className="w-full justify-start"
-            title="Nâng cấp sức mạnh"
-          >
-            ⚔️ NÂNG CẤP
-          </PixelButton>
-
-          <PixelButton
-            onClick={() => setActiveTab('items')}
-            variant={activeTab === 'items' ? 'blue' : 'dark'}
-            size="md"
-            className="w-full justify-start"
-            title="Túi đồ & vật phẩm"
-          >
-            🎒 VẬT PHẨM
-          </PixelButton>
-
-          <PixelButton
-            onClick={() => {
-              setActiveTab('achievements');
-              setShowAchievementsModal(true);
-            }}
-            variant={activeTab === 'achievements' ? 'gold' : 'dark'}
-            size="md"
-            className="w-full justify-start"
-            title="Thành tựu"
-          >
-            🏆 THÀNH TÍCH
-          </PixelButton>
-
-          <PixelButton
-            onClick={() => setActiveTab('shop')}
-            variant={activeTab === 'shop' ? 'green' : 'dark'}
-            size="md"
-            className="w-full justify-start"
-            title="Cửa hàng"
-          >
-            🛒 CỬA HÀNG
-          </PixelButton>
+        {/* ─── LEFT SIDEBAR (nav items) ─── */}
+        <aside className="hidden lg:flex flex-col gap-1.5 w-[160px] shrink-0">
+          {[
+            { id: 'home',         icon: '🏠', label: 'BẤM',     sub: 'Trang chủ',  variant: 'gold' },
+            { id: 'upgrades',     icon: '⚔️', label: 'NÂNG CẤP', sub: 'Sức mạnh',  variant: 'purple' },
+            { id: 'items',        icon: '🎒', label: 'ĐỒ VẬT',  sub: 'Vật phẩm',  variant: 'blue' },
+            { id: 'achievements', icon: '🏆', label: 'THÀNH TÍCH', sub: 'Thành tích', variant: 'gold' },
+            { id: 'shop',         icon: '🛒', label: 'CỬA HÀNG', sub: 'Mua bán',    variant: 'green' },
+          ].map(item => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                if (item.id === 'achievements') setShowAchievementsModal(true);
+              }}
+              className={`w-full flex items-center gap-2 px-2 py-2 border-2 text-left shadow-[2px_2px_0_#000] active:translate-y-0.5 transition-transform
+                ${activeTab === item.id
+                  ? 'bg-amber-500 border-amber-300 text-black'
+                  : 'bg-[#1e293b] border-[#334155] text-slate-300 hover:border-amber-400'
+                }`}
+            >
+              <span className="text-base w-5 text-center leading-none">{item.icon}</span>
+              <div>
+                <div className="text-[9px] font-black uppercase leading-none">{item.label}</div>
+                <div className="text-[8px] text-current opacity-70 leading-none mt-0.5">{item.sub}</div>
+              </div>
+            </button>
+          ))}
         </aside>
 
-        {/* CENTER MAIN GAMEPLAY ARENA & DYNAMIC TAB VIEWS */}
-        {activeTab === 'items' ? (
-          <main className="flex-1 w-full bg-[#1e293b]/60 border border-slate-800 rounded-3xl p-4 md:p-6 flex flex-col justify-between relative min-h-[520px]">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
-              <div className="flex items-center gap-2">
-                <Package size={22} className="text-pink-400" />
-                <h3 className="text-xl font-black text-white uppercase tracking-wider">TÚI ĐỒ & VẬT PHẨM</h3>
-              </div>
-              <span className="text-xs text-slate-400 font-bold">Vật phẩm sở hữu</span>
-            </div>
+        {/* ─── CENTER GAMEPLAY ARENA ─── */}
+        <main className="flex-1 min-w-0 flex flex-col bg-[#0f172a] border-2 border-[#1e293b] relative overflow-hidden" style={{ minHeight: 560 }}>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
-              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-purple-900/40 border border-purple-500/40 text-purple-300 flex items-center justify-center font-black text-xl">
-                    🔮
-                  </div>
-                  <div>
-                    <h4 className="font-extrabold text-sm text-white">Tinh Thể Linh Hồn</h4>
-                    <span className="text-xs text-purple-400 font-bold">Sở hữu: {offlineState.soulCrystals || 0} 💎</span>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowRebirthModal(true)}
-                  className="bg-purple-600 hover:bg-purple-500 text-white font-black text-xs px-3 py-2 rounded-xl"
-                >
-                  Trùng Sinh
-                </button>
-              </div>
-
-              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 text-rose-300 flex items-center justify-center font-black text-xl">
-                    🧪
-                  </div>
-                  <div>
-                    <h4 className="font-extrabold text-sm text-white">Bình Thuốc Nộ (x2 DPC)</h4>
-                    <span className="text-xs text-rose-400 font-bold">{frenzyActive ? 'Đang kích hoạt!' : 'Sẵn sàng dùng'}</span>
-                  </div>
-                </div>
-                <button
-                  onClick={handleActivateFrenzy}
-                  disabled={frenzyCd > 0 || frenzyActive}
-                  className="bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white font-black text-xs px-3 py-2 rounded-xl"
-                >
-                  Sử Dụng
-                </button>
-              </div>
-
-              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-amber-900/40 border border-amber-500/40 text-amber-300 flex items-center justify-center font-black text-xl">
-                    ⚡
-                  </div>
-                  <div>
-                    <h4 className="font-extrabold text-sm text-white">Bùa Bão Vàng</h4>
-                    <span className="text-xs text-amber-400 font-bold">Thưởng vàng bão tức thì</span>
-                  </div>
-                </div>
-                <button
-                  onClick={handleActivateGoldenRush}
-                  disabled={goldenRushCd > 0}
-                  className="bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-slate-950 font-black text-xs px-3 py-2 rounded-xl"
-                >
-                  Sử Dụng
-                </button>
-              </div>
-
-              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-900/40 border border-emerald-500/40 text-emerald-300 flex items-center justify-center font-black text-xl">
-                    🎁
-                  </div>
-                  <div>
-                    <h4 className="font-extrabold text-sm text-white">Rương Thần Khí</h4>
-                    <span className="text-xs text-emerald-400 font-bold">Quà thưởng hàng ngày</span>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setOfflineState(prev => ({ ...prev, money: prev.money + 500 }));
-                    spawnFloatingText('+500💰 HÀNG NGÀY!', 50, 40, '#10b981');
-                  }}
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-3 py-2 rounded-xl"
-                >
-                  Mở Rương
-                </button>
-              </div>
-            </div>
-          </main>
-        ) : activeTab === 'shop' ? (
-          <main className="flex-1 w-full bg-[#1e293b]/60 border border-slate-800 rounded-3xl p-4 md:p-6 flex flex-col justify-between relative min-h-[520px]">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
-              <div className="flex items-center gap-2">
-                <Store size={22} className="text-emerald-400" />
-                <h3 className="text-xl font-black text-white uppercase tracking-wider">CỬA HÀNG THẦN KHÍ</h3>
-              </div>
-              <span className="text-xs text-amber-400 font-bold">Vàng: {Math.floor(offlineState.money).toLocaleString()} 🪙</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
-              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between items-center text-center">
-                <div className="w-14 h-14 rounded-2xl bg-rose-900/40 border border-rose-500/40 text-rose-300 flex items-center justify-center font-black text-2xl mb-2">
-                  🧪
-                </div>
-                <h4 className="font-extrabold text-sm text-white mb-1">Bình Nộ Cuồng Phong</h4>
-                <p className="text-xs text-slate-400 mb-3">x2 DPC trong 30s</p>
-                <button
-                  onClick={() => {
-                    if (offlineState.money >= 500) {
-                      setOfflineState(prev => ({ ...prev, money: prev.money - 500 }));
-                      handleActivateFrenzy();
-                    } else {
-                      alert('Không đủ tiền!');
-                    }
-                  }}
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-2 rounded-xl"
-                >
-                  Mua (500 🪙)
-                </button>
-              </div>
-
-              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between items-center text-center">
-                <div className="w-14 h-14 rounded-2xl bg-amber-900/40 border border-amber-500/40 text-amber-300 flex items-center justify-center font-black text-2xl mb-2">
-                  ⚡
-                </div>
-                <h4 className="font-extrabold text-sm text-white mb-1">Cơn Mưa Vàng</h4>
-                <p className="text-xs text-slate-400 mb-3">+5,000 Vàng tức thì</p>
-                <button
-                  onClick={() => {
-                    if ((offlineState.soulCrystals || 0) >= 2) {
-                      setOfflineState(prev => ({ 
-                        ...prev, 
-                        soulCrystals: prev.soulCrystals - 2,
-                        money: prev.money + 5000 
-                      }));
-                      spawnFloatingText('+5,000💰!', 50, 40, '#eab308');
-                    } else {
-                      alert('Không đủ Tinh thể!');
-                    }
-                  }}
-                  className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs py-2 rounded-xl"
-                >
-                  Mua (2 💎)
-                </button>
-              </div>
-
-              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between items-center text-center">
-                <div className="w-14 h-14 rounded-2xl bg-purple-900/40 border border-purple-500/40 text-purple-300 flex items-center justify-center font-black text-2xl mb-2">
-                  📜
-                </div>
-                <h4 className="font-extrabold text-sm text-white mb-1">Bùa Sát Thương Vĩnh Viễn</h4>
-                <p className="text-xs text-slate-400 mb-3">Tăng vĩnh viễn +20 DPC</p>
-                <button
-                  onClick={() => {
-                    if ((offlineState.soulCrystals || 0) >= 5) {
-                      setOfflineState(prev => ({ 
-                        ...prev, 
-                        soulCrystals: prev.soulCrystals - 5,
-                        dpc: prev.dpc + 20 
-                      }));
-                      spawnFloatingText('+20 DPC VĨNH VIỄN!', 50, 40, '#8b5cf6');
-                    } else {
-                      alert('Không đủ Tinh thể!');
-                    }
-                  }}
-                  className="w-full bg-purple-600 hover:bg-purple-500 text-white font-black text-xs py-2 rounded-xl"
-                >
-                  Mua (5 💎)
-                </button>
-              </div>
-            </div>
-          </main>
-        ) : (
-          <PixelPanel className="lg:col-span-7 w-full flex flex-col items-center justify-between relative overflow-hidden min-h-[520px] font-['Silkscreen',monospace]">
-            {/* Flying Damage/Gold Numbers */}
-            {floatingTexts.map(t => (
-              <span
-                key={t.id}
-                className="floating-text"
-                style={{
-                  left: `${t.x}%`,
-                  top: `${t.y}%`,
-                  color: t.color
-                }}
-              >
-                {t.text}
-              </span>
-            ))}
-
-            {/* TOP CHARACTER STATS & ENERGY BAR */}
-            <div className="w-full max-w-md flex flex-col items-center z-10 gap-2">
-              <span className="text-[9px] font-bold text-amber-400 bg-[#78350f] border-2 border-amber-500 px-3 py-0.5 uppercase tracking-wider">
-                ⚡ SẮC NỔ ACTIVE ⚡
-              </span>
-
-              {/* Pixel Energy / Frenzy Bar */}
-              <PixelProgressBar
-                value={isMultiplierActive ? multiplierTimer : energy}
-                max={isMultiplierActive ? 6 : 100}
-                label="🔥 THANH NỘ BỔ TRỢ (x2)"
-                variant={isMultiplierActive ? 'purple' : 'gold'}
-                height="h-3.5"
-                className="w-full"
-              />
-
-              {/* Buff Tags */}
-              <div className="flex gap-2 text-xs font-bold mt-1">
-                <PixelButton
-                  onClick={handleActivateFrenzy}
-                  disabled={frenzyCd > 0 || frenzyActive}
-                  variant={frenzyActive ? 'red' : 'dark'}
-                  size="sm"
-                >
-                  🔥 Cuồng Phong (x2 DPC) {frenzyActive ? `${frenzyTimer}s` : frenzyCd > 0 ? `(${frenzyCd}s)` : ''}
-                </PixelButton>
-
-                <PixelButton
-                  onClick={handleActivateGoldenRush}
-                  disabled={goldenRushCd > 0}
-                  variant="gold"
-                  size="sm"
-                >
-                  ⚡ Bão Vàng {goldenRushCd > 0 ? `(${goldenRushCd}s)` : ''}
-                </PixelButton>
-              </div>
-            </div>
-
-            {/* CENTER CHARACTER MASCOT CENTERPIECE */}
-            <div
-              onClick={handleTap}
-              className={`my-4 cursor-pointer select-none transition-transform active:scale-95 z-10 ${clickShake ? 'click-shake' : ''}`}
+          {/* Floating damage texts */}
+          {floatingTexts.map(t => (
+            <span
+              key={t.id}
+              className="floating-text pointer-events-none"
+              style={{ left: `${t.x}%`, top: `${t.y}%`, color: t.color }}
             >
-              {renderClickObject()}
-            </div>
+              {t.text}
+            </span>
+          ))}
 
-            {/* BOTTOM CLICK POWER & MAIN GOLD CTA BUTTON */}
-            <div className="w-full flex flex-col items-center gap-3 z-10 mt-2">
-              <div className="text-center">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Click Power</span>
-                <span className="text-2xl md:text-3xl font-black text-white tracking-wide block drop-shadow-[2px_2px_0px_#000000]">
-                  +{mode === 'offline' ? offlineState.dpc : (getMyCompPlayer()?.dpc || 1)}
-                </span>
-                <span className="text-[10px] text-purple-300 font-bold flex items-center justify-center gap-1 mt-0.5">
-                  ⚒️ Nâng Cấp Công Cụ Click
-                </span>
+          {/* ── Top: SẮC NỔ label + energy bar ── */}
+          <div className="flex flex-col items-center gap-1.5 pt-3 px-4">
+            <span className="text-[9px] font-black text-amber-300 bg-[#1e293b] border-2 border-amber-500 px-3 py-0.5 uppercase shadow-[2px_2px_0_#000]">
+              ⚡ SẮC NỔ
+            </span>
+
+            {/* Energy bar row */}
+            <div className="w-full max-w-md">
+              <div className="flex justify-between text-[8px] font-black mb-1">
+                <span className="text-blue-400">🔥 THANH NỘ BỔ TRỢ (x2)</span>
+                <span className="text-amber-400">{isMultiplierActive ? 'X2!' : `${energy}%`}</span>
               </div>
-
-              {/* GIANT GOLD PRIMARY CLICK BUTTON (MATCHING MOCKUP "BẤM NGAY") */}
-              <PixelButton
-                onClick={handleTap}
-                variant="gold"
-                size="xl"
-                className="cta-gold-button text-lg py-3.5 px-10 shadow-2xl flex items-center justify-center gap-2 cursor-pointer active:translate-y-1"
-              >
-                👆 BẤM NGAY
-              </PixelButton>
+              <div className="w-full h-3 bg-[#1e293b] border-2 border-[#334155] overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-200 ${isMultiplierActive ? 'bg-purple-500 animate-pulse' : 'bg-blue-500'}`}
+                  style={{ width: `${isMultiplierActive ? (multiplierTimer / 6) * 100 : energy}%` }}
+                />
+              </div>
             </div>
-          </PixelPanel>
-        )}
 
-        {/* RIGHT SIDE UTILITY BOOST CARDS (COL-SPAN-2 = 2/12) */}
-        <aside className="lg:col-span-2 w-full flex flex-col gap-4 font-['Silkscreen',monospace]">
-          {/* Boost x2 Card */}
-          <PixelPanel className="p-3 flex flex-col items-center justify-center text-center">
-            <div className="w-10 h-10 bg-[#3b0764] border-2 border-purple-500 text-purple-300 flex items-center justify-center font-bold text-base mb-2">
+            {/* Skill buttons */}
+            <div className="flex gap-2 flex-wrap justify-center">
+              <button
+                onClick={handleActivateFrenzy}
+                disabled={frenzyCd > 0 || frenzyActive}
+                className={`px-2 py-1 border-2 text-[8px] font-black uppercase shadow-[2px_2px_0_#000] active:translate-y-0.5 transition-transform
+                  ${frenzyActive ? 'bg-red-600 border-red-400 text-white animate-pulse'
+                    : frenzyCd > 0 ? 'bg-[#1e293b] border-[#334155] text-slate-500 cursor-not-allowed'
+                    : 'bg-rose-900 border-rose-500 text-rose-300 hover:border-rose-300'}`}
+              >
+                🔥 Cuồng Phong (x2 DPC){frenzyActive ? ` ${frenzyTimer}s` : frenzyCd > 0 ? ` (${frenzyCd}s)` : ''}
+              </button>
+              <button
+                onClick={handleActivateGoldenRush}
+                disabled={goldenRushCd > 0}
+                className={`px-2 py-1 border-2 text-[8px] font-black uppercase shadow-[2px_2px_0_#000] active:translate-y-0.5 transition-transform
+                  ${goldenRushCd > 0 ? 'bg-[#1e293b] border-[#334155] text-slate-500 cursor-not-allowed'
+                    : 'bg-amber-900 border-amber-500 text-amber-300 hover:border-amber-300'}`}
+              >
+                ⚡ Bão Vàng{goldenRushCd > 0 ? ` (${goldenRushCd}s)` : ''}
+              </button>
+            </div>
+          </div>
+
+          {/* ── Center: Monster sprite ── */}
+          <div
+            onClick={handleTap}
+            className={`flex-1 flex items-center justify-center cursor-pointer select-none relative ${clickShake ? 'click-shake' : ''}`}
+            style={{ minHeight: 220 }}
+          >
+            {/* Rune platform glow */}
+            <div className="rune-platform-glow absolute bottom-6 left-1/2 -translate-x-1/2" />
+            {renderClickObject()}
+          </div>
+
+          {/* ── Bottom: Click Power + BẤM NGAY ── */}
+          <div className="flex flex-col items-center gap-2 pb-4 px-4">
+            <div className="text-center">
+              <div className="text-[8px] text-slate-400 uppercase">Click Power</div>
+              <div className="text-2xl font-black text-white drop-shadow-[2px_2px_0_#000]">
+                +{mode === 'offline' ? offlineState.dpc : (getMyCompPlayer()?.dpc || 1)}
+              </div>
+              <div className="text-[8px] text-purple-400">⚒ Nâng Cấp Công Cụ Click</div>
+            </div>
+
+            {/* BẤM NGAY */}
+            <button
+              onClick={handleTap}
+              className="bg-amber-400 border-b-4 border-amber-700 border-2 border-amber-300 text-black text-sm font-black px-10 py-3 uppercase shadow-[4px_4px_0_#000] hover:bg-amber-300 active:translate-y-1 active:border-b-2 transition-all"
+            >
+              👆 BẤM NGAY
+            </button>
+          </div>
+        </main>
+
+        {/* ─── RIGHT SIDEBAR (boost cards) ─── */}
+        <aside className="hidden lg:flex flex-col gap-3 w-[110px] shrink-0">
+          {/* Boost x2 */}
+          <div className="bg-[#1e293b] border-2 border-purple-500 p-2 flex flex-col items-center text-center shadow-[3px_3px_0_#000]">
+            <div className="w-10 h-10 bg-[#3b0764] border-2 border-purple-400 text-purple-200 flex items-center justify-center font-black text-base mb-1 shadow-[2px_2px_0_#000]">
               x2
             </div>
-            <span className="text-[9px] text-purple-300 font-bold">23:45:12</span>
-            <span className="text-[10px] text-white font-bold mt-0.5 uppercase">BOOST X2</span>
-          </PixelPanel>
+            <div className="text-[8px] text-purple-300 font-black">23:45:12</div>
+            <div className="text-[8px] text-white font-black uppercase mt-0.5">BOOST X2</div>
+          </div>
 
-          {/* Daily Gift Card */}
-          <PixelPanel className="p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-amber-400">
-            <div className="w-10 h-10 bg-[#78350f] border-2 border-amber-500 text-amber-400 flex items-center justify-center text-lg mb-2">
+          {/* Daily Gift */}
+          <div className="bg-[#1e293b] border-2 border-amber-500 p-2 flex flex-col items-center text-center shadow-[3px_3px_0_#000] cursor-pointer hover:border-amber-300">
+            <div className="w-10 h-10 bg-[#78350f] border-2 border-amber-400 text-amber-300 flex items-center justify-center text-lg mb-1 shadow-[2px_2px_0_#000]">
               🎁
             </div>
-            <span className="text-[10px] text-amber-400 font-bold uppercase">QUÀ NGÀY</span>
-            <span className="text-[8px] text-slate-400 font-bold mt-0.5">Nhận quà</span>
-          </PixelPanel>
+            <div className="text-[9px] text-amber-400 font-black uppercase">QUÀ NGÀY</div>
+            <div className="text-[8px] text-slate-400 font-black mt-0.5">Nhận quà</div>
+          </div>
         </aside>
-
       </div>
 
-      {/* 3. BOTTOM UPGRADE CARDS GRID (4 COLUMNS ON DESKTOP - MATCHING MOCKUP) */}
-      <section className="w-full px-4 md:px-8 mt-4">
-        <div className="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
-          <div className="flex items-center gap-2">
-            <Zap size={18} className="text-amber-400" />
-            <h3 className="text-base md:text-lg font-black text-white uppercase tracking-wider">
-              DANH SÁCH NÂNG CẤP THẦN KHÍ
-            </h3>
-          </div>
-          <span className="text-xs text-slate-400 font-bold">Tự động tối ưu theo theme</span>
+      {/* ═══════════════════════════════════════════════════
+          BOTTOM UPGRADE CARDS GRID (4 columns)
+          ═══════════════════════════════════════════════════ */}
+      <section className="w-full px-3 pb-6 mt-2">
+        <div className="flex items-center gap-2 mb-2 pb-2 border-b-2 border-[#1e293b]">
+          <span className="text-amber-400 text-sm">⚡</span>
+          <h3 className="text-[9px] font-black text-white uppercase">DANH SÁCH NÂNG CẤP THẦN KHÍ</h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {mode === 'offline' && (() => {
             const { clickTools, autoWorkers } = getFilteredUpgrades();
-            const allUpgrades = [...clickTools, ...autoWorkers];
-
-            return allUpgrades.map((up) => {
+            return [...clickTools, ...autoWorkers].map(up => {
               const IconComp = up.icon;
               const curLvl = offlineState.upgrades[up.key] || 0;
               const cost = getOfflineUpgradeCost(up.cost, curLvl);
               const canAfford = offlineState.money >= cost;
-
               return (
-                <PixelPanel
+                <div
                   key={up.key}
-                  className={`flex flex-col justify-between text-left font-['Silkscreen',monospace] ${!canAfford ? 'opacity-75' : ''}`}
+                  className={`bg-[#1e293b] border-2 border-[#334155] p-3 flex flex-col gap-2 shadow-[3px_3px_0_#000] ${!canAfford ? 'opacity-70' : 'hover:border-amber-400'}`}
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="w-10 h-10 bg-[#0f172a] border-2 border-[#334155] flex items-center justify-center text-amber-400 font-bold">
-                      <IconComp size={20} />
+                  <div className="flex items-start justify-between">
+                    <div className="w-9 h-9 bg-[#0f172a] border-2 border-[#334155] flex items-center justify-center text-amber-400">
+                      <IconComp size={18} />
                     </div>
-                    <span className="text-[9px] font-bold bg-[#3b0764] text-purple-300 border-2 border-purple-500 px-2 py-0.5 uppercase">
+                    <span className="text-[8px] font-black bg-[#3b0764] text-purple-300 border border-purple-500 px-1.5 py-0.5 uppercase">
                       Lv. {curLvl}
                     </span>
                   </div>
 
-                  <div className="mb-2">
-                    <h4 className="font-bold text-xs text-white mb-0.5 truncate uppercase">
-                      {up.name}
-                    </h4>
-                    <span className="text-[10px] font-bold text-purple-400 block">{up.statLabel}</span>
+                  <div>
+                    <div className="text-[9px] font-black text-white uppercase truncate">{up.name}</div>
+                    <div className="text-[9px] text-purple-400 font-black">{up.statLabel}</div>
                   </div>
 
-                  {/* Pixel Progress Bar inside Card */}
-                  <PixelProgressBar
-                    value={offlineState.money}
-                    max={cost}
-                    height="h-2"
-                    variant="gold"
-                    className="mb-3"
-                  />
+                  {/* Progress bar */}
+                  <div className="w-full h-2 bg-[#0f172a] border border-[#334155]">
+                    <div
+                      className="h-full bg-amber-400 transition-all"
+                      style={{ width: `${Math.min(100, (offlineState.money / cost) * 100)}%` }}
+                    />
+                  </div>
 
-                  {/* Price Button Badge */}
-                  <PixelButton
+                  {/* Buy button */}
+                  <button
                     onClick={() => buyOfflineUpgrade(up.key, up.isDpc, up.val, up.cost)}
                     disabled={!canAfford}
-                    variant={canAfford ? 'green' : 'dark'}
-                    size="sm"
-                    className="w-full"
+                    className={`w-full py-1.5 text-[9px] font-black uppercase border-2 shadow-[2px_2px_0_#000] active:translate-y-0.5 transition-transform flex items-center justify-center gap-1
+                      ${canAfford
+                        ? 'bg-green-600 border-green-400 text-white hover:bg-green-500'
+                        : 'bg-[#0f172a] border-[#334155] text-slate-500 cursor-not-allowed'}`}
                   >
                     🪙 {cost.toLocaleString()}
-                  </PixelButton>
-                </PixelPanel>
+                  </button>
+                </div>
               );
             });
           })()}
         </div>
       </section>
 
-      {/* SETTINGS MODAL */}
+      {/* ═══════════════════════════════════════════════════
+          MODALS
+          ═══════════════════════════════════════════════════ */}
+
+      {/* Settings Modal */}
       {showSettingsModal && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#1e293b] border border-slate-700 rounded-3xl max-w-sm w-full p-6 text-white text-center shadow-2xl animate-in zoom-in-95">
-            <h3 className="text-xl font-black text-white mb-4 uppercase tracking-wider">⚙️ CÀI ĐẶT GAME</h3>
-            
-            <div className="space-y-3 mb-6">
-              <button
-                onClick={handleToggleSound}
-                className="w-full bg-slate-800 hover:bg-slate-700 p-3 rounded-2xl flex items-center justify-between font-bold text-sm border border-slate-700"
-              >
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1e293b] border-4 border-[#334155] w-full max-w-sm p-5 shadow-[6px_6px_0_#000]" style={{ fontFamily: "'Silkscreen', monospace" }}>
+            <h3 className="text-sm font-black text-white mb-4 uppercase text-center">⚙ CÀI ĐẶT GAME</h3>
+            <div className="flex flex-col gap-2 mb-4">
+              <button onClick={handleToggleSound} className="w-full bg-[#0f172a] border-2 border-[#334155] p-2.5 flex justify-between text-xs font-black text-white hover:border-amber-400">
                 <span>Âm thanh hiệu ứng</span>
-                {muted ? <VolumeX size={18} className="text-red-400" /> : <Volume2 size={18} className="text-emerald-400" />}
+                <span>{muted ? '🔇' : '🔊'}</span>
               </button>
-
-              {mode === 'offline' && (
-                <>
-                  <button
-                    onClick={() => {
-                      setShowSettingsModal(false);
-                      setShowRebirthModal(true);
-                    }}
-                    className="w-full bg-purple-900/40 hover:bg-purple-900/60 p-3 rounded-2xl flex items-center justify-between font-bold text-sm border border-purple-700/50 text-purple-300"
-                  >
-                    <span>Điện Trùng Sinh</span>
-                    <RotateCcw size={18} />
-                  </button>
-
-                  <button
-                    onClick={handleResetGameData}
-                    className="w-full bg-amber-950/40 hover:bg-amber-950/60 p-3 rounded-2xl flex items-center justify-between font-bold text-sm border border-amber-700/50 text-amber-300"
-                  >
-                    <span>🔄 Reset Chơi Lại Từ Đầu</span>
-                    <RotateCcw size={18} className="text-amber-400" />
-                  </button>
-                </>
-              )}
-
-              <button
-                onClick={onLeave}
-                className="w-full bg-rose-950/40 hover:bg-rose-950/60 p-3 rounded-2xl flex items-center justify-between font-bold text-sm border border-rose-700/50 text-rose-300"
-              >
+              {mode === 'offline' && <>
+                <button onClick={() => { setShowSettingsModal(false); setShowRebirthModal(true); }} className="w-full bg-[#0f172a] border-2 border-purple-700 p-2.5 flex justify-between text-xs font-black text-purple-300 hover:border-purple-400">
+                  <span>Điện Trùng Sinh</span>
+                  <span>🔄</span>
+                </button>
+                <button onClick={handleResetGameData} className="w-full bg-[#0f172a] border-2 border-amber-700 p-2.5 flex justify-between text-xs font-black text-amber-300 hover:border-amber-400">
+                  <span>🔄 Reset Chơi Lại Từ Đầu</span>
+                  <span>⚠</span>
+                </button>
+              </>}
+              <button onClick={onLeave} className="w-full bg-[#0f172a] border-2 border-rose-700 p-2.5 flex justify-between text-xs font-black text-rose-300 hover:border-rose-400">
                 <span>Thoát ra Menu chính</span>
-                <ArrowLeft size={18} />
+                <span>←</span>
               </button>
             </div>
-
-            <button
-              onClick={() => setShowSettingsModal(false)}
-              className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-extrabold py-2.5 rounded-xl text-xs"
-            >
-              Đóng
-            </button>
+            <button onClick={() => setShowSettingsModal(false)} className="w-full bg-[#334155] border-2 border-slate-600 text-white text-xs font-black py-2 hover:bg-slate-600">Đóng</button>
           </div>
         </div>
       )}
 
-      {/* REBIRTH MODAL */}
+      {/* Rebirth Modal */}
       {showRebirthModal && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#1e293b] border border-purple-500/40 rounded-3xl max-w-md w-full p-6 text-white text-center shadow-2xl animate-in zoom-in-95">
-            <RotateCcw size={44} className="mx-auto text-purple-400 mb-3 animate-spin-slow" />
-            <h3 className="text-2xl font-black text-purple-300 mb-2">ĐIỆN TRÙNG SINH</h3>
-            <p className="text-xs text-slate-300 mb-4">
-              Trùng Sinh sẽ reset tiền vàng và nâng cấp thường, đổi lấy **Tinh Thể Linh Hồn** vĩnh viễn!
-            </p>
-            
-            <div className="bg-[#0f172a] border border-purple-500/30 p-4 rounded-2xl mb-5 space-y-2 text-left text-xs font-semibold">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Tiền vàng tích lũy:</span>
-                <span className="font-extrabold text-amber-400">{Math.floor(offlineState.money).toLocaleString()} 🪙</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Tinh thể hiện có:</span>
-                <span className="font-extrabold text-purple-400">💎 {offlineState.soulCrystals || 0}</span>
-              </div>
-              <div className="flex justify-between text-sm pt-2 border-t border-purple-800/50">
-                <span className="text-purple-200 font-extrabold">Nhận thêm sau Trùng Sinh:</span>
-                <span className="font-black text-emerald-400">+${Math.max(1, Math.floor(offlineState.money / 50000))} Tinh thể 💎</span>
-              </div>
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1e293b] border-4 border-purple-500 w-full max-w-md p-5 shadow-[6px_6px_0_#000]" style={{ fontFamily: "'Silkscreen', monospace" }}>
+            <h3 className="text-sm font-black text-purple-300 mb-2 uppercase text-center">⚡ ĐIỆN TRÙNG SINH</h3>
+            <p className="text-[9px] text-slate-300 mb-4 text-center">Reset tiền vàng & nâng cấp để đổi lấy Tinh Thể Linh Hồn vĩnh viễn!</p>
+            <div className="bg-[#0f172a] border-2 border-purple-700 p-3 mb-4 flex flex-col gap-1.5 text-[9px] font-black">
+              <div className="flex justify-between"><span className="text-slate-400">Tiền vàng:</span><span className="text-amber-400">{Math.floor(offlineState.money).toLocaleString()} 🪙</span></div>
+              <div className="flex justify-between"><span className="text-slate-400">Tinh thể hiện có:</span><span className="text-purple-400">💎 {offlineState.soulCrystals || 0}</span></div>
+              <div className="flex justify-between pt-1 border-t border-purple-800"><span className="text-purple-200">Nhận thêm:</span><span className="text-green-400">+{Math.max(1, Math.floor(offlineState.money / 50000))} 💎</span></div>
             </div>
-
-            <div className="flex gap-3">
-              <button 
-                onClick={() => setShowRebirthModal(false)}
-                className="flex-1 bg-slate-800 hover:bg-slate-700 font-bold py-2.5 rounded-xl text-xs"
-              >
-                Hủy Bỏ
-              </button>
-              <button 
-                onClick={handlePerformRebirth}
-                disabled={offlineState.money < 50000}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 disabled:opacity-50 font-black py-2.5 rounded-xl text-xs shadow-lg"
-              >
-                Xác Nhận Trùng Sinh!
-              </button>
+            <div className="flex gap-2">
+              <button onClick={() => setShowRebirthModal(false)} className="flex-1 bg-[#334155] border-2 border-slate-600 text-white text-xs font-black py-2 hover:bg-slate-600">Hủy</button>
+              <button onClick={handlePerformRebirth} disabled={offlineState.money < 50000} className="flex-1 bg-purple-600 border-2 border-purple-400 text-white text-xs font-black py-2 disabled:opacity-50 hover:bg-purple-500">Trùng Sinh!</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ACHIEVEMENTS MODAL */}
+      {/* Achievements Modal */}
       {showAchievementsModal && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#1e293b] border border-amber-500/40 rounded-3xl max-w-lg w-full p-6 text-white text-left shadow-2xl">
-            <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
-              <div className="flex items-center gap-2">
-                <Trophy size={24} className="text-amber-400" />
-                <h3 className="text-xl font-black text-amber-300">BẢNG THÀNH TỰU</h3>
-              </div>
-              <button 
-                onClick={() => setShowAchievementsModal(false)}
-                className="text-slate-400 hover:text-white font-bold text-sm"
-              >
-                ✕ Đóng
-              </button>
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1e293b] border-4 border-amber-500 w-full max-w-lg p-5 shadow-[6px_6px_0_#000]" style={{ fontFamily: "'Silkscreen', monospace" }}>
+            <div className="flex justify-between items-center mb-4 pb-2 border-b-2 border-[#334155]">
+              <h3 className="text-xs font-black text-amber-300 uppercase">🏆 BẢNG THÀNH TỰU</h3>
+              <button onClick={() => setShowAchievementsModal(false)} className="text-slate-400 hover:text-white text-xs font-black">✕</button>
             </div>
-
-            <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
-              <div className="bg-[#0f172a] p-3 rounded-2xl border border-slate-800 flex justify-between items-center">
-                <div>
-                  <div className="font-extrabold text-sm text-slate-200">👉 Nhấp Nháy Nhẹ Nhàng</div>
-                  <div className="text-xs text-slate-400">Đạt 100 lần click tay ({offlineState.totalClicks || 0}/100)</div>
+            <div className="flex flex-col gap-2 max-h-64 overflow-y-auto">
+              {[
+                { label: '👉 Nhấp Nháy Nhẹ Nhàng', desc: `Đạt 100 lần click (${offlineState.totalClicks || 0}/100)`, done: (offlineState.totalClicks || 0) >= 100 },
+                { label: '💰 Triệu Phú Clicker', desc: `Tích lũy 100,000 vàng (${Math.floor(offlineState.totalGoldEarned || 0).toLocaleString()}/100,000)`, done: (offlineState.totalGoldEarned || 0) >= 100000 },
+              ].map((a, i) => (
+                <div key={i} className="bg-[#0f172a] border-2 border-[#334155] p-3 flex justify-between items-center">
+                  <div>
+                    <div className="text-[9px] font-black text-slate-200">{a.label}</div>
+                    <div className="text-[8px] text-slate-400">{a.desc}</div>
+                  </div>
+                  <span className={`text-[8px] font-black px-2 py-0.5 border ${a.done ? 'bg-green-900 border-green-600 text-green-300' : 'text-slate-500 border-transparent'}`}>
+                    {a.done ? '✓ Xong' : '...'}
+                  </span>
                 </div>
-                <span className={(offlineState.totalClicks || 0) >= 100 ? 'text-xs font-bold bg-green-900/60 text-green-300 border border-green-700 px-2 py-1 rounded-full' : 'text-xs text-slate-500'}>
-                  {(offlineState.totalClicks || 0) >= 100 ? '✓ Đã xong' : 'Đang làm...'}
-                </span>
-              </div>
-
-              <div className="bg-[#0f172a] p-3 rounded-2xl border border-slate-800 flex justify-between items-center">
-                <div>
-                  <div className="font-extrabold text-sm text-slate-200">💰 Triệu Phú Clicker</div>
-                  <div className="text-xs text-slate-400">Tích lũy 100,000 tổng vàng ({Math.floor(offlineState.totalGoldEarned || 0).toLocaleString()}/100,000)</div>
-                </div>
-                <span className={(offlineState.totalGoldEarned || 0) >= 100000 ? 'text-xs font-bold bg-green-900/60 text-green-300 border border-green-700 px-2 py-1 rounded-full' : 'text-xs text-slate-500'}>
-                  {(offlineState.totalGoldEarned || 0) >= 100000 ? '✓ Đã xong' : 'Đang làm...'}
-                </span>
-              </div>
+              ))}
             </div>
           </div>
         </div>
@@ -1108,6 +853,7 @@ function GameArea({
 
     </div>
   );
+
 }
 
 export default GameArea;
