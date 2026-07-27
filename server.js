@@ -366,10 +366,11 @@ io.on('connection', (socket) => {
       const multiplier = 1 + (room.coopUpgrades.multiplier.level - 1) * 0.2;
       const clickVal = Math.floor(damageUpgradeLevel * multiplier);
 
-      room.coopResources.money += clickVal;
+      player.score += clickVal; // Individual score for personal upgrades
+      room.coopResources.money += clickVal; // Shared team pool
 
-      // Random drop chance (10% chance to drop Wood, Stone, or Meat)
-      if (Math.random() < 0.10) {
+      // Material drop chance (12% chance per click to drop Wood, Stone, or Meat)
+      if (Math.random() < 0.12) {
         const dropTypes = ['wood', 'stone', 'meat'];
         const droppedItem = dropTypes[Math.floor(Math.random() * dropTypes.length)];
         room.coopResources[droppedItem] += 1;
@@ -378,7 +379,7 @@ io.on('connection', (socket) => {
         io.to(code).emit('resourceDropped', { 
           player: player.name, 
           item: droppedItem, 
-          x: Math.random() * 40 + 30, // center areas
+          x: Math.random() * 40 + 30, // center area
           y: Math.random() * 40 + 30 
         });
       }
@@ -387,7 +388,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // 6. Buy Upgrade in Competitive Mode
+  // 6. Buy Upgrade in Competitive Mode or Personal Upgrade in Co-op Mode
   socket.on('buyCompUpgrade', ({ code, upgradeId }, callback) => {
     const room = rooms.get(code);
     if (!room || room.status !== 'playing') return callback?.({ success: false, message: 'Trận chưa bắt đầu hoặc phòng không tồn tại!' });
@@ -399,7 +400,8 @@ io.on('connection', (socket) => {
     if (!upgrade) return callback({ success: false, message: 'Nâng cấp không tồn tại!' });
 
     const currentLevel = player.upgrades[upgradeId] || 0;
-    const cost = getUpgradeCost(upgrade.cost, currentLevel);
+    // Scaled cost factor for increased difficulty
+    const cost = Math.floor(upgrade.cost * Math.pow(1.85, currentLevel));
 
     if (player.score < cost) {
       return callback({ success: false, message: 'Không đủ tiền!' });
@@ -419,17 +421,18 @@ io.on('connection', (socket) => {
     callback({ success: true });
   });
 
-  // 7. Buy Shared Upgrade in Co-op Mode
+  // 7. Buy Shared Upgrade in Co-op Mode (Benefits ALL players in the room!)
   socket.on('buyCoopUpgrade', ({ code, upgradeId }, callback) => {
     const room = rooms.get(code);
     if (!room || room.status !== 'playing') return callback?.({ success: false, message: 'Trận chưa bắt đầu hoặc phòng không tồn tại!' });
 
+    const player = room.players.find(p => p.id === socket.id);
     const upgrade = room.coopUpgrades[upgradeId];
     if (!upgrade) return callback({ success: false, message: 'Nâng cấp không hợp lệ!' });
 
     const lvl = upgrade.level;
-    // Costs scale up by level: cost = base * 1.5 ^ (level - 1)
-    const costFactor = Math.pow(1.5, lvl - 1);
+    // Costs scale up by level (factor 1.85 for balanced challenge)
+    const costFactor = Math.pow(1.85, lvl - 1);
     
     let requiredMeat = 0;
     let requiredWood = 0;
@@ -454,15 +457,23 @@ io.on('connection', (socket) => {
       return callback({ success: false, message: 'Không đủ nguyên liệu nâng cấp!' });
     }
 
-    // Deduct resources
+    // Deduct shared resources
     room.coopResources.meat -= requiredMeat;
     room.coopResources.wood -= requiredWood;
     room.coopResources.stone -= requiredStone;
     
-    // Increment upgrade level
+    // Increment shared upgrade level
     upgrade.level += 1;
 
-    console.log(`Coop Upgrade bought in room ${code}: ${upgradeId} to level ${upgrade.level}`);
+    console.log(`Coop Upgrade bought by ${player?.name || 'Player'} in room ${code}: ${upgradeId} to level ${upgrade.level}`);
+    
+    // Broadcast notification so all players see who bought the team upgrade!
+    io.to(code).emit('coopUpgradeBought', {
+      buyer: player?.name || 'Đồng đội',
+      upgradeId,
+      newLevel: upgrade.level
+    });
+    
     io.to(code).emit('roomUpdated', room);
     callback({ success: true });
   });

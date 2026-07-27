@@ -22,8 +22,9 @@ function fmt(n) {
   return Math.floor(n).toString();
 }
 
+// Balanced difficulty upgrade cost scaling factor (2.0)
 function getUpgradeCost(base, level) {
-  return Math.floor(base * Math.pow(1.85, level));
+  return Math.floor(base * Math.pow(2.0, level));
 }
 
 /* ─────────────────────────────────────────────
@@ -64,12 +65,12 @@ export default function GameArea({
     setTimeout(() => setFloats(f => f.filter(t => t.id !== id)), 850);
   }, []);
 
-  /* defeat target */
+  /* defeat target — monster HP scaling increased to 1.45 for balanced challenge */
   const defeatTarget = useCallback((lv) => {
-    const reward = lv * 15 + Math.floor(Math.random() * lv * 10);
+    const reward = lv * 20 + Math.floor(Math.random() * lv * 15);
     spawn(`💥 PHÁ VỠ! +${reward}💰`, 50, 45, '#22c55e');
     const next = lv + 1;
-    const newMax = Math.floor(100 * Math.pow(1.3, next - 1));
+    const newMax = Math.floor(100 * Math.pow(1.45, next - 1));
     setLevel(next); setMaxHp(newMax); setHp(newMax);
     setOfflineState(p => ({ ...p, money: p.money + reward, totalGoldEarned: (p.totalGoldEarned || 0) + reward }));
   }, [spawn, setOfflineState]);
@@ -108,15 +109,22 @@ export default function GameArea({
     }
   }, [energy, multiplier]);
 
-  /* socket drops */
+  /* socket drops and team upgrade events */
   useEffect(() => {
     if (!socket) return;
-    const h = (d) => {
+    const handleDrop = (d) => {
       const icons = { wood: '🪵 Gỗ', stone: '🪨 Đá', meat: '🥩 Thịt' };
       spawn(icons[d.item] || '+1', d.x || 50, d.y || 40, '#8b5cf6');
     };
-    socket.on('resourceDropped', h);
-    return () => socket.off('resourceDropped', h);
+    const handleCoopUpgrade = (data) => {
+      spawn(`✨ ${data.buyer} nâng cấp Cả Đội Lv.${data.newLevel}!`, 50, 25, '#38bdf8');
+    };
+    socket.on('resourceDropped', handleDrop);
+    socket.on('coopUpgradeBought', handleCoopUpgrade);
+    return () => {
+      socket.off('resourceDropped', handleDrop);
+      socket.off('coopUpgradeBought', handleCoopUpgrade);
+    };
   }, [socket, spawn]);
 
   /* skills */
@@ -138,7 +146,7 @@ export default function GameArea({
   /* reset / rebirth */
   const resetGame = () => {
     if (!confirm('Reset chơi lại từ đầu? Tất cả tiến trình sẽ mất!')) return;
-    const fresh = { money:0, dpc:1, dps:0, soulCrystals:0, totalClicks:0, totalGoldEarned:0, rebirthCount:0, upgrades:{ clicker:31,diamondSword:25,godSlayer:10,ultimateRelic:1 } };
+    const fresh = { money:0, dpc:1, dps:0, soulCrystals:0, totalClicks:0, totalGoldEarned:0, rebirthCount:0, upgrades:{ clicker:0,diamondSword:0,godSlayer:0,ultimateRelic:0 } };
     setOfflineState(fresh); setLevel(1); setHp(100); setMaxHp(100); setEnergy(0); setMultiplier(false);
     sessionStorage.setItem('session_clicker_state_v1', JSON.stringify(fresh));
     localStorage.removeItem('offline_clicker_state_v1');
@@ -154,7 +162,7 @@ export default function GameArea({
     spawn(`🌟 TRÙNG SINH! +${crystals} Tinh Thể`, 50, 50, '#a855f7');
   };
 
-  /* tap */
+  /* tap action — exact match between gold earned & floating damage */
   const handleTap = (e) => {
     soundManager.playClick();
     setShaking(true); setTimeout(() => setShaking(false), 120);
@@ -188,31 +196,47 @@ export default function GameArea({
     }
   };
 
-  /* 4 upgrade cards matching reference */
+  /* Theme-specific 4 upgrade items with dynamic costs and stats */
   const getUpgrades = () => {
-    return [
-      { key:'clicker',       name:'Găng Tay Sắt',    icon:'✋', cost:33,    val:31,  btnColor:'btn-success', stat:'+31 DPC'   },
-      { key:'diamondSword',  name:'Kiếm Kim Cương',  icon:'⚔️', cost:150,   val:25,  btnColor:'btn-success', stat:'+25 DPC'   },
-      { key:'godSlayer',     name:'Trảm Thần Đao',   icon:'🔥', cost:1000,  val:120, btnColor:'btn-primary', stat:'+120 DPC'  },
-      { key:'ultimateRelic', name:'Thần Khí Tối Thượng',icon:'✨',cost:5000,val:500, btnColor:'btn-danger',  stat:'+500 DPC' },
-    ];
+    const list = {
+      monster: [
+        { key:'clicker',       name:'Găng Tay Sắt',    icon:'✋', baseCost:30,   baseVal:1,  isDpc:true,  btnColor:'btn-success' },
+        { key:'diamondSword',  name:'Kiếm Kim Cương',  icon:'⚔️', baseCost:150,  baseVal:5,  isDpc:true,  btnColor:'btn-success' },
+        { key:'godSlayer',     name:'Trảm Thần Đao',   icon:'🔥', baseCost:800,  baseVal:25, isDpc:true,  btnColor:'btn-primary' },
+        { key:'ultimateRelic', name:'Thần Khí Tối Thượng',icon:'✨',baseCost:4000,baseVal:100,isDpc:true, btnColor:'btn-danger'  },
+      ],
+      wood: [
+        { key:'battleAxe',     name:'Rìu Chặt Củi',    icon:'🪓', baseCost:30,   baseVal:1,  isDpc:true,  btnColor:'btn-success' },
+        { key:'crystalAxe',    name:'Rìu Thạch Anh',   icon:'💎', baseCost:150,  baseVal:5,  isDpc:true,  btnColor:'btn-success' },
+        { key:'mythicSaw',     name:'Cưa Cổ Thụ',      icon:'🌲', baseCost:800,  baseVal:25, isDpc:true,  btnColor:'btn-primary' },
+        { key:'godChainsaw',   name:'Máy Cưa Thần',    icon:'⚡', baseCost:4000,baseVal:100,isDpc:true,  btnColor:'btn-danger'  },
+      ],
+      stone: [
+        { key:'stonePickaxe',  name:'Cuốc Đá Cổ',      icon:'⛏️', baseCost:30,   baseVal:1,  isDpc:true,  btnColor:'btn-success' },
+        { key:'diamondPickaxe',name:'Cuốc Kim Cương',   icon:'💎', baseCost:150,  baseVal:5,  isDpc:true,  btnColor:'btn-success' },
+        { key:'laserHammer',   name:'Búa Laze',         icon:'🔫', baseCost:800,  baseVal:25, isDpc:true,  btnColor:'btn-primary' },
+        { key:'atomicSmasher', name:'Đập Hạt Nhân',    icon:'💥', baseCost:4000,baseVal:100,isDpc:true,  btnColor:'btn-danger'  },
+      ],
+    };
+    return list[theme] || list.monster;
   };
 
   const buyUpgrade = (up) => {
-    const lv   = offlineState.upgrades[up.key] || 1;
-    const cost = getUpgradeCost(up.cost, lv);
+    const lv   = offlineState.upgrades[up.key] || 0;
+    const cost = getUpgradeCost(up.baseCost, lv);
     if (offlineState.money < cost) return;
     soundManager.playBuy();
     setOfflineState(p => ({
       ...p,
       money: p.money - cost,
       upgrades: { ...p.upgrades, [up.key]: lv + 1 },
-      dpc: p.dpc + up.val,
+      dpc: up.isDpc  ? p.dpc + up.baseVal : p.dpc,
+      dps: !up.isDpc ? p.dps + up.baseVal : p.dps,
     }));
-    spawn('✅ NÂNG CẤP!', 50, 20, '#22c55e');
+    spawn(`✅ +${up.baseVal} DPC!`, 50, 20, '#22c55e');
   };
 
-  /* click object image */
+  /* click target sprite image based on theme */
   const clickImg = () => {
     const base = import.meta.env.BASE_URL;
     const map = { monster:`${base}assets/pixel_monster.png`, wood:`${base}assets/pixel_wood.png`, stone:`${base}assets/pixel_stone.png` };
@@ -220,9 +244,9 @@ export default function GameArea({
   };
 
   const me = roomData?.players.find(p => p.id === socketId);
-  const dpc = mode === 'offline' ? (offlineState.dpc || 9) : (me?.dpc || 1);
-  const gold = mode === 'offline' ? (offlineState.money || 12450000) : (me?.score || 0);
-  const dps  = mode === 'offline' ? (offlineState.dps  || 25300) : (me?.dps  || 0);
+  const dpc = mode === 'offline' ? (offlineState.dpc || 1) : (me?.dpc || 1);
+  const gold = mode === 'offline' ? offlineState.money : (me?.score || 0);
+  const dps  = mode === 'offline' ? offlineState.dps  : (me?.dps  || 0);
   const upgrades = getUpgrades();
 
   /* ─── RENDER ─── */
@@ -339,7 +363,7 @@ export default function GameArea({
             </div>
           </div>
 
-          {/* Target Monster standing on Rune Platform */}
+          {/* Target Sprite Image standing on Rune Platform */}
           <div
             onClick={handleTap}
             className={`d-flex align-items-center justify-content-center cursor-pointer user-select-none position-relative flex-grow-1 w-100 ${shaking ? 'click-shake' : ''}`}
@@ -348,7 +372,7 @@ export default function GameArea({
             <div className="platform-glow" />
             <img
               src={clickImg()}
-              alt="Purple Monster"
+              alt="Game Target"
               className="pixel-art position-relative z-2"
               style={{ width: '220px', height: '220px', objectFit: 'contain', filter: 'drop-shadow(0 15px 30px rgba(0,0,0,0.5))' }}
             />
@@ -396,9 +420,9 @@ export default function GameArea({
         <section className="bottom-upgrades-section">
           <div className="row g-2">
             {upgrades.map(up => {
-              const lv = offlineState.upgrades[up.key] || (up.key === 'clicker' ? 31 : up.key === 'diamondSword' ? 25 : up.key === 'godSlayer' ? 10 : 1);
-              const cost = up.cost;
-              const can = offlineState.money >= cost;
+              const lv = offlineState.upgrades[up.key] || 0;
+              const currentCost = getUpgradeCost(up.baseCost, lv);
+              const can = offlineState.money >= currentCost;
               return (
                 <div key={up.key} className="col-6 col-md-3">
                   <div className="upgrade-card-item">
@@ -406,13 +430,14 @@ export default function GameArea({
                     <div className="flex-grow-1 min-w-0">
                       <div className="text-truncate fw-bold text-light" style={{ fontSize: '10px' }}>{up.name}</div>
                       <div className="text-warning fw-semibold" style={{ fontSize: '9px' }}>Lv. {lv}</div>
-                      <div className="text-info fw-bold" style={{ fontSize: '8px' }}>{up.stat}</div>
+                      <div className="text-info fw-bold" style={{ fontSize: '8px' }}>+{up.baseVal} DPC</div>
                       <button
                         onClick={() => buyUpgrade(up)}
-                        className={`btn ${up.btnColor} btn-sm w-100 fw-bold mt-1 py-0`}
+                        disabled={!can}
+                        className={`btn ${can ? up.btnColor : 'btn-secondary opacity-50'} btn-sm w-100 fw-bold mt-1 py-0`}
                         style={{ fontSize: '10px', height: '22px' }}
                       >
-                        🪙 {fmt(cost)}
+                        🪙 {fmt(currentCost)}
                       </button>
                     </div>
                   </div>
